@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+.vscode/
+config/
+private/
+data_received/
+
+# docs folder 
+docs/
+!docs/excel_color_code.txt
+!docs/excel_template.xlsx
+!docs/problem.txt
+!docs/to_do.txt

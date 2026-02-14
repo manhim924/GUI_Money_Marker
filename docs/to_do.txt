@@ -1,0 +1,31 @@
+1)  GUI add new button that when the excel have "False" then the GUI will tell, and will have a button that reload the back up file and so on
+
+2) GUI add a new button that clear the log message window
+
+3) GUI add a new button that can do all the thing
+
+4) GUI add a new button that can restore the temp file to the current file 
+
+5) add investment marking as a new file ( not same file as money)
+
+7) GUI add a new button that open the excel file
+
+8) GUI should not check is the file path exist, should be the job of main
+
+6)excel
+    6.1)    copy the old file to the temp
+    6.2)    if have False, then print to log window with the current line
+    6.3)    add coin-hold
+    6.4)    process the countless
+    6.5)    fix accrose two month and two year
+    6.6)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have process
+    6.7)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows
+    6.8)    if not every account in the current_have.txt have a amount, then tell error
+    6.9)    fix the new month can just be the first day
+    6.10)   when all every thing is ok, then del the input file
+    6.11)   the coin hold should record every coin that holding
+    
+    work_flow)
+          
+
+!) add the date back to current have ( for the excel to check when accrose two month)

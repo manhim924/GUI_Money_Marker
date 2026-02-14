@@ -6,7 +6,7 @@ private/
 data_received/
 
 # docs folder 
-docs/
+docs/*
 !docs/excel_color_code.txt
 !docs/excel_template.xlsx
 !docs/problem.txt

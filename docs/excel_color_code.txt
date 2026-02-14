@@ -1,0 +1,35 @@
+235 241 222
+Pale Mint
+#EBF1DE
+
+242 220 219
+Pale Pink
+#F2DCDB
+
+220 230 241
+Light Blue
+#DCE6F1
+
+197 217 241
+sky_blue
+#C5D9F1
+
+253 233 217
+peach
+#FDE9D9
+
+228 223 236
+lavender
+#E4DFEC
+
+221 217 196
+beige
+#DDD9C4
+
+255 189 189
+light_coral
+#FFBDBD
+
+146 208 80
+yellow_green
+#92D050

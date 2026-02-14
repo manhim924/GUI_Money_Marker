@@ -1,0 +1,31 @@
+1) only read message in same day ( since last record)
+
+2) if delected some thing in excel, the ws.max_row is not the best method for adding new value to the new cell
+
+3) cell value need to be in same string (e.g. piggy_play) , better to be ( piggy play) in one cell
+
+4) copy a new temp.xlsx file
+
+5) if there is "False" need to print it out
+
+6) the Correct "TRUE" for checking sum and total should be check current have Correct to sum correct
+
+7) tag the markless record
+
+8) add  coin-hold and investment in the table
+
+9) in the GUI it should have a way that I can input everything to the .txt ( money_message or current) 
+
+10) cannot do it when the money_message have two month
+
+11) when have two month in same money_message(Aug and Sep), if there is a current_have.txt, the last day of Aug will print out the current_have.txt(which should be the new day of the Sep), so the total of the last day of Aug is wrong col will , which will make the first day of Sep get the wrong information to start
+
+12) if the current_have.txt is not exite, the total rol will still be there, the next day/month will have error
+
+13) in the current_have.txt , if one of the element is missing , need to tell a error
+
+14) show up the current_have.txt and money_message.txt in the GUI
+
+15) the new month must be first day, but the secound day or other will be error
+
+16) cannot use for acrose two years

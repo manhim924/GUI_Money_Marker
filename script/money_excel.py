@@ -419,16 +419,47 @@ def mark_current_amount(ws, date, row):
                 message.append([col+3, row, correct_value]) 
             
             else:
-                return
+                return False
+
         message.append([19, row, total_amount]) 
         cell_type_message(ws, message)
+        return True
 
     else:
-        return
+        return False
 
-def day_set_style():
+def day_set_style(ws, date, row, current_marked):
+    date_row = find_last_value_row(ws, date, row)
+    cell_color= []
+    if(current_marked):    
+        # row = sum row, row + 1 = total row, row + 2 = current have row
+        cell_border = [
+            *([i, date_row, helper.Border.TLR_M_B_D] for i in [2,20]),
+            *([i, date_row, helper.Border.TL_M_RB_D] for i in range(3,18) if i%2==1),
+            *([i, date_row, helper.Border.TR_M_LB_D] for i in range(4,19) if i%2==0),
+            [18,date_row , helper.Border.T_M_BLR_D],
 
-    pass
+            *([i, j, helper.Border.TB_D_LR_M] for i in range [2,20] for j in range(date_row+1,row-1)), # only for the first row middle part
+            *([i ,j, helper.Border.TRB_D_L_M] for i in range(3,18) if i%2==1 for j in range(date_row+1, row-1)),
+            *([i, j, helper.Border.TLB_D_R_M] for i in range(4,20) if (i%2==0 and i==19) for j in range(date_row+1, row-1)),
+            *([18,j, helper.Border.F_D] for j in range(date_row+1, row-1)),
+
+            *([i,row-1, helper.Border.T_D_LR_M_B_T] for i in range [2,20]),
+            *([i, row-1, helper.Border.TR_D_L_M_B_M])
+
+
+            # flag change the border method ( T, R, B , L) by border style
+        ]
+# cell_border = [ 
+#         *([2+i, 2 , helper.Border.F_M ] for i in range(0,19)),
+#         *([2+i, 2+j , helper.Border.F_M] for i in [0,18] for j in [1,2]),
+#         *([2+i, 2+j , helper.Border.TBL_M_R_D] for i in range(1,16) if i%2==1 for j in [1,2]),
+#         *([2+i, 2+j , helper.Border.TBR_M_L_D] for i in range(1,16) if i%2==0 for j in [1,2]),
+#         *([18, 2+j, helper.Border.TB_M_LR_D] for j in [1,2]),
+#         *([19, 2+j, helper.Border.TBR_M_L_D] for j in [1,2]),
+#     ]
+    range_cell_set_color(ws, cell_color) 
+    cell_set_border(ws,cell_border)
 
 def money_excel_process():
     message_out("Money excel processing")
@@ -438,8 +469,8 @@ def money_excel_process():
 def day_finish(ws, date, row):
     day_summary(ws, date, row)
     day_total(ws, date, row+1)
-    mark_current_amount(ws, date, row+2)
-    day_set_style()
+    current_marked = mark_current_amount(ws, date, row+2)
+    day_set_style(ws, date, row, current_marked)
 
 def test():
     # --- need to copy to the process function --- #

@@ -106,7 +106,7 @@ def cell_type_message(ws,item): # item = [ [row(int), col(int), value(String)],[
     for col, row, message in item:
         cell = f"{get_column_letter(col)}{row}"
         ws[cell].value = message
-        ws[cell].font = helper.Font.FONT
+        ws[cell].font = helper.Font_style.FONT
 
 def range_cell_set_color(ws, item): # item = [ [col1,row1,col2,row2,color1],[col1,row1,col2,row2,color]]
     for col1, row1, col2, row2, color in item:
@@ -130,11 +130,11 @@ def range_merge_cell(ws, item): # item = [ [[col1, row1 (start cell)],[col2, row
 
 def sheet_init(wb, ws, month, year): # funciton for the first day of every month
 
-    ws.column_dimensions['B'].width = 12
+    ws.column_dimensions['B'].width = 14.5
 
     for i in range(3,21):
         col = get_column_letter(i)
-        ws.column_dimensions[col].width = 10.5
+        ws.column_dimensions[col].width = 12
 
     last_month_have = get_last_month_money_message(wb, month, year)
 
@@ -148,28 +148,27 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     else:
         last_message= [2, 4, "Last"], [3, 4, "None"], [5, 4, "None"], [7, 4, "None"], [9, 4, "None"], [11, 4, "None"], [13, 4, "None"], [ 19, 4, "None"]
     
-    for message in last_message:
-        cell_message.append(message)
+    cell_message.extend(last_message)
 
     cell_color = [
-        [3, 2, 4, 4, helper.Color.PALE_MINT],
-        [5, 2, 6, 4, helper.Color.PALE_PINK],
-        [7, 2, 8, 4, helper.Color.LIGHT_BLUE],
-        [9, 2, 10, 4, helper.Color.SKY_BLUE],
-        [11, 2, 12, 4, helper.Color.PEACH],
-        [13, 2, 14, 4, helper.Color.LACENDER],
-        [15, 2, 16, 4, helper.Color.BEIGE],
-        [17, 2, 19, 4, helper.Color.LIGHT_CORAL],
-        [20, 2, 20, 4, helper.Color.YELLOW_GREEN],
+        [3, 2, 4, 4, helper.Color_style.PALE_MINT],
+        [5, 2, 6, 4, helper.Color_style.PALE_PINK],
+        [7, 2, 8, 4, helper.Color_style.LIGHT_BLUE],
+        [9, 2, 10, 4, helper.Color_style.SKY_BLUE],
+        [11, 2, 12, 4, helper.Color_style.PEACH],
+        [13, 2, 14, 4, helper.Color_style.LACENDER],
+        [15, 2, 16, 4, helper.Color_style.BEIGE],
+        [17, 2, 19, 4, helper.Color_style.LIGHT_CORAL],
+        [20, 2, 20, 4, helper.Color_style.YELLOW_GREEN],
     ]
 
     cell_border = [ 
-        *([2+i, 2 , helper.Border.F_M ] for i in range(0,19)),
-        *([2+i, 2+j , helper.Border.F_M] for i in [0,18] for j in [1,2]),
-        *([2+i, 2+j , helper.Border.TBL_M_R_D] for i in range(1,16) if i%2==1 for j in [1,2]),
-        *([2+i, 2+j , helper.Border.TBR_M_L_D] for i in range(1,16) if i%2==0 for j in [1,2]),
-        *([18, 2+j, helper.Border.TB_M_LR_D] for j in [1,2]),
-        *([19, 2+j, helper.Border.TBR_M_L_D] for j in [1,2]),
+        *([2+i, 2 , helper.Border_style.set("M","M","M","M") ] for i in range(0,19)),
+        *([2+i, 2+j , helper.Border_style.set("M","M","M","M")] for i in [0,18] for j in [1,2]),
+        *([2+i, 2+j , helper.Border_style.set("M","D","M","M")] for i in range(1,16) if i%2==1 for j in [1,2]),
+        *([2+i, 2+j , helper.Border_style.set("M","M","D","M")] for i in range(1,16) if i%2==0 for j in [1,2]),
+        *([18, 2+j, helper.Border_style.set("M","D","D","M")] for j in [1,2]),
+        *([19, 2+j, helper.Border_style.set("M","M","D","M")] for j in [1,2]),
     ] 
 
     merge_cell = [
@@ -319,7 +318,12 @@ def day_summary(ws, date, end_row):
         col = 2 + pair[1]
 
         last_cell = f"{get_column_letter(col)}{last_row}"
-        last_money = Decimal(ws[last_cell].value) 
+        last_money_raw_value = ws[last_cell].value 
+        
+        if (last_money_raw_value is None or last_money_raw_value == "None"):
+            last_money = Decimal('0')
+        else:
+            last_money = Decimal(str(last_money_raw_value))
 
         income_money = cal_sum_in_outcome(ws, col, date_start_row, end_row) 
         outcome_money = cal_sum_in_outcome(ws, col+1, date_start_row, end_row)
@@ -430,47 +434,73 @@ def mark_current_amount(ws, date, row):
 
 def day_set_style(ws, date, row, current_marked):
     date_row = find_last_value_row(ws, date, row)
-    cell_color= []
-    if(current_marked):    
-        # row = sum row, row + 1 = total row, row + 2 = current have row
-        cell_border = [
-            *([i, date_row, helper.Border.TLR_M_B_D] for i in [2,20]),
-            *([i, date_row, helper.Border.TL_M_RB_D] for i in range(3,18) if i%2==1),
-            *([i, date_row, helper.Border.TR_M_LB_D] for i in range(4,19) if i%2==0),
-            [18,date_row , helper.Border.T_M_BLR_D],
+    #row = sum row, row + 1 = total row , row + 2 = current have row
+    
+    cell_border = [
+        # the date_row style part
+        *([i, date_row, helper.Border_style.set("M","M","M","D")] for i in [2,20]),
+        *([i, date_row, helper.Border_style.set("M","D","M","D")] for i in range(3,18) if i%2==1),
+        *([i, date_row, helper.Border_style.set("M","M","D","D")] for i in range(4,19) if i%2==0),
+        [18,date_row , helper.Border_style.set("M","D","D","D")],
+        # middle part 
+        *([i, j, helper.Border_style.set("D","M","M","D")] for i in [2,20] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
+        *([i ,j, helper.Border_style.set("D","D","M","D")] for i in range(3,18) if i%2==1 for j in range(date_row+1, row-1)),
+        *([i, j, helper.Border_style.set("D","M","D","D")] for i in range(4,20) if (i%2==0 or i==19) for j in range(date_row+1, row-1)),
+        *([18,j, helper.Border_style.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
+        # the row about the sum row
+        *([i,row-1, helper.Border_style.set("D","M","M","T")] for i in [2,20]),
+        *([i, row-1, helper.Border_style.set("D","D","M","T")] for i in range(3,18) if i%2==1),
+        *([i, row-1, helper.Border_style.set("D","M","D","T")] for i in range(4,20) if i%2==0 or i == 19),
+        [18,row-1, helper.Border_style.set("D","D","D","T")],
+        # the sum row
+        *([i,row, helper.Border_style.set("T","M","M","T")] for i in [2,20]),
+        *([i, row, helper.Border_style.set("T","D","M","T")] for i in range(3,18) if i%2==1),
+        *([i, row, helper.Border_style.set("T","M","D","T")] for i in range(4,20) if i%2==0 or i == 19),
+        [18,row, helper.Border_style.set("T","D","D","T")],
+        # the total row
+        *([i,row+1, helper.Border_style.set("T","M","M","M")] for i in [2,20]),
+        *([i, row+1, helper.Border_style.set("T","D","M","M")] for i in range(3,18) if i%2==1),
+        *([i, row+1, helper.Border_style.set("T","M","D","M")] for i in range(4,20) if i%2==0 or i == 19),
+        [18,row+1, helper.Border_style.set("T","D","D","M")]
+    ]
 
-            *([i, j, helper.Border.TB_D_LR_M] for i in range [2,20] for j in range(date_row+1,row-1)), # only for the first row middle part
-            *([i ,j, helper.Border.TRB_D_L_M] for i in range(3,18) if i%2==1 for j in range(date_row+1, row-1)),
-            *([i, j, helper.Border.TLB_D_R_M] for i in range(4,20) if (i%2==0 and i==19) for j in range(date_row+1, row-1)),
-            *([18,j, helper.Border.F_D] for j in range(date_row+1, row-1)),
-
-            *([i,row-1, helper.Border.T_D_LR_M_B_T] for i in range [2,20]),
-            *([i, row-1, helper.Border.TR_D_L_M_B_M])
-
-
-            # flag change the border method ( T, R, B , L) by border style
+    color_end_row = row+1
+    if(current_marked):
+        border_message = [
+            *([i,row+2, helper.Border_style.set("M","M","M","M")] for i in [2,20]),
+            *([i, row+2, helper.Border_style.set("M","D","M","M")] for i in range(3,18) if i%2==1),
+            *([i, row+2, helper.Border_style.set("M","M","D","M")] for i in range(4,20) if i%2==0 or i == 19),
+            [18,row+2, helper.Border_style.set("M","D","D","M")]
         ]
-# cell_border = [ 
-#         *([2+i, 2 , helper.Border.F_M ] for i in range(0,19)),
-#         *([2+i, 2+j , helper.Border.F_M] for i in [0,18] for j in [1,2]),
-#         *([2+i, 2+j , helper.Border.TBL_M_R_D] for i in range(1,16) if i%2==1 for j in [1,2]),
-#         *([2+i, 2+j , helper.Border.TBR_M_L_D] for i in range(1,16) if i%2==0 for j in [1,2]),
-#         *([18, 2+j, helper.Border.TB_M_LR_D] for j in [1,2]),
-#         *([19, 2+j, helper.Border.TBR_M_L_D] for j in [1,2]),
-#     ]
+        cell_border.extend(border_message) 
+
+        color_end_row = row+2
+
+    cell_color= [
+        [3, date_row, 4, color_end_row, helper.Color_style.PALE_MINT],
+        [5, date_row, 6, color_end_row, helper.Color_style.PALE_PINK],
+        [7, date_row, 8, color_end_row, helper.Color_style.LIGHT_BLUE],
+        [9, date_row, 10, color_end_row, helper.Color_style.SKY_BLUE],
+        [11, date_row, 12, color_end_row, helper.Color_style.PEACH],
+        [13, date_row, 14, color_end_row, helper.Color_style.LACENDER],
+        [15, date_row, 16, color_end_row, helper.Color_style.BEIGE],
+        [17, date_row, 19, color_end_row, helper.Color_style.LIGHT_CORAL],
+        [20, date_row, 20, color_end_row, helper.Color_style.YELLOW_GREEN]
+    ]
     range_cell_set_color(ws, cell_color) 
     cell_set_border(ws,cell_border)
-
-def money_excel_process():
-    message_out("Money excel processing")
-
-    # --- copy to here --- #    
 
 def day_finish(ws, date, row):
     day_summary(ws, date, row)
     day_total(ws, date, row+1)
     current_marked = mark_current_amount(ws, date, row+2)
     day_set_style(ws, date, row, current_marked)
+
+def money_excel_process():
+    message_out("Money excel processing")
+
+    # --- copy to here --- #    
+
 
 def test():
     # --- need to copy to the process function --- #
@@ -497,16 +527,15 @@ def test():
     have_previous_date = False
     for message in money_message_list:
         if is_date(message):
+            if(have_previous_date):
+                last_day = get_last_day(message)
+                day_finish(ws, last_day, start_row + record)
+                
             day, month, year = message.split('/') 
             month_str = month_to_string(month)
             ws = open_month_ws(wb, month_str)
 
             current_date = message
-
-            if(have_previous_date):
-                last_day = get_last_day(message)
-                day_finish(ws, last_day, start_row + record)
-                
 
             if(is_first_time_of_ws(ws)): 
                 sheet_init(wb, ws, month, year)

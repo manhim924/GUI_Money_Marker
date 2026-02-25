@@ -1,5 +1,5 @@
 from openpyxl.styles import PatternFill, Font, Border, Side
-class Color():
+class Color_style():
     PALE_MINT = PatternFill(fill_type="solid", fgColor="EBF1DE") 
     PALE_PINK = PatternFill(fill_type="solid", fgColor="F2DCDB")
     LIGHT_BLUE = PatternFill(fill_type="solid",fgColor="DCE6F1")
@@ -10,158 +10,25 @@ class Color():
     LIGHT_CORAL = PatternFill(fill_type="solid",fgColor="FFBDBD")
     YELLOW_GREEN = PatternFill(fill_type="solid",fgColor="92D050")
 
-class Font():
+class Font_style():
     FONT = Font(name='Book Antiqua', size=12)
 
-class Border():
-    STYLE_M = Side(border_style="medium")
-    STYLE_D = Side(border_style="dashed")
-    STYLE_T = Side(border_style="thin")
-    
-    F_M = Border(
-        top = STYLE_M,
-        bottom = STYLE_M, 
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    TBL_M_R_D = Border(
-        top = STYLE_M,
-        bottom = STYLE_M,
-        left = STYLE_M,
-        right = STYLE_D
-    )
-    TBR_M_L_D = Border(
-        top = STYLE_M,
-        bottom = STYLE_M,
-        left = STYLE_D,
-        right = STYLE_M
-    )    
-    TB_M_LR_D = Border(
-        top = STYLE_M,
-        bottom = STYLE_M,
-        left = STYLE_D,
-        right = STYLE_D
-    )
-    TLR_M_B_D = Border(
-        top = STYLE_M,
-        bottom =STYLE_D,
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    TB_D_LR_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_D,
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    T_D_LR_M_B_T = Border(
-        top = STYLE_D,
-        bottom =STYLE_T,
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    TB_T_LR_M = Border(
-        top = STYLE_T,
-        bottom =STYLE_T,
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    T_T_LRB_M = Border(
-        top = STYLE_T,
-        bottom =STYLE_M,
-        left = STYLE_M,
-        right = STYLE_M
-    )
-    
-    TL_M_BR_D = Border(
-        top = STYLE_M,
-        bottom =STYLE_D,
-        left = STYLE_M,
-        right = STYLE_D
-    )
-    TRB_D_L_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_D,
-        left = STYLE_M,
-        right = STYLE_D
-    )
-    TR_D_LB_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_M,
-        left = STYLE_M,
-        right = STYLE_D
-    )
-    TB_T_L_M_R_D = Border(
-        top = STYLE_T,
-        bottom =STYLE_T,
-        left = STYLE_M,
-        right = STYLE_D
-    )
-    T_T_LB_M_R_D = Border(
-        top = STYLE_T,
-        bottom =STYLE_M,
-        left = STYLE_M,
-        right = STYLE_D
-    )
+class Border_style():
+    S_M = Side(border_style="medium")
+    S_D = Side(border_style="dashed")
+    S_T = Side(border_style="thin")
 
-    T_M_BLR_D = Border(
-        top = STYLE_M,
-        bottom =STYLE_D,
-        left = STYLE_D,
-        right = STYLE_D
-    )
-    F_D = Border(
-        top = STYLE_D,
-        bottom =STYLE_D,
-        left = STYLE_D,
-        right = STYLE_D
-    )
-    TLR_D_B_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_M,
-        left = STYLE_D,
-        right = STYLE_D
-    )
-    TB_T_LR_D = Border(
-        top = STYLE_T,
-        bottom =STYLE_T,
-        left = STYLE_D,
-        right = STYLE_D
-    )
-    T_T_LR_D_B_M = Border(
-        top = STYLE_T,
-        bottom =STYLE_M,
-        left = STYLE_D,
-        right = STYLE_D
-    )
+    border_dict = {
+        "M" : S_M,
+        "D" : S_D,
+        "T" : S_T
+    }
 
-    TR_M_BL_D = Border(
-        top = STYLE_M,
-        bottom =STYLE_D,
-        left = STYLE_D,
-        right = STYLE_M
-    )
-    TLB_D_R_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_D,
-        left = STYLE_D,
-        right = STYLE_M
-    )
-    TL_D_RB_M = Border(
-        top = STYLE_D,
-        bottom =STYLE_M,
-        left = STYLE_D,
-        right = STYLE_M
-    )
-    TB_T_L_D_R_M = Border(
-        top = STYLE_T,
-        bottom =STYLE_T,
-        left = STYLE_D,
-        right = STYLE_M
-    )
-    T_T_L_D_BR_M = Border(
-        top = STYLE_T,
-        bottom =STYLE_M,
-        left = STYLE_D,
-        right = STYLE_M
-    )
+    @classmethod
+    def set(cls,t=None,r=None,l=None,b=None): 
+        return Border(
+            top = cls.border_dict.get(t),         
+            bottom = cls.border_dict.get(b),         
+            left = cls.border_dict.get(l),         
+            right = cls.border_dict.get(r)         
+        )

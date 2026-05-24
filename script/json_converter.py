@@ -10,16 +10,12 @@ ALL_FILE_LIST = list(map(lambda files_: os.path.join(TXT_FOLDER_PATH, files_) ,c
 
 def save_date(date):
     for file_path in ALL_FILE_LIST:
-        if file_path == "money_current_have.txt":
-            pass
-        else:
-            with open(file_path ,'a',encoding='utf-8') as file:
-                file.write(date +'\n')
+        with open(file_path ,'a',encoding='utf-8') as file:
+            file.write(date +'\n')
                 
                 
-def save_to_file(file, message):
-    save_path = os.path.join(TXT_FOLDER_PATH, file)
-    with open(save_path, 'a', encoding=('utf-8')) as file:
+def save_to_file(file_path, message):
+    with open(file_path, 'a', encoding=('utf-8')) as file:
         file.write(message + ' \n')
 
 def money_message(json, file):
@@ -49,6 +45,7 @@ def work_end(json, file):
     message = (
         "end "
         f"{json.get("time")}"
+        f"\"{json.get("work for")}\""
     )
     save_to_file(file,message)
     
@@ -77,33 +74,35 @@ def water_fill(json, file):
 def convert():
     with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
         data = json.load(json_file)
-    for entry in data:
-        for date_key , data_list in entry.items():
-            save_date(date_key)
 
-            for each_action in data_list:
-                operation = each_action.get("operation")
+    for date_key , data_list in data.items():
+        save_date(date_key)
 
-                if (operation == "Money message"):
-                    money_message(each_action, ALL_FILE_LIST[0])
-                elif(operation == "Money current have"):
-                    money_curreny_have(each_action, ALL_FILE_LIST[1])                 
-                elif(operation == "Work start"):
-                    work_start(each_action, ALL_FILE_LIST[2]) 
-                elif(operation == "Work end"):
-                    work_end(each_action, ALL_FILE_LIST[2])
-                elif(operation == "Sleep start"):
-                    sleep_start(each_action, ALL_FILE_LIST[3])
-                elif(operation == "Sleep end"):
-                    sleep_end(each_action, ALL_FILE_LIST[3])
-                elif(operation == "Feeling"):
-                    feeling(each_action, ALL_FILE_LIST[4]) 
-                elif(operation == "Water fill"):
-                    water_fill(each_action, ALL_FILE_LIST[5])
-    open(JSON_FILE_PATH,'w').close()
+        if(isinstance(data_list , list)):
+            action_list = data_list
+        else:
+            action_list = [data_list]
+        
+        for each_action in action_list:
+            operation = each_action.get("operation")
 
-def test():
-    convert()
+            if (operation == "Money message"):
+                money_message(each_action, ALL_FILE_LIST[0])
+            elif(operation == "Money current have"):
+                money_curreny_have(each_action, ALL_FILE_LIST[1])                 
+            elif(operation == "Work start"):
+                work_start(each_action, ALL_FILE_LIST[2]) 
+            elif(operation == "Work end"):
+                work_end(each_action, ALL_FILE_LIST[2])
+            elif(operation == "Sleep start"):
+                sleep_start(each_action, ALL_FILE_LIST[3])
+            elif(operation == "Sleep end"):
+                sleep_end(each_action, ALL_FILE_LIST[3])
+            elif(operation == "Feeling"):
+                feeling(each_action, ALL_FILE_LIST[4]) 
+            elif(operation == "Water fill"):
+                water_fill(each_action, ALL_FILE_LIST[5])
+    open(JSON_FILE_PATH,'w', encoding="utf-8").close()
 
 if __name__ == "__main__":
-    test()
+    convert()

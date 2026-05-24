@@ -9,6 +9,7 @@ class Color_style():
     BEIGE = PatternFill(fill_type="solid",fgColor="DDD9C4")
     LIGHT_CORAL = PatternFill(fill_type="solid",fgColor="FFBDBD")
     YELLOW_GREEN = PatternFill(fill_type="solid",fgColor="92D050")
+    SATIN_GREEN = PatternFill(fill_type="solid", fgColor="C6E0B4") 
 
 class Font_style():
     FONT = Font(name='Book Antiqua', size=12)

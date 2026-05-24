@@ -33,7 +33,7 @@ def main():
     window = GUI.Main_window(1920,1080)
     parallel = Server_parallel()
 
-    message_output = window.log_window_message
+    message_output = window.log_window_message_output
 
     window.server_start_signal.connect(parallel.start)
     parallel.log_signal.connect(message_output)

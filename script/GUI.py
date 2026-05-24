@@ -163,8 +163,8 @@ class Main_window(QMainWindow):
             folder_path = os.path.join(self.CURRENT_DIRECTORY, folder)
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
-                self.log_window_message(f"System: Folder \"{folder}\" not found")
-                self.log_window_message(f"System: Folder \"{folder}\" is created") 
+                self.log_window_message_output(f"System: Folder \"{folder}\" not found")
+                self.log_window_message_output(f"System: Folder \"{folder}\" is created") 
 
         # --- folder checking end --- #
 
@@ -249,14 +249,14 @@ class Main_window(QMainWindow):
             with open(file_path, 'r', encoding="utf-8") as file:
                 data = file.read()
             self.user_input_window.append(data)
-            self.log_window_message(f"File {file_name} is loaded!")
+            self.log_window_message_output(f"File {file_name} is loaded!")
 
         except FileNotFoundError:
-            self.log_window_message(f"File {file_name} not exists")
+            self.log_window_message_output(f"File {file_name} not exists")
 
             with open(file_path, 'w',encoding="utf-8" ) as file:
                 pass
-            self.log_window_message(f"File {file_name} created")    
+            self.log_window_message_output(f"File {file_name} created")    
 
         self.current_opening_file = file_path
         self.user_input_window.document().clearUndoRedoStacks()
@@ -267,11 +267,11 @@ class Main_window(QMainWindow):
             with open(self.current_opening_file, 'w',encoding="utf-8") as file:
                 file.write(text_to_save)
             self.user_input_window.clear()
-            self.log_window_message(f"File {os.path.basename(self.current_opening_file)} is saved!")
+            self.log_window_message_output(f"File {os.path.basename(self.current_opening_file)} is saved!")
             self.current_opening_file = None
         except TypeError:
-            self.log_window_message(f"Nothing is not opening!")
-            self.log_window_message(f"Please open some file before saving!")      
+            self.log_window_message_output(f"Nothing is not opening!")
+            self.log_window_message_output(f"Please open some file before saving!")      
 
 
     def Color_widget(self, layout ,border="",bgc = "#ffffff", margin=""):
@@ -296,7 +296,7 @@ class Main_window(QMainWindow):
             button.pressed.connect(func)
         return button
 
-    def log_window_message(self, input):
+    def log_window_message_output(self, input):
         time = datetime.now().strftime("%H:%M:%S") 
         message = f"{time}: {input}"
         self.log_window.append(message) 

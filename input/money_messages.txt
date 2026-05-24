@@ -11,6 +11,7 @@
 15.23 "AP" "gundam" True  
 12.57 "H" "AP" True  
 12.57 "AP" "gundam" True  
+
 02/01/2026
 2993 "H" "Dad" False  
 7000 "Dad" "H" False  
@@ -27,5 +28,5 @@
 231.6 "H" "AP" True  
 231.6 "AP" "Dinner" True  
 63 "C" "Lunch" True  
-7 "C" "Coin hold" True  
+7 "C" "CH" True  
 500 "H" "O" True  

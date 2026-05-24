@@ -91,11 +91,12 @@ def get_last_month_money_message(wb, month, year):
     ws_last_row = last_month_ws.max_row
     cell = f"B{ws_last_row}"
     ws_last_row_colB_value = last_month_ws[cell].value
+
     if(ws_last_row_colB_value != "current have"):
         return None
     else:
         result = []
-        for col in [3,5,7,9,11,13,19]:
+        for col in [3,5,7,9,11,13,15,21]:
             cell = f"{get_column_letter(col)}{ws_last_row}"
             value = last_month_ws[cell].value
             result.append(value)
@@ -132,43 +133,44 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
 
     ws.column_dimensions['B'].width = 14.5
 
-    for i in range(3,21):
+    for i in range(3,23):
         col = get_column_letter(i)
         ws.column_dimensions[col].width = 12
 
     last_month_have = get_last_month_money_message(wb, month, year)
 
-    cell_message = [
-        [2, 2, "Date"], [3 , 2, "Cash"], [5, 2, "HSBC"], [7, 2, "Octopus"], [9, 2, "AliPay"], [11, 2, "Tap and Go"], [13, 2, "Payme"], [ 15, 2, "Countable Total"], [17, 2, "Real Total"], [20, 2, "Correct"], 
-        [2, 3, "DD/MM/YY"], [3, 3, 'I'], [4, 3, 'O'], [5, 3, 'I'], [6, 3, 'O'], [7, 3, 'I'], [8, 3, 'O'], [9, 3, 'I'], [10, 3, 'O'], [11, 3, 'I'], [12, 3, 'O'], [13, 3, 'I'], [14, 3, 'O'], [15, 3, 'I'], [16, 3, 'O'], [17, 3, 'I'], [18, 3, 'O'], [19, 3, "Have"]
+    cell_message = [ 
+        [2, 2, "Date"], [3 , 2, "Cash"], [5,2, "Coin-hold"], [7, 2, "HSBC"], [9, 2, "Octopus"], [11, 2, "AliPay"], [13, 2, "Tap and Go"], [15, 2, "Payme"], [ 17, 2, "Countable Total"], [19, 2, "Real Total"], [22, 2, "Correct"], 
+        [2, 3, "DD/MM/YY"], [3, 3, 'I'], [4, 3, 'O'], [5, 3, 'I'], [6, 3, 'O'], [7, 3, 'I'], [8, 3, 'O'], [9, 3, 'I'], [10, 3, 'O'], [11, 3, 'I'], [12, 3, 'O'], [13, 3, 'I'], [14, 3, 'O'], [15, 3, 'I'], [16, 3, 'O'], [17, 3, 'I'], [18, 3, 'O'], [19, 3, 'I'], [20, 3, 'O'], [21, 3, "Have"]
     ]
 
     if(last_month_have != None):
-        last_message =[2, 4, "Last"], [3, 4, last_month_have[0]], [5, 4,last_month_have[1]], [7, 4,last_month_have[2] ], [9, 4,last_month_have[3] ], [11, 4,last_month_have[4] ], [13, 4,last_month_have[5] ], [ 19, 4,last_month_have[6] ]
+        last_message =[2, 4, "Last"], [3, 4, last_month_have[0]], [5, 4,last_month_have[1]], [7, 4,last_month_have[2] ], [9, 4,last_month_have[3] ], [11, 4,last_month_have[4] ], [13, 4,last_month_have[5] ],[15,4,last_month_have[6]],[ 21, 4,last_month_have[7] ]
     else:
-        last_message= [2, 4, "Last"], [3, 4, "None"], [5, 4, "None"], [7, 4, "None"], [9, 4, "None"], [11, 4, "None"], [13, 4, "None"], [ 19, 4, "None"]
+        last_message= [2, 4, "Last"], [3, 4, "None"], [5, 4, "None"], [7, 4, "None"], [9, 4, "None"], [11, 4, "None"], [13, 4, "None"],[15, 4, "None"], [ 21, 4, "None"]
     
     cell_message.extend(last_message)
 
     cell_color = [
         [3, 2, 4, 4, helper.Color_style.PALE_MINT],
-        [5, 2, 6, 4, helper.Color_style.PALE_PINK],
-        [7, 2, 8, 4, helper.Color_style.LIGHT_BLUE],
-        [9, 2, 10, 4, helper.Color_style.SKY_BLUE],
-        [11, 2, 12, 4, helper.Color_style.PEACH],
-        [13, 2, 14, 4, helper.Color_style.LACENDER],
-        [15, 2, 16, 4, helper.Color_style.BEIGE],
-        [17, 2, 19, 4, helper.Color_style.LIGHT_CORAL],
-        [20, 2, 20, 4, helper.Color_style.YELLOW_GREEN],
+        [5, 2, 6, 4, helper.Color_style.SATIN_GREEN],
+        [7, 2, 8, 4, helper.Color_style.PALE_PINK],
+        [9, 2, 10, 4, helper.Color_style.LIGHT_BLUE],
+        [11, 2, 12, 4, helper.Color_style.SKY_BLUE],
+        [13, 2, 14, 4, helper.Color_style.PEACH],
+        [15, 2, 16, 4, helper.Color_style.LACENDER],
+        [17, 2, 18, 4, helper.Color_style.BEIGE],
+        [19, 2, 21, 4, helper.Color_style.LIGHT_CORAL],
+        [22, 2, 22, 4, helper.Color_style.YELLOW_GREEN],
     ]
 
     cell_border = [ 
-        *([2+i, 2 , helper.Border_style.set("M","M","M","M") ] for i in range(0,19)),
-        *([2+i, 2+j , helper.Border_style.set("M","M","M","M")] for i in [0,18] for j in [1,2]),
-        *([2+i, 2+j , helper.Border_style.set("M","D","M","M")] for i in range(1,16) if i%2==1 for j in [1,2]),
-        *([2+i, 2+j , helper.Border_style.set("M","M","D","M")] for i in range(1,16) if i%2==0 for j in [1,2]),
-        *([18, 2+j, helper.Border_style.set("M","D","D","M")] for j in [1,2]),
-        *([19, 2+j, helper.Border_style.set("M","M","D","M")] for j in [1,2]),
+        *([2+i, 2 , helper.Border_style.set("M","M","M","M") ] for i in range(0,21)),
+        *([2+i, 2+j , helper.Border_style.set("M","M","M","M")] for i in [0,20] for j in [1,2]),
+        *([2+i, 2+j , helper.Border_style.set("M","D","M","M")] for i in range(1,18) if i%2==1 for j in [1,2]),
+        *([2+i, 2+j , helper.Border_style.set("M","M","D","M")] for i in range(1,18) if i%2==0 for j in [1,2]),
+        *([20, 2+j, helper.Border_style.set("M","D","D","M")] for j in [1,2]),
+        *([21, 2+j, helper.Border_style.set("M","M","D","M")] for j in [1,2]),
     ] 
 
     merge_cell = [
@@ -179,7 +181,8 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
         [[11, 2], [12, 2]],
         [[13, 2], [14, 2]],
         [[15, 2], [16, 2]],
-        [[17, 2], [19, 2]]
+        [[17, 2], [18, 2]],
+        [[19, 2], [21, 2]]
     ]
 
     cell_type_message(ws,cell_message)
@@ -213,7 +216,7 @@ def input_date(ws, message):
     cell_type_message(ws, cell_value)
     return start_row
 
-ACCOUNT_LIST = [ ["C", 1], ["H", 3], ["O", 5], ["AP", 7], ["TnG", 9], ["P", 11]]
+ACCOUNT_LIST = [ ["C", 1], ["CH", 3] ,["H", 5], ["O", 7], ["AP", 9], ["TnG", 11], ["P", 13]]
 
 def self_convert(ws, amount, account, to, record_list):
     account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
@@ -233,17 +236,16 @@ def income(ws, amount, account, to, countable, record_list):
     message = [
         [col+to_add_amount, row, amount],
         [col+to_add_amount+1, row, account],
-        [col+13, row , amount],
-        [col+14, row, account],
-        [col+15, row, amount],
-        [col+16, row, account]
+        [col+15, row , amount],
+        [col+16, row, account],
+        [col+17, row, amount],
+        [col+18, row, account]
     ]
     if(not countable):
         message.pop(2)
         message.pop(2) 
    
     cell_type_message(ws, message)
-    
 
 def pay(ws, amount, account, to, countable, record_list):
     account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
@@ -251,10 +253,10 @@ def pay(ws, amount, account, to, countable, record_list):
     message = [
         [col+account_add_amount, row, to],
         [col+account_add_amount+1, row, amount],
-        [col+13, row, to],
-        [col+14, row, amount],
         [col+15, row, to],
-        [col+16, row, amount]
+        [col+16, row, amount],
+        [col+17, row, to],
+        [col+18, row, amount]
     ]     
     if(not countable):
         message.pop(2)
@@ -310,6 +312,9 @@ def day_summary(ws, date, end_row):
     else:
         last_row = find_last_value_row(ws, "sum", end_row)
 
+    message = [ [2,end_row, "sum"]]
+    cell_type_message(ws, message)
+
     total_money = Decimal('0')
     for pair in ACCOUNT_LIST:
         income_money = Decimal('0')
@@ -331,17 +336,14 @@ def day_summary(ws, date, end_row):
         total_value = last_money +  income_money - outcome_money 
         total_money += total_value
 
-        message = [ [2,end_row, "sum"]]
-        cell_type_message(ws, message)
-
         message = [[col, end_row, total_value]]
 
         cell_type_message(ws,message)
 
-    message = [[19, end_row, total_money]]
+    message = [[21, end_row, total_money]]
     cell_type_message(ws, message)
 
-    for col in [15,17]:
+    for col in [17,19]:
         total_input = cal_sum_in_outcome(ws, col , date_start_row, end_row)
         total_output = cal_sum_in_outcome(ws, col+1 , date_start_row, end_row)
 
@@ -349,39 +351,38 @@ def day_summary(ws, date, end_row):
 
         cell_type_message(ws, message)
 
-    last_have_value = Decimal(str(ws[f"{get_column_letter(19)}{last_row}"].value)).quantize(Decimal("0.00"))
-    current_input_value = Decimal(str(ws[f"{get_column_letter(17)}{end_row}"].value)).quantize(Decimal("0.00"))
-    current_output_value = Decimal(str(ws[f"{get_column_letter(18)}{end_row}"].value)).quantize(Decimal("0.00"))
-    current_have_value = Decimal(str(ws[f"{get_column_letter(19)}{end_row}"].value)).quantize(Decimal("0.00"))
+    last_have_value = Decimal(str(ws[f"{get_column_letter(21)}{last_row}"].value)).quantize(Decimal("0.00"))
+    current_input_value = Decimal(str(ws[f"{get_column_letter(19)}{end_row}"].value)).quantize(Decimal("0.00"))
+    current_output_value = Decimal(str(ws[f"{get_column_letter(20)}{end_row}"].value)).quantize(Decimal("0.00"))
+    current_have_value = Decimal(str(ws[f"{get_column_letter(21)}{end_row}"].value)).quantize(Decimal("0.00"))
     
     correct_value = str(last_have_value == current_have_value + current_output_value - current_input_value)
-    message = [[20, end_row, correct_value]]
+    message = [[22, end_row, correct_value]]
     cell_type_message(ws, message)
-
 
 def day_total(ws, date, row):
     day, month, year = date.split('/')
-    current_real_sum_in_cell = f"Q{row-1}"
-    current_real_sum_out_cell = f"R{row-1}"
+    current_real_sum_in_cell = f"S{row-1}"
+    current_real_sum_out_cell = f"T{row-1}"
     current_real_sum_in_value = Decimal(str(ws[current_real_sum_in_cell].value))
     current_real_sum_out_value = Decimal(str(ws[current_real_sum_out_cell].value))
 
-    current_countable_sum_in_cell = f"O{row-1}"
-    current_countable_sum_out_cell = f"P{row-1}"
+    current_countable_sum_in_cell = f"Q{row-1}"
+    current_countable_sum_out_cell = f"R{row-1}"
     current_countable_sum_in_value = Decimal(str(ws[current_countable_sum_in_cell].value))
     current_countable_sum_out_value = Decimal(str(ws[current_countable_sum_out_cell].value))
 
     if(day == "01"):
-        message = [[2, row, "total"], [15, row, current_countable_sum_in_value], [16, row, current_countable_sum_out_value],[17, row, current_real_sum_in_value], [18, row, current_real_sum_out_value]] 
+        message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
     else:
         last_row = find_last_value_row(ws, "total", row)
-        last_real_total_in_cell = f"Q{last_row}" 
-        last_real_total_out_cell = f"R{last_row}"
+        last_real_total_in_cell = f"S{last_row}" 
+        last_real_total_out_cell = f"T{last_row}"
         last_real_total_in_value = Decimal(str(ws[last_real_total_in_cell].value))
         last_real_total_out_value = Decimal(str(ws[last_real_total_out_cell].value))
 
-        last_countable_sum_in_cell = f"O{last_row}"
-        last_countable_sum_out_cell = f"P{last_row}"
+        last_countable_sum_in_cell = f"Q{last_row}"
+        last_countable_sum_out_cell = f"R{last_row}"
         last_countable_sum_in_value = Decimal(str(ws[last_countable_sum_in_cell].value))
         last_countable_sum_out_value = Decimal(str(ws[last_countable_sum_out_cell].value))
 
@@ -392,7 +393,7 @@ def day_total(ws, date, row):
         countalbe_total_out_value = last_countable_sum_out_value + current_countable_sum_out_value
 
 
-        message = [[2, row, "total"], [15, row, countable_total_in_value], [16, row, countalbe_total_out_value], [17, row, total_in_value], [18, row, total_out_value]]
+        message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countalbe_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
 
     cell_type_message(ws, message)
 
@@ -404,7 +405,7 @@ def mark_current_amount(ws, date, row):
         is_current_day = False
         total_amount = Decimal("0.00")
         for line in full_file:
-            if(line == date):
+            if( is_current_day == False and line == date):
                 is_current_day = True
                 continue
             elif(is_current_day):
@@ -420,12 +421,12 @@ def mark_current_amount(ws, date, row):
                 correct_value = "True" if (sum_value == amount) else "False"
 
                 message.append([2+col, row, amount])
-                message.append([col+3, row, correct_value]) 
+                message.append([2+col+1, row, correct_value]) 
             
             else:
                 return False
 
-        message.append([19, row, total_amount]) 
+        message.append([21, row, total_amount]) 
         cell_type_message(ws, message)
         return True
 
@@ -438,39 +439,39 @@ def day_set_style(ws, date, row, current_marked):
     
     cell_border = [
         # the date_row style part
-        *([i, date_row, helper.Border_style.set("M","M","M","D")] for i in [2,20]),
-        *([i, date_row, helper.Border_style.set("M","D","M","D")] for i in range(3,18) if i%2==1),
-        *([i, date_row, helper.Border_style.set("M","M","D","D")] for i in range(4,19) if i%2==0),
-        [18,date_row , helper.Border_style.set("M","D","D","D")],
+        *([i, date_row, helper.Border_style.set("M","M","M","D")] for i in [2,22]),
+        *([i, date_row, helper.Border_style.set("M","D","M","D")] for i in range(3,20) if i%2==1),
+        *([i, date_row, helper.Border_style.set("M","M","D","D")] for i in range(4,21) if i%2==0),
+        [20,date_row , helper.Border_style.set("M","D","D","D")],
         # middle part 
-        *([i, j, helper.Border_style.set("D","M","M","D")] for i in [2,20] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
-        *([i ,j, helper.Border_style.set("D","D","M","D")] for i in range(3,18) if i%2==1 for j in range(date_row+1, row-1)),
-        *([i, j, helper.Border_style.set("D","M","D","D")] for i in range(4,20) if (i%2==0 or i==19) for j in range(date_row+1, row-1)),
-        *([18,j, helper.Border_style.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
+        *([i, j, helper.Border_style.set("D","M","M","D")] for i in [2,22] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
+        *([i ,j, helper.Border_style.set("D","D","M","D")] for i in range(3,20) if i%2==1 for j in range(date_row+1, row-1)),
+        *([i, j, helper.Border_style.set("D","M","D","D")] for i in range(4,22) if (i%2==0 or i==21) for j in range(date_row+1, row-1)),
+        *([20,j, helper.Border_style.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
         # the row about the sum row
-        *([i,row-1, helper.Border_style.set("D","M","M","T")] for i in [2,20]),
-        *([i, row-1, helper.Border_style.set("D","D","M","T")] for i in range(3,18) if i%2==1),
-        *([i, row-1, helper.Border_style.set("D","M","D","T")] for i in range(4,20) if i%2==0 or i == 19),
-        [18,row-1, helper.Border_style.set("D","D","D","T")],
+        *([i,row-1, helper.Border_style.set("D","M","M","T")] for i in [2,22]),
+        *([i, row-1, helper.Border_style.set("D","D","M","T")] for i in range(3,20) if i%2==1),
+        *([i, row-1, helper.Border_style.set("D","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row-1, helper.Border_style.set("D","D","D","T")],
         # the sum row
-        *([i,row, helper.Border_style.set("T","M","M","T")] for i in [2,20]),
-        *([i, row, helper.Border_style.set("T","D","M","T")] for i in range(3,18) if i%2==1),
-        *([i, row, helper.Border_style.set("T","M","D","T")] for i in range(4,20) if i%2==0 or i == 19),
-        [18,row, helper.Border_style.set("T","D","D","T")],
+        *([i,row, helper.Border_style.set("T","M","M","T")] for i in [2,22]),
+        *([i, row, helper.Border_style.set("T","D","M","T")] for i in range(3,20) if i%2==1),
+        *([i, row, helper.Border_style.set("T","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row, helper.Border_style.set("T","D","D","T")],
         # the total row
-        *([i,row+1, helper.Border_style.set("T","M","M","M")] for i in [2,20]),
-        *([i, row+1, helper.Border_style.set("T","D","M","M")] for i in range(3,18) if i%2==1),
-        *([i, row+1, helper.Border_style.set("T","M","D","M")] for i in range(4,20) if i%2==0 or i == 19),
-        [18,row+1, helper.Border_style.set("T","D","D","M")]
+        *([i,row+1, helper.Border_style.set("T","M","M","M")] for i in [2,22]),
+        *([i, row+1, helper.Border_style.set("T","D","M","M")] for i in range(3,20) if i%2==1),
+        *([i, row+1, helper.Border_style.set("T","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row+1, helper.Border_style.set("T","D","D","M")]
     ]
 
     color_end_row = row+1
     if(current_marked):
         border_message = [
-            *([i,row+2, helper.Border_style.set("M","M","M","M")] for i in [2,20]),
-            *([i, row+2, helper.Border_style.set("M","D","M","M")] for i in range(3,18) if i%2==1),
-            *([i, row+2, helper.Border_style.set("M","M","D","M")] for i in range(4,20) if i%2==0 or i == 19),
-            [18,row+2, helper.Border_style.set("M","D","D","M")]
+            *([i,row+2, helper.Border_style.set("M","M","M","M")] for i in [2,22]),
+            *([i, row+2, helper.Border_style.set("M","D","M","M")] for i in range(3,20) if i%2==1),
+            *([i, row+2, helper.Border_style.set("M","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+            [20,row+2, helper.Border_style.set("M","D","D","M")]
         ]
         cell_border.extend(border_message) 
 
@@ -478,14 +479,15 @@ def day_set_style(ws, date, row, current_marked):
 
     cell_color= [
         [3, date_row, 4, color_end_row, helper.Color_style.PALE_MINT],
-        [5, date_row, 6, color_end_row, helper.Color_style.PALE_PINK],
-        [7, date_row, 8, color_end_row, helper.Color_style.LIGHT_BLUE],
-        [9, date_row, 10, color_end_row, helper.Color_style.SKY_BLUE],
-        [11, date_row, 12, color_end_row, helper.Color_style.PEACH],
-        [13, date_row, 14, color_end_row, helper.Color_style.LACENDER],
-        [15, date_row, 16, color_end_row, helper.Color_style.BEIGE],
-        [17, date_row, 19, color_end_row, helper.Color_style.LIGHT_CORAL],
-        [20, date_row, 20, color_end_row, helper.Color_style.YELLOW_GREEN]
+        [5, date_row, 6, color_end_row, helper.Color_style.SATIN_GREEN],
+        [7, date_row, 8, color_end_row, helper.Color_style.PALE_PINK],
+        [9, date_row, 10, color_end_row, helper.Color_style.LIGHT_BLUE],
+        [11, date_row, 12, color_end_row, helper.Color_style.SKY_BLUE],
+        [13, date_row, 14, color_end_row, helper.Color_style.PEACH],
+        [15, date_row, 16, color_end_row, helper.Color_style.LACENDER],
+        [17, date_row, 18, color_end_row, helper.Color_style.BEIGE],
+        [19, date_row, 21, color_end_row, helper.Color_style.LIGHT_CORAL],
+        [22, date_row, 22, color_end_row, helper.Color_style.YELLOW_GREEN]
     ]
     range_cell_set_color(ws, cell_color) 
     cell_set_border(ws,cell_border)
@@ -499,12 +501,6 @@ def day_finish(ws, date, row):
 def money_excel_process():
     message_out("Money excel processing")
 
-    # --- copy to here --- #    
-
-
-def test():
-    # --- need to copy to the process function --- #
-
     file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
     if(is_date(file_first_line)):
         f_day, f_month, f_year = file_first_line.split('/')
@@ -512,7 +508,7 @@ def test():
         MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
     else:
         if(message_out):
-            message_out("Money Excel : Error, the money_messages.txt first is not a dat!") 
+            message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
             sys.exit(0)
 
     if(not is_folder_exist(MONEY_FOLDER_PATH)):
@@ -526,6 +522,9 @@ def test():
     START_COL = 2
     have_previous_date = False
     for message in money_message_list:
+        if(message == ''):
+            continue
+
         if is_date(message):
             if(have_previous_date):
                 last_day = get_last_day(message)
@@ -545,13 +544,13 @@ def test():
                     sys.exit(0) # for just in testing, may need to change after apply to gui
 
             start_row = input_date(ws,message)
+            have_previous_date = True
             record = 0
         else: 
-            have_previous_date = True
             amount, account, to, countable, *rest = shlex.split(message)  # *rest is just let the code can run successfully 
             account = account.strip('"')
             to = to.strip('"')
-            countable = countable == "True"
+            countable = (countable == "True")
             if any(to == pair[0] for pair in ACCOUNT_LIST) and any(account == pair[0] for pair in ACCOUNT_LIST ):
                 self_convert(ws, amount, account, to, [START_COL, start_row + record])
             elif any(to == pair[0] for pair in ACCOUNT_LIST):
@@ -565,7 +564,33 @@ def test():
 
     wb.save(MONEY_FILE_PATH)
 
+    message_out("Money excal process done")
+
     # --- stop copy --- #
 
+def test():
+    file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
+    if(is_date(file_first_line)):
+        f_day, f_month, f_year = file_first_line.split('/')
+        MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
+        MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
+    else:
+        if(message_out):
+            message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
+            sys.exit(0)
+
+    if(not is_folder_exist(MONEY_FOLDER_PATH)):
+        os.makedirs(MONEY_FOLDER_PATH)
+
+    wb = check_and_open_excel(MONEY_FILE_PATH)
+    ws = wb.active
+
+    START_COL = 2
+
+    sheet_init(wb, ws, f_month,f_year)
+
+    wb.save(MONEY_FILE_PATH)
+
 if __name__ == "__main__":
-    test()
+    # test()
+    money_excel_process()

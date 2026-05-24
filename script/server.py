@@ -35,6 +35,8 @@ def status_check():
     # --- receive file function start --- #
 @server.route('/upload', methods=['POST'])
 def get_file():
+    with open(SAVE_FILE_PATH, "w", encoding="utf-8") as f:
+        pass
     try:
         data = request.get_json(force=True) # get file
         
@@ -74,8 +76,12 @@ def get_file():
     # --- receive file function start --- #
     
 def server_start():
+    
+    print("Old json file is cleared")
     print("The server is started!")
     server.run(host='0.0.0.0', port=PORT)
 
 if __name__ == "__main__":
+    # import json_converter
+    # set_json_converter(json_converter.convert)
     server_start()

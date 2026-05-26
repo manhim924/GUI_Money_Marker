@@ -13,10 +13,10 @@
 8) GUI should not check is the file path exist, should be the job of main
 
 6)excel
-    6.1)    copy the old file to the temp
+    6.1)    copy the old file to the temp -- done -- 
     6.2)    if have False, then print to log window with the current line
     6.3)    add coin-hold  -- done -- 
-    6.4)    process the countless
+    6.4)    process the countless -- done --
     6.5)    fix accrose two month and two year
     6.6)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have process
     6.7)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows

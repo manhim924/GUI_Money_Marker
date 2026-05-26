@@ -10,22 +10,22 @@
 
 6) the Correct "TRUE" for checking sum and total should be check current have Correct to sum correct
 
-7) tag the markless record
+7) tag the markless record ---done---
 
-8) add  coin-hold and investment in the table
+8) add coin-hold and investment in the table --- coin-hold done ---
 
-9) in the GUI it should have a way that I can input everything to the .txt ( money_message or current) 
+9) in the GUI it should have a way that I can input everything to the .txt ( money_message or current) --- done ---  
 
-10) cannot do it when the money_message have two month
+10) cannot do it when the money_message have two month --- done ---
 
-11) when have two month in same money_message(Aug and Sep), if there is a current_have.txt, the last day of Aug will print out the current_have.txt(which should be the new day of the Sep), so the total of the last day of Aug is wrong col will , which will make the first day of Sep get the wrong information to start
+11) when have two month in same money_message(Aug and Sep), if there is a current_have.txt, the last day of Aug will print out the current_have.txt(which should be the new day of the Sep), so the total of the last day of Aug is wrong col will , which will make the first day of Sep get the wrong information to start --- done --- 
 
-12) if the current_have.txt is not exite, the total rol will still be there, the next day/month will have error
+12) if the current_have.txt is not exite, the total rol will still be there, the next day/month will have error --- done --- 
 
-13) in the current_have.txt , if one of the element is missing , need to tell a error
+13) in the current_have.txt , if one of the element is missing , need to tell a error --- avoided ---
 
-14) show up the current_have.txt and money_message.txt in the GUI
+14) show up the current_have.txt and money_message.txt in the GUI  --- done ---
 
-15) the new month must be first day, but the secound day or other will be error
+15) the new month must be first day, but the secound day or other will be error --- done  ---
 
-16) cannot use for acrose two years
+16) cannot use for acrose two years --- done --- 

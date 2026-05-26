@@ -8,13 +8,13 @@ from decimal import Decimal
 import shlex
 import config
 import excel_helper as helper
+import shutil
 
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
 MONEY_MESSAGE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[0])  
 CURRENT_HAVE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[1])
 
 OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
-
 
 message_out = print
 def set_message_out(function):
@@ -25,13 +25,8 @@ def read_first_line_of_file(file):
     with open(file, 'r', encoding='utf-8') as f:
         return f.readline().strip()
 
-def is_folder_exist(folder):
-    if not os.path.exists(folder):
-        return False
-    return True
-
 def check_and_open_excel(file):
-    if is_folder_exist(file):
+    if os.path.exists(file):
         wb = load_workbook(file)
     else:
         wb = Workbook()
@@ -49,10 +44,10 @@ def is_date(data):
     except ValueError:
         return False
 
-def month_to_string(month):
+def month_int_to_string(month):
     month_dict = {
-        "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
-        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
+        1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+        7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
     }
     return month_dict.get(month)
 
@@ -62,16 +57,27 @@ def open_month_ws(wb,ws):
     else:
         return wb.create_sheet(ws)
 
-
-def is_first_time_of_ws(ws):
+# the pass number is the amount to pass the return false
+def is_first_time_of_ws(ws, pass_number):
     last_row = ws.max_row
     for i in range(last_row,1,-1):
         cell = f"B{i}"
         value = ws[cell].value
         if value != None:
             if is_date(ws[cell].value):
-                return False
+                if(pass_number == 0):
+                    return False
+                else:
+                    pass_number-=1
     return True
+
+def find_last_value_row(ws, value, row):
+    for i in range(row,3,-1):
+        cell = f"B{i}" 
+        cell_value = ws[cell].value
+        if (cell_value == value):
+            return i
+    return None
 
 def get_last_month_money_message(wb, month, year):
     if(month == "1" or month == "01"):
@@ -84,7 +90,7 @@ def get_last_month_money_message(wb, month, year):
             return None
     else:
         try:
-            last_month_ws = wb[month_to_string(int(month)-1)]
+            last_month_ws = wb[month_int_to_string(int(month)-1)]
         except KeyError:
             return None
 
@@ -92,16 +98,18 @@ def get_last_month_money_message(wb, month, year):
     cell = f"B{ws_last_row}"
     ws_last_row_colB_value = last_month_ws[cell].value
 
-    if(ws_last_row_colB_value != "current have"):
-        return None
-    else:
-        result = []
-        for col in [3,5,7,9,11,13,15,21]:
-            cell = f"{get_column_letter(col)}{ws_last_row}"
-            value = last_month_ws[cell].value
-            result.append(value)
-        return result 
+    is_use_sum = False
 
+    if(ws_last_row_colB_value != "current have"):
+        is_use_sum = True
+        ws_last_row = find_last_value_row(last_month_ws, "sum", ws_last_row)
+
+    result = []
+    for col in [3,5,7,9,11,13,15,21]:
+        cell = f"{get_column_letter(col)}{ws_last_row}"
+        value = last_month_ws[cell].value
+        result.append(value)
+    return result 
 
 def cell_type_message(ws,item): # item = [ [row(int), col(int), value(String)],[row1, col1, value1],...   ]
     for col, row, message in item:
@@ -128,9 +136,7 @@ def range_merge_cell(ws, item): # item = [ [[col1, row1 (start cell)],[col2, row
         ws.merge_cells(f"{start_cell}:{end_cell}")
         ws[start_cell].alignment = Alignment(horizontal='center', vertical='top')
 
-
 def sheet_init(wb, ws, month, year): # funciton for the first day of every month
-
     ws.column_dimensions['B'].width = 14.5
 
     for i in range(3,23):
@@ -264,17 +270,6 @@ def pay(ws, amount, account, to, countable, record_list):
 
     cell_type_message(ws, message)
 
-def find_last_value_row(ws, value, row):
-    for i in range(row,3,-1):
-        cell = f"B{i}" 
-        if (ws[cell].value == value):
-            return i
-    return None
-
-def get_last_day(day):
-    day = datetime.strptime(day, "%d/%m/%Y")
-    return (day - timedelta(days=1)).strftime("%d/%m/%Y")
-
 def is_num(num):
     try:
         float(num)  
@@ -307,7 +302,7 @@ def day_summary(ws, date, end_row):
     if (date_start_row == None):
         message_out(f"Money Excel: Error, cannot find last cell of value: {date}")
 
-    if(day == "01"):
+    if(is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
         last_row = find_last_value_row(ws, "Last", end_row)
     else:
         last_row = find_last_value_row(ws, "sum", end_row)
@@ -372,7 +367,7 @@ def day_total(ws, date, row):
     current_countable_sum_in_value = Decimal(str(ws[current_countable_sum_in_cell].value))
     current_countable_sum_out_value = Decimal(str(ws[current_countable_sum_out_cell].value))
 
-    if(day == "01"):
+    if(is_first_time_of_ws(ws, 1)):
         message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
     else:
         last_row = find_last_value_row(ws, "total", row)
@@ -398,7 +393,7 @@ def day_total(ws, date, row):
     cell_type_message(ws, message)
 
 def mark_current_amount(ws, date, row):
-    if(is_folder_exist(CURRENT_HAVE_FILE_PATH)):
+    if(os.path.exists(CURRENT_HAVE_FILE_PATH)):
         full_file = read_file_data(CURRENT_HAVE_FILE_PATH)
 
         message = [[2, row, "current have"]]
@@ -506,18 +501,23 @@ def money_excel_process():
         f_day, f_month, f_year = file_first_line.split('/')
         MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
         MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
+        BACKUP_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "backup.xlsx")
     else:
         if(message_out):
             message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
             sys.exit(0)
 
-    if(not is_folder_exist(MONEY_FOLDER_PATH)):
+    if(not os.path.exists(MONEY_FOLDER_PATH)):
         os.makedirs(MONEY_FOLDER_PATH)
+
+    if(os.path.exists(MONEY_FILE_PATH)):
+        shutil.copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
 
     wb = check_and_open_excel(MONEY_FILE_PATH)
     ws = wb.active
 
     current_date = None
+    last_day = None
     money_message_list = read_file_data(MONEY_MESSAGE_FILE_PATH)
     START_COL = 2
     have_previous_date = False
@@ -526,17 +526,21 @@ def money_excel_process():
             continue
 
         if is_date(message):
+
+            if(current_date != None):
+                last_day = current_date
+
             if(have_previous_date):
-                last_day = get_last_day(message)
                 day_finish(ws, last_day, start_row + record)
                 
             day, month, year = message.split('/') 
-            month_str = month_to_string(month)
+            month_str = month_int_to_string(int(month))
             ws = open_month_ws(wb, month_str)
+
 
             current_date = message
 
-            if(is_first_time_of_ws(ws)): 
+            if(is_first_time_of_ws(ws,0)): 
                 sheet_init(wb, ws, month, year)
             else:
                 if(is_date_duplicate(ws,message)):
@@ -561,6 +565,7 @@ def money_excel_process():
 
     if(current_date is not None):
         day_finish(ws, current_date, start_row + record)
+    
 
     wb.save(MONEY_FILE_PATH)
 
@@ -569,27 +574,28 @@ def money_excel_process():
     # --- stop copy --- #
 
 def test():
-    file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
-    if(is_date(file_first_line)):
-        f_day, f_month, f_year = file_first_line.split('/')
-        MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
-        MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
-    else:
-        if(message_out):
-            message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
-            sys.exit(0)
+    # file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
+    # if(is_date(file_first_line)):
+    #     f_day, f_month, f_year = file_first_line.split('/')
+    #     MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
+    #     MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
+    # else:
+    #     if(message_out):
+    #         message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
+    #         sys.exit(0)
 
-    if(not is_folder_exist(MONEY_FOLDER_PATH)):
-        os.makedirs(MONEY_FOLDER_PATH)
+    # if(not is_folder_exist(MONEY_FOLDER_PATH)):
+    #     os.makedirs(MONEY_FOLDER_PATH)
 
-    wb = check_and_open_excel(MONEY_FILE_PATH)
-    ws = wb.active
+    # wb = check_and_open_excel(MONEY_FILE_PATH)
+    # ws = wb.active
 
-    START_COL = 2
+    # START_COL = 2
 
-    sheet_init(wb, ws, f_month,f_year)
+    # sheet_init(wb, ws, f_month,f_year)
 
-    wb.save(MONEY_FILE_PATH)
+    # wb.save(MONEY_FILE_PATH)
+    pass
 
 if __name__ == "__main__":
     # test()

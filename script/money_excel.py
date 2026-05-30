@@ -3,18 +3,21 @@ from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 import sys
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal
 import shlex
 import config
 import excel_helper as helper
 import shutil
 
+fix the file path problem
+
+
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
 MONEY_MESSAGE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[0])  
 CURRENT_HAVE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[1])
 
-OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
+OUTPUT_FOLDER_PATH = os.path.join(config.path.OUTPUT_FOLDER, config.path.EXCEL_OUTPUT_FILE_LIST[0])
 
 message_out = print
 def set_message_out(function):
@@ -297,7 +300,6 @@ def cal_sum_in_outcome(ws, col, start_row, end_row):
 def day_summary(ws, date, end_row):
     date_start_row = find_last_value_row(ws, date, end_row)
 
-    day , month, year = date.split('/')
 
     if (date_start_row == None):
         message_out(f"Money Excel: Error, cannot find last cell of value: {date}")
@@ -351,9 +353,15 @@ def day_summary(ws, date, end_row):
     current_output_value = Decimal(str(ws[f"{get_column_letter(20)}{end_row}"].value)).quantize(Decimal("0.00"))
     current_have_value = Decimal(str(ws[f"{get_column_letter(21)}{end_row}"].value)).quantize(Decimal("0.00"))
     
-    correct_value = str(last_have_value == current_have_value + current_output_value - current_input_value)
+    correct_value_bool = last_have_value == current_have_value + current_output_value - current_input_value
+    if (not correct_value_bool):
+        message_out("Money excel summary have false")
+        return False
+
+    correct_value = str(correct_value_bool)
     message = [[22, end_row, correct_value]]
     cell_type_message(ws, message)
+    return True
 
 def day_total(ws, date, row):
     day, month, year = date.split('/')
@@ -393,6 +401,7 @@ def day_total(ws, date, row):
     cell_type_message(ws, message)
 
 def mark_current_amount(ws, date, row):
+    return_flag = True
     if(os.path.exists(CURRENT_HAVE_FILE_PATH)):
         full_file = read_file_data(CURRENT_HAVE_FILE_PATH)
 
@@ -413,7 +422,13 @@ def mark_current_amount(ws, date, row):
 
                 total_amount += amount
 
-                correct_value = "True" if (sum_value == amount) else "False"
+                correct_value_bool = (sum_value == amount)
+                
+                if(not correct_value_bool):
+                    message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False")
+                    return_flag =  -100 #a flag
+
+                correct_value = "True" if (correct_value_bool) else "False"
 
                 message.append([2+col, row, amount])
                 message.append([2+col+1, row, correct_value]) 
@@ -423,9 +438,10 @@ def mark_current_amount(ws, date, row):
 
         message.append([21, row, total_amount]) 
         cell_type_message(ws, message)
-        return True
+        return return_flag
 
     else:
+        message_out("Money excel money_current_have.txt not exist")
         return False
 
 def day_set_style(ws, date, row, current_marked):
@@ -488,10 +504,21 @@ def day_set_style(ws, date, row, current_marked):
     cell_set_border(ws,cell_border)
 
 def day_finish(ws, date, row):
-    day_summary(ws, date, row)
+    have_false = False
+
+    have_false = not (day_summary(ws, date, row))
+    if(have_false):
+        return False
+
     day_total(ws, date, row+1)
     current_marked = mark_current_amount(ws, date, row+2)
+    
+    if(current_marked == -100):
+        return False
+
     day_set_style(ws, date, row, current_marked)
+
+    return True
 
 def money_excel_process():
     message_out("Money excel processing")
@@ -521,6 +548,7 @@ def money_excel_process():
     money_message_list = read_file_data(MONEY_MESSAGE_FILE_PATH)
     START_COL = 2
     have_previous_date = False
+    can_save = True
     for message in money_message_list:
         if(message == ''):
             continue
@@ -531,7 +559,10 @@ def money_excel_process():
                 last_day = current_date
 
             if(have_previous_date):
-                day_finish(ws, last_day, start_row + record)
+                not_have_false = day_finish(ws, last_day, start_row + record)
+                if(not not_have_false):
+                    can_save = False
+                    break
                 
             day, month, year = message.split('/') 
             month_str = month_int_to_string(int(month))
@@ -564,39 +595,17 @@ def money_excel_process():
             record+=1
 
     if(current_date is not None):
-        day_finish(ws, current_date, start_row + record)
-    
+        not_have_false = day_finish(ws, current_date, start_row + record)
+        if (not not_have_false):
+            can_save = False    
+
+    if(can_save):
+        wb.save(MONEY_FILE_PATH)
 
     wb.save(MONEY_FILE_PATH)
-
     message_out("Money excal process done")
 
     # --- stop copy --- #
 
-def test():
-    # file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
-    # if(is_date(file_first_line)):
-    #     f_day, f_month, f_year = file_first_line.split('/')
-    #     MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
-    #     MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
-    # else:
-    #     if(message_out):
-    #         message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
-    #         sys.exit(0)
-
-    # if(not is_folder_exist(MONEY_FOLDER_PATH)):
-    #     os.makedirs(MONEY_FOLDER_PATH)
-
-    # wb = check_and_open_excel(MONEY_FILE_PATH)
-    # ws = wb.active
-
-    # START_COL = 2
-
-    # sheet_init(wb, ws, f_month,f_year)
-
-    # wb.save(MONEY_FILE_PATH)
-    pass
-
 if __name__ == "__main__":
-    # test()
     money_excel_process()

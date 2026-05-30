@@ -1,6 +1,4 @@
 import os
-from datetime import datetime
-
 
 class path():
     CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -14,6 +12,8 @@ class path():
     GUI_SETTING_FILE = os.path.join(PROJECT_ROOT_FOLDER, "config", "setting.txt")
 
     EXCEL_INPUT_FILE_LIST = ["money_messages.txt","money_current_have.txt","work_message.txt","sleep_message.txt","feeling_message.txt","water_message.txt"]
+
+    EXCEL_OUTPUT_FILE_LIST = ["money","work","sleep","feeling","water"]
 
 class server():
     SERVER_PORT_NUM = 5000

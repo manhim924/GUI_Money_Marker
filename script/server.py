@@ -1,14 +1,20 @@
-from flask import Flask, request, jsonify
-import json
+from flask import (Flask as flask_Flask,
+                   request as flask_request,
+                   jsonify as flask_jsonify)
+from json import (loads as json_loads,
+                  load as json_load,
+                  dump as json_dump,
+                  JSONDecodeError as json_JSONDecodeError)
+from os import (path as os_path,
+                makedirs as os_makedirs)
 import config
-import os
 
 # --- verable setup start --- #
 SAVE_FILE_PATH = config.path.SERVER_OUTPUT_FILE
 PORT = config.server.SERVER_PORT_NUM
-folder_path = os.path.dirname(SAVE_FILE_PATH)
-if folder_path and not os.path.exists(folder_path):
-    os.makedirs(folder_path)
+folder_path = os_path.dirname(SAVE_FILE_PATH)
+if folder_path and not os_path.exists(folder_path):
+    os_makedirs(folder_path)
 # --- verable setup end --- #
 
 # --- setup function for main.py start --- #
@@ -24,12 +30,12 @@ def set_json_converter(function):
 # --- setup function for main.py end --- #
 
 # --- main function start --- # 
-server = Flask(__name__)
+server = flask_Flask(__name__)
 
     # --- server accessable test start --- #
 @server.route('/status', methods=['GET'])
 def status_check():
-    return jsonify({"status":"online"}), 200
+    return flask_jsonify({"status":"online"}), 200
     # --- server accessable test end --- #
 
     # --- receive file function start --- #
@@ -38,20 +44,20 @@ def get_file():
     with open(SAVE_FILE_PATH, "w", encoding="utf-8") as f:
         pass
     try:
-        data = request.get_json(force=True) # get file
+        data = flask_request.get_json(force=True) # get file
         
         if not data: 
-            data = json.loads(request.data.decode('utf-8'))  
+            data = json_loads(flask_request.data.decode('utf-8'))  
         
         if not data:
-            return jsonify({"status": "error", "message":"No data found"}), 400
+            return flask_jsonify({"status": "error", "message":"No data found"}), 400
 
         file_old_data = []
-        if os.path.exists(SAVE_FILE_PATH):
+        if os_path.exists(SAVE_FILE_PATH):
             try:
                 with open(SAVE_FILE_PATH, 'r', encoding='utf-8') as file:
-                    file_old_data = json.load(file)
-            except json.JSONDecodeError:
+                    file_old_data = json_load(file)
+            except json_JSONDecodeError:
                 file_old_data = []
 
         if isinstance(data, list):
@@ -60,19 +66,19 @@ def get_file():
             file_old_data.append(data)
         
         with open(SAVE_FILE_PATH, 'w', encoding='utf-8') as file:
-            json.dump(file_old_data, file, indent=4 , ensure_ascii=False)
+            json_dump(file_old_data, file, indent=4 , ensure_ascii=False)
 
-        message_output(f"Server : Rreceived data! Saved to {os.path.basename(SAVE_FILE_PATH)}")
+        message_output(f"Server : Rreceived data! Saved to {os_path.basename(SAVE_FILE_PATH)}")
 
         if json_converter:
             json_converter()
             message_output(f"Server : Json convereted")
 
-        return jsonify({"status": "success"}), 200
+        return flask_jsonify({"status": "success"}), 200
         
     except Exception as error:
         message_output(f"Server Error: {str(error)}")
-        return jsonify({"status": "error", "message": str(error)}), 500
+        return flask_jsonify({"status": "error", "message": str(error)}), 500
     # --- receive file function start --- #
     
 def server_start():

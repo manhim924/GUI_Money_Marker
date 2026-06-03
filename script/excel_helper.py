@@ -1,4 +1,5 @@
 from openpyxl.styles import PatternFill, Font, Border, Side
+
 class Color_style():
     PALE_MINT = PatternFill(fill_type="solid", fgColor="EBF1DE") 
     PALE_PINK = PatternFill(fill_type="solid", fgColor="F2DCDB")

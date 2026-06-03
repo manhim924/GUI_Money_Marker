@@ -1,4 +1,4 @@
-import GUI
+import window_GUI
 import server
 import feeling_excel
 import money_excel
@@ -6,7 +6,7 @@ import sleep_excel
 import water_excel
 import work_excel
 import json_converter
-import sys
+from sys import argv as sys_argv
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QThread, pyqtSignal
 
@@ -28,9 +28,9 @@ class Server_parallel(QThread):
 # --- parallel for pyqt6 end  --- #
 
 def main():
-    app = QApplication(sys.argv)
+    app = QApplication(sys_argv)
 
-    window = GUI.Main_window(1920,1080)
+    window = window_GUI.Main_window(1920,1080)
     parallel = Server_parallel()
 
     message_output = window.log_window_message_output

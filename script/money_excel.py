@@ -1,23 +1,21 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
-import sys
-import os
+from sys import (exit as sys_exit)
+from os import (path as os_path,
+                makedirs as os_makedirs)
 from datetime import datetime
 from decimal import Decimal
-import shlex
+from shutil import (copy as shutil_copy)
+from shlex import (split as shlex_split)
 import config
 import excel_helper as helper
-import shutil
-
-fix the file path problem
-
 
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
-MONEY_MESSAGE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[0])  
-CURRENT_HAVE_FILE_PATH = os.path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[1])
+MONEY_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[0])  
+CURRENT_HAVE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[1])
 
-OUTPUT_FOLDER_PATH = os.path.join(config.path.OUTPUT_FOLDER, config.path.EXCEL_OUTPUT_FILE_LIST[0])
+OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
 
 message_out = print
 def set_message_out(function):
@@ -29,7 +27,7 @@ def read_first_line_of_file(file):
         return f.readline().strip()
 
 def check_and_open_excel(file):
-    if os.path.exists(file):
+    if os_path.exists(file):
         wb = load_workbook(file)
     else:
         wb = Workbook()
@@ -60,9 +58,15 @@ def open_month_ws(wb,ws):
     else:
         return wb.create_sheet(ws)
 
+def get_max_row_by_value(ws):
+    for row in range(ws.max_row, 0, -1):
+        if any(cell.value is not None for cell in ws[row]):
+            return row
+    return 0
+
 # the pass number is the amount to pass the return false
 def is_first_time_of_ws(ws, pass_number):
-    last_row = ws.max_row
+    last_row = get_max_row_by_value(ws)
     for i in range(last_row,1,-1):
         cell = f"B{i}"
         value = ws[cell].value
@@ -86,7 +90,7 @@ def get_last_month_money_message(wb, month, year):
     if(month == "1" or month == "01"):
         try:
             last_year = int(year) - 1 
-            last_year_wb = load_workbook(os.path.join(OUTPUT_FOLDER_PATH, str(last_year),"money.xlsx"))
+            last_year_wb = load_workbook(os_path.join(OUTPUT_FOLDER_PATH, str(last_year),"money","money.xlsx"))
             last_month_ws = last_year_wb["Dec"]
 
         except FileNotFoundError:
@@ -97,14 +101,12 @@ def get_last_month_money_message(wb, month, year):
         except KeyError:
             return None
 
-    ws_last_row = last_month_ws.max_row
+    ws_last_row = get_max_row_by_value(last_month_ws)
     cell = f"B{ws_last_row}"
     ws_last_row_colB_value = last_month_ws[cell].value
 
-    is_use_sum = False
 
     if(ws_last_row_colB_value != "current have"):
-        is_use_sum = True
         ws_last_row = find_last_value_row(last_month_ws, "sum", ws_last_row)
 
     result = []
@@ -200,7 +202,7 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     range_merge_cell(ws, merge_cell)
 
 def is_date_duplicate(ws,date):
-    last_row = ws.max_row
+    last_row = get_max_row_by_value(ws)
     for row in range(last_row, 1,-1):
         cell = f"B{row}"
         value = ws[cell].value
@@ -212,7 +214,7 @@ def is_date_duplicate(ws,date):
                     return False            
 
 def find_start_row(ws):
-    last_row = ws.max_row
+    last_row = get_max_row_by_value(ws)
 
     for i in range(last_row, 1, -1):
         if any(cell.value is not None for cell in ws[i]):
@@ -401,8 +403,7 @@ def day_total(ws, date, row):
     cell_type_message(ws, message)
 
 def mark_current_amount(ws, date, row):
-    return_flag = True
-    if(os.path.exists(CURRENT_HAVE_FILE_PATH)):
+    if(os_path.exists(CURRENT_HAVE_FILE_PATH)):
         full_file = read_file_data(CURRENT_HAVE_FILE_PATH)
 
         message = [[2, row, "current have"]]
@@ -426,7 +427,6 @@ def mark_current_amount(ws, date, row):
                 
                 if(not correct_value_bool):
                     message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False")
-                    return_flag =  -100 #a flag
 
                 correct_value = "True" if (correct_value_bool) else "False"
 
@@ -438,7 +438,7 @@ def mark_current_amount(ws, date, row):
 
         message.append([21, row, total_amount]) 
         cell_type_message(ws, message)
-        return return_flag
+        return True
 
     else:
         message_out("Money excel money_current_have.txt not exist")
@@ -504,21 +504,10 @@ def day_set_style(ws, date, row, current_marked):
     cell_set_border(ws,cell_border)
 
 def day_finish(ws, date, row):
-    have_false = False
-
-    have_false = not (day_summary(ws, date, row))
-    if(have_false):
-        return False
-
+    day_summary(ws, date, row)
     day_total(ws, date, row+1)
     current_marked = mark_current_amount(ws, date, row+2)
-    
-    if(current_marked == -100):
-        return False
-
     day_set_style(ws, date, row, current_marked)
-
-    return True
 
 def money_excel_process():
     message_out("Money excel processing")
@@ -526,19 +515,19 @@ def money_excel_process():
     file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
     if(is_date(file_first_line)):
         f_day, f_month, f_year = file_first_line.split('/')
-        MONEY_FOLDER_PATH = os.path.join(OUTPUT_FOLDER_PATH, f_year)
-        MONEY_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "money.xlsx")
-        BACKUP_FILE_PATH = os.path.join(MONEY_FOLDER_PATH, "backup.xlsx")
+        MONEY_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "money")
+        MONEY_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "money.xlsx")
+        BACKUP_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "backup.xlsx")
     else:
         if(message_out):
             message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
-            sys.exit(0)
+            sys_exit(0)
 
-    if(not os.path.exists(MONEY_FOLDER_PATH)):
-        os.makedirs(MONEY_FOLDER_PATH)
+    if(not os_path.exists(MONEY_FOLDER_PATH)):
+        os_makedirs(MONEY_FOLDER_PATH)
 
-    if(os.path.exists(MONEY_FILE_PATH)):
-        shutil.copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
+    if(os_path.exists(MONEY_FILE_PATH)):
+        shutil_copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
 
     wb = check_and_open_excel(MONEY_FILE_PATH)
     ws = wb.active
@@ -559,15 +548,11 @@ def money_excel_process():
                 last_day = current_date
 
             if(have_previous_date):
-                not_have_false = day_finish(ws, last_day, start_row + record)
-                if(not not_have_false):
-                    can_save = False
-                    break
+                day_finish(ws, last_day, start_row + record)
                 
             day, month, year = message.split('/') 
             month_str = month_int_to_string(int(month))
             ws = open_month_ws(wb, month_str)
-
 
             current_date = message
 
@@ -576,13 +561,13 @@ def money_excel_process():
             else:
                 if(is_date_duplicate(ws,message)):
                     message_out(f"Money_excel : date {message} is marked!")
-                    sys.exit(0) # for just in testing, may need to change after apply to gui
+                    sys_exit(0) # for just in testing, may need to change after apply to gui
 
             start_row = input_date(ws,message)
             have_previous_date = True
             record = 0
         else: 
-            amount, account, to, countable, *rest = shlex.split(message)  # *rest is just let the code can run successfully 
+            amount, account, to, countable, *rest = shlex_split(message)  # *rest is just let the code can run successfully 
             account = account.strip('"')
             to = to.strip('"')
             countable = (countable == "True")
@@ -595,9 +580,7 @@ def money_excel_process():
             record+=1
 
     if(current_date is not None):
-        not_have_false = day_finish(ws, current_date, start_row + record)
-        if (not not_have_false):
-            can_save = False    
+        day_finish(ws, current_date, start_row + record)
 
     if(can_save):
         wb.save(MONEY_FILE_PATH)

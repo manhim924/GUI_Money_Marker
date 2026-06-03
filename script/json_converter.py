@@ -1,12 +1,12 @@
-import json 
-import os
+from json import (load as json_load)
+from os import path as os_path
 import config
 
 TXT_FOLDER_PATH = config.path.INPUT_FOLDER
 JSON_FILE_PATH = config.path.SERVER_OUTPUT_FILE
 
  
-ALL_FILE_LIST = list(map(lambda files_: os.path.join(TXT_FOLDER_PATH, files_) ,config.path.EXCEL_INPUT_FILE_LIST))
+ALL_FILE_LIST = list(map(lambda files_: os_path.join(TXT_FOLDER_PATH, files_) ,config.path.EXCEL_INPUT_FILE_LIST))
 
 def save_date(date):
     for file_path in ALL_FILE_LIST:
@@ -77,7 +77,7 @@ def water_fill(json):
 
 def convert():
     with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
-        data = json.load(json_file)
+        data = json_load(json_file)
 
     if isinstance(data, dict):
         full_list = [data]

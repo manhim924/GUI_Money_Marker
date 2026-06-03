@@ -1,18 +1,20 @@
 1)  GUI add new button that when the excel have "False" then the GUI will tell, and will have a button that reload the back up file and so on 
-    1.1) rename the file path ( as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path)
+    1.1) rename the file path ( as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path) -- done --
     1.2) check all the reload button after is the excel.py is finish
 
 2) GUI add a new button that clear the log message window -- done --
 
-3) GUI add a new button that can do all the thing
+3) GUI add a new button that can do all the thing -- done -- 
 
-4) GUI add a new button that can restore the temp file to the current file 
+4) GUI add a new button that can restore the temp file to the current file -- same as 1) --
 
 5) add investment marking as a new file ( not same file as money)
 
-7) GUI add a new button that open the excel file
+7) GUI add a new button that open the excel file -- done -- 
 
 8) GUI should not check is the file path exist, should be the job of main
+
+9) every file should only import the function needed, check it
 
 6)excel
     6.1)    copy the old file to the temp -- done -- 
@@ -27,9 +29,3 @@
     6.10)   when all every thing is ok, then del the input file -- done --
     
 !) add the date back to current have ( for the excel to check when accrose two month) -- done -- 
-
-
-the path should
-
-output/2026/money/main.xlsx
-output/2026/water/main.xlsx

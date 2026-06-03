@@ -4,23 +4,30 @@ from PyQt6.QtWidgets import (QApplication,  QWidget , QMainWindow, QPushButton,
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction
 from datetime import datetime
-import os
-import sys
-import json
+from os import (path as os_path,
+                makedirs as os_makedirs,
+                remove as os_remove,
+                rename as os_rename,
+                startfile as os_startfile)
+from sys import argv as sys_argv
+from json import (dump as json_dump,
+                  load as json_load)
+from platform import system as platform_system
+from subprocess import run as subprocess_run
 import config 
 
 class Main_window(QMainWindow):
     BUTTON_STYLE_SHEET=("""
         QPushButton{
             color: #ffffff;
-            background-color: #00000000;
+            background-color: #55000000;
             font-size: 20px;
             border: 1px solid #000000;
             border-radius : 5px;
         }
 
         QPushButton:hover{
-            background-color: #33000000;
+            background-color: #AA000000;
         }
     """)
     LOG_WINDOW_STYLE_SHEET=(""" 
@@ -92,6 +99,11 @@ class Main_window(QMainWindow):
         view_action_3.setShortcut("Ctrl+3")
         view_action_3.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(2))
         view_button.addAction(view_action_3)
+        
+        view_action_4 = QAction("Show all excel reload", self)
+        view_action_4.setShortcut("Ctrl+4")
+        view_action_4.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(3))
+        view_button.addAction(view_action_4)
         # --- menu bar end --- #
 
         # --- left main widget money marking button start --- #
@@ -140,21 +152,21 @@ class Main_window(QMainWindow):
 
         # --- left main widget all reload button start --- #
         current_year = datetime.now().year
-        current_year_file_path = os.path.join(self.OUTPUT_FOLDER, str(current_year))
+        current_year_file_path = os_path.join(self.OUTPUT_FOLDER, str(current_year))
 
-        money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os.path.join(current_year_file_path,"money"))])
+        money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"money"))])
         money_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os.path.join(current_year_file_path,"work"))])
+        work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"work"))])
         work_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os.path.join(current_year_file_path, "sleep"))])
+        sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path, "sleep"))])
         sleep_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os.path.join(current_year_file_path,"feeling"))])
+        feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"feeling"))])
         feeling_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os.path.join(current_year_file_path,"water"))])
+        water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"water"))])
         water_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
         l_reload_excel_layout = QVBoxLayout()
@@ -167,11 +179,43 @@ class Main_window(QMainWindow):
         l_reload_excel_widget_set = self.Color_widget(layout=l_reload_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
         # --- left main widget all reload button end  --- #
 
+        # --- left main widget open file butten start --- #
+        money_excel_open_button = self.Button("Open Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "money.xlsx"))])
+        money_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+        money_backup_excel_open_button = self.Button("Open Backup Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "backup.xlsx"))])
+        money_backup_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+        work_excel_open_button = self.Button("Open Work Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "work", "work.xlsx"))])
+        work_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+        sleep_excel_open_button = self.Button("Open Sleep Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "sleep", "sleep.xlsx"))])
+        sleep_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+        feeling_excel_open_button = self.Button("Open Feeling Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "feeling", "feeling.xlsx"))])
+        feeling_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+        water_excel_open_button = self.Button("Open Water Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "water", "water.xlsx"))])
+        water_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+        
+        l_open_excel_layout = QVBoxLayout()
+        l_open_excel_layout.addWidget(money_excel_open_button)
+        l_open_excel_layout.addWidget(money_backup_excel_open_button)
+        l_open_excel_layout.addWidget(work_excel_open_button)
+        l_open_excel_layout.addWidget(sleep_excel_open_button)
+        l_open_excel_layout.addWidget(feeling_excel_open_button)
+        l_open_excel_layout.addWidget(water_excel_open_button)
+
+        l_open_excel_widget_set = self.Color_widget(layout=l_open_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
+
+        # --- left main widget open file butten end --- #
+
         # --- left stacked widget start --- #
         self.l_stacked_w = QStackedWidget()
         self.l_stacked_w.addWidget(l_money_marking_widget_set) # index 0
         self.l_stacked_w.addWidget(l_daily_marking_widget_set) # index 1
         self.l_stacked_w.addWidget(l_reload_excel_widget_set)  # index 2
+        self.l_stacked_w.addWidget(l_open_excel_widget_set) # index 3
         # --- left stacked widget end --- #
 
         # --- log widget start--- #
@@ -192,10 +236,10 @@ class Main_window(QMainWindow):
         # --- folder checking start --- #
 
         for folder in ["config", "input", "output"]:
-            folder_path = os.path.join(self.CURRENT_DIRECTORY, folder)
-            if not os.path.exists(folder_path):
+            folder_path = os_path.join(self.CURRENT_DIRECTORY, folder)
+            if not os_path.exists(folder_path):
                 self.log_window_message_output(f"System: Folder \"{folder}\" not found")
-                os.makedirs(folder_path)
+                os_makedirs(folder_path)
                 self.log_window_message_output(f"System: Folder \"{folder}\" is created") 
 
         # --- folder checking end --- #
@@ -214,7 +258,7 @@ class Main_window(QMainWindow):
         clear_user_input_window_button = self.Button("Clear", True, [lambda: self.user_input_window.clear()] )
         clear_user_input_window_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        start_all_job_button = self.Button("start_all_excel", True, [
+        start_all_job_button = self.Button("Start All Excel", True, [
             self.money_excel_start_signal.emit,
             self.work_excel_start_signal.emit,
             self.sleep_excel_start_signal.emit,
@@ -268,15 +312,15 @@ class Main_window(QMainWindow):
         }
 
         with open(self.SETTING_FILE,'w') as file:
-            json.dump(setting, file, indent=4)
+            json_dump(setting, file, indent=4)
         print("Setting saved")
 
     def Load_setting(self):
-        if not os.path.exists(self.SETTING_FILE):
+        if not os_path.exists(self.SETTING_FILE):
             return
         
         with open(self.SETTING_FILE, 'r') as file:  
-            data = json.load(file)
+            data = json_load(file)
 
         if "x" in data and "y" in data:
             self.move(data["x"], data["y"])
@@ -293,7 +337,7 @@ class Main_window(QMainWindow):
     def Load_file(self, file_name):
         self.user_input_window.clear()
          
-        file_path= os.path.join(self.INPUT_FOLDER, file_name)
+        file_path= os_path.join(self.INPUT_FOLDER, file_name)
 
         try:
             with open(file_path, 'r', encoding="utf-8") as file:
@@ -317,7 +361,7 @@ class Main_window(QMainWindow):
             with open(self.current_opening_file, 'w',encoding="utf-8") as file:
                 file.write(text_to_save)
             self.user_input_window.clear()
-            self.log_window_message_output(f"File {os.path.basename(self.current_opening_file)} is saved!")
+            self.log_window_message_output(f"File {os_path.basename(self.current_opening_file)} is saved!")
             self.current_opening_file = None
         except TypeError:
             self.log_window_message_output(f"Nothing is not opening!")
@@ -352,16 +396,32 @@ class Main_window(QMainWindow):
         self.log_window.append(message) 
 
     def reload_file(self, file_path):
-        remove_file_path = os.path.join(file_path, "main.xlsx")
-        reload_file_path = os.path.join(file_path, "backup.xlsx")
-        if(os.path.exists(remove_file_path) and os.path.exists(reload_file_path)):
-            os.remove(reload_file_path)
-            os.rename(reload_file_path, remove_file_path)
+        remove_file_path = os_path.join(file_path, "main.xlsx")
+        reload_file_path = os_path.join(file_path, "backup.xlsx")
+        if(os_path.exists(remove_file_path) and os_path.exists(reload_file_path)):
+            os_remove(reload_file_path)
+            os_rename(reload_file_path, remove_file_path)
         else:
             self.log_window_message_output(f"file path {file_path} not exist")
 
+    def open_file(self, file_path):
+        if (not os_path.exists(file_path)):
+            self.log_window_message_output(f"File {file_path} not exist")
+            return
+        
+        current_os = platform_system()
+
+        if (current_os == "Windows"):
+            os_startfile(file_path)
+        elif(current_os == "Darwin"):
+            subprocess_run(["open"], file_path)
+        elif(current_os == "Linux"):
+            subprocess_run(["xdg-open", file_path])
+        else:
+            self.log_window_message_output(f"Unsupproted OS : {current_os}") 
+
 def test():
-    app = QApplication(sys.argv)
+    app = QApplication(sys_argv)
     window = Main_window(1920,1080) 
     window.show()
 

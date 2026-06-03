@@ -1,14 +1,14 @@
-1) only read message in same day ( since last record)
+1) only read message in same day ( since last record) -- done -- 
 
-2) if delected some thing in excel, the ws.max_row is not the best method for adding new value to the new cell
+2) if delected some thing in excel, the ws.max_row is not the best method for adding new value to the new cell -- done --
 
-3) cell value need to be in same string (e.g. piggy_play) , better to be ( piggy play) in one cell
+3) cell value need to be in same string (e.g. piggy_play) , better to be ( piggy play) in one cell -- done --
 
-4) copy a new temp.xlsx file
+4) copy a new temp.xlsx file -- done --
 
-5) if there is "False" need to print it out
+5) if there is "False" need to print it out -- done --
 
-6) the Correct "TRUE" for checking sum and total should be check current have Correct to sum correct
+6) the Correct "TRUE" for checking sum and total should be check current have Correct to sum correct -- done -- 
 
 7) tag the markless record ---done---
 

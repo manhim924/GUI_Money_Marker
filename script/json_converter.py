@@ -1,5 +1,6 @@
 from json import (load as json_load)
-from os import path as os_path
+from os import (path as os_path, makedirs as os_makedirs)
+from shutil import (copy2 as shutil_copy2)
 import config
 
 TXT_FOLDER_PATH = config.path.INPUT_FOLDER
@@ -10,8 +11,6 @@ ALL_FILE_LIST = list(map(lambda files_: os_path.join(TXT_FOLDER_PATH, files_) ,c
 
 def save_date(date):
     for file_path in ALL_FILE_LIST:
-        with open(file_path , 'w', encoding="utf-8") as file:
-            pass
         with open(file_path ,'a',encoding='utf-8') as file:
             file.write(date +'\n')
                 
@@ -76,6 +75,15 @@ def water_fill(json):
     save_to_file(ALL_FILE_LIST[5],message)
 
 def convert():
+    for file_path in ALL_FILE_LIST:
+        backup_dir = os_path.join(os_path.dirname(file_path), "backup")
+        os_makedirs(backup_dir, exist_ok=True)
+        file_name = os_path.basename(file_path)
+        backup_file_path = os_path.join(backup_dir, file_name)
+        shutil_copy2(file_path, backup_file_path)
+        with open(file_path, "w", encoding="utf-8") as file:
+            pass
+
     with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
         data = json_load(json_file)
 

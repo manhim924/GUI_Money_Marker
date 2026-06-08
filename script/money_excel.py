@@ -9,7 +9,10 @@ from decimal import Decimal
 from shutil import (copy as shutil_copy)
 from shlex import (split as shlex_split)
 import config
-import excel_helper as helper
+from excel_helper import (Color_style as eh_color,
+                          Font_style as eh_font,
+                          Border_style as eh_border,
+                          Function as eh_funct)
 
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
 MONEY_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[0])  
@@ -22,10 +25,6 @@ def set_message_out(function):
     global message_out
     message_out = function
 
-def read_first_line_of_file(file):
-    with open(file, 'r', encoding='utf-8') as f:
-        return f.readline().strip()
-
 def check_and_open_excel(file):
     if os_path.exists(file):
         wb = load_workbook(file)
@@ -37,13 +36,6 @@ def read_file_data(file):
     with open(file,'r', encoding="utf-8") as file:
         data = file.read().splitlines()
     return data
-
-def is_date(data):
-    try:
-        datetime.strptime(data, "%d/%m/%Y")
-        return True
-    except ValueError:
-        return False
 
 def month_int_to_string(month):
     month_dict = {
@@ -71,7 +63,7 @@ def is_first_time_of_ws(ws, pass_number):
         cell = f"B{i}"
         value = ws[cell].value
         if value != None:
-            if is_date(ws[cell].value):
+            if eh_funct.is_date(ws[cell].value):
                 if(pass_number == 0):
                     return False
                 else:
@@ -120,7 +112,7 @@ def cell_type_message(ws,item): # item = [ [row(int), col(int), value(String)],[
     for col, row, message in item:
         cell = f"{get_column_letter(col)}{row}"
         ws[cell].value = message
-        ws[cell].font = helper.Font_style.FONT
+        ws[cell].font = eh_font.FONT
 
 def range_cell_set_color(ws, item): # item = [ [col1,row1,col2,row2,color1],[col1,row1,col2,row2,color]]
     for col1, row1, col2, row2, color in item:
@@ -163,25 +155,25 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     cell_message.extend(last_message)
 
     cell_color = [
-        [3, 2, 4, 4, helper.Color_style.PALE_MINT],
-        [5, 2, 6, 4, helper.Color_style.SATIN_GREEN],
-        [7, 2, 8, 4, helper.Color_style.PALE_PINK],
-        [9, 2, 10, 4, helper.Color_style.LIGHT_BLUE],
-        [11, 2, 12, 4, helper.Color_style.SKY_BLUE],
-        [13, 2, 14, 4, helper.Color_style.PEACH],
-        [15, 2, 16, 4, helper.Color_style.LACENDER],
-        [17, 2, 18, 4, helper.Color_style.BEIGE],
-        [19, 2, 21, 4, helper.Color_style.LIGHT_CORAL],
-        [22, 2, 22, 4, helper.Color_style.YELLOW_GREEN],
+        [3, 2, 4, 4, eh_color.PALE_MINT],
+        [5, 2, 6, 4, eh_color.SATIN_GREEN],
+        [7, 2, 8, 4, eh_color.PALE_PINK],
+        [9, 2, 10, 4, eh_color.LIGHT_BLUE],
+        [11, 2, 12, 4, eh_color.SKY_BLUE],
+        [13, 2, 14, 4, eh_color.PEACH],
+        [15, 2, 16, 4, eh_color.LACENDER],
+        [17, 2, 18, 4, eh_color.BEIGE],
+        [19, 2, 21, 4, eh_color.LIGHT_CORAL],
+        [22, 2, 22, 4, eh_color.YELLOW_GREEN],
     ]
 
     cell_border = [ 
-        *([2+i, 2 , helper.Border_style.set("M","M","M","M") ] for i in range(0,21)),
-        *([2+i, 2+j , helper.Border_style.set("M","M","M","M")] for i in [0,20] for j in [1,2]),
-        *([2+i, 2+j , helper.Border_style.set("M","D","M","M")] for i in range(1,18) if i%2==1 for j in [1,2]),
-        *([2+i, 2+j , helper.Border_style.set("M","M","D","M")] for i in range(1,18) if i%2==0 for j in [1,2]),
-        *([20, 2+j, helper.Border_style.set("M","D","D","M")] for j in [1,2]),
-        *([21, 2+j, helper.Border_style.set("M","M","D","M")] for j in [1,2]),
+        *([2+i, 2 , eh_border.set("M","M","M","M") ] for i in range(0,21)),
+        *([2+i, 2+j , eh_border.set("M","M","M","M")] for i in [0,20] for j in [1,2]),
+        *([2+i, 2+j , eh_border.set("M","D","M","M")] for i in range(1,18) if i%2==1 for j in [1,2]),
+        *([2+i, 2+j , eh_border.set("M","M","D","M")] for i in range(1,18) if i%2==0 for j in [1,2]),
+        *([20, 2+j, eh_border.set("M","D","D","M")] for j in [1,2]),
+        *([21, 2+j, eh_border.set("M","M","D","M")] for j in [1,2]),
     ] 
 
     merge_cell = [
@@ -207,7 +199,7 @@ def is_date_duplicate(ws,date):
         cell = f"B{row}"
         value = ws[cell].value
         if value != None:
-            if is_date(value):
+            if eh_funct.is_date(value):
                 if (value == date):
                     return True
                 else:
@@ -450,55 +442,55 @@ def day_set_style(ws, date, row, current_marked):
     
     cell_border = [
         # the date_row style part
-        *([i, date_row, helper.Border_style.set("M","M","M","D")] for i in [2,22]),
-        *([i, date_row, helper.Border_style.set("M","D","M","D")] for i in range(3,20) if i%2==1),
-        *([i, date_row, helper.Border_style.set("M","M","D","D")] for i in range(4,21) if i%2==0),
-        [20,date_row , helper.Border_style.set("M","D","D","D")],
+        *([i, date_row, eh_border.set("M","M","M","D")] for i in [2,22]),
+        *([i, date_row, eh_border.set("M","D","M","D")] for i in range(3,20) if i%2==1),
+        *([i, date_row, eh_border.set("M","M","D","D")] for i in range(4,21) if i%2==0),
+        [20,date_row , eh_border.set("M","D","D","D")],
         # middle part 
-        *([i, j, helper.Border_style.set("D","M","M","D")] for i in [2,22] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
-        *([i ,j, helper.Border_style.set("D","D","M","D")] for i in range(3,20) if i%2==1 for j in range(date_row+1, row-1)),
-        *([i, j, helper.Border_style.set("D","M","D","D")] for i in range(4,22) if (i%2==0 or i==21) for j in range(date_row+1, row-1)),
-        *([20,j, helper.Border_style.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
+        *([i, j, eh_border.set("D","M","M","D")] for i in [2,22] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
+        *([i ,j, eh_border.set("D","D","M","D")] for i in range(3,20) if i%2==1 for j in range(date_row+1, row-1)),
+        *([i, j, eh_border.set("D","M","D","D")] for i in range(4,22) if (i%2==0 or i==21) for j in range(date_row+1, row-1)),
+        *([20,j, eh_border.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
         # the row about the sum row
-        *([i,row-1, helper.Border_style.set("D","M","M","T")] for i in [2,22]),
-        *([i, row-1, helper.Border_style.set("D","D","M","T")] for i in range(3,20) if i%2==1),
-        *([i, row-1, helper.Border_style.set("D","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
-        [20,row-1, helper.Border_style.set("D","D","D","T")],
+        *([i,row-1, eh_border.set("D","M","M","T")] for i in [2,22]),
+        *([i, row-1, eh_border.set("D","D","M","T")] for i in range(3,20) if i%2==1),
+        *([i, row-1, eh_border.set("D","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row-1, eh_border.set("D","D","D","T")],
         # the sum row
-        *([i,row, helper.Border_style.set("T","M","M","T")] for i in [2,22]),
-        *([i, row, helper.Border_style.set("T","D","M","T")] for i in range(3,20) if i%2==1),
-        *([i, row, helper.Border_style.set("T","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
-        [20,row, helper.Border_style.set("T","D","D","T")],
+        *([i,row, eh_border.set("T","M","M","T")] for i in [2,22]),
+        *([i, row, eh_border.set("T","D","M","T")] for i in range(3,20) if i%2==1),
+        *([i, row, eh_border.set("T","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row, eh_border.set("T","D","D","T")],
         # the total row
-        *([i,row+1, helper.Border_style.set("T","M","M","M")] for i in [2,22]),
-        *([i, row+1, helper.Border_style.set("T","D","M","M")] for i in range(3,20) if i%2==1),
-        *([i, row+1, helper.Border_style.set("T","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
-        [20,row+1, helper.Border_style.set("T","D","D","M")]
+        *([i,row+1, eh_border.set("T","M","M","M")] for i in [2,22]),
+        *([i, row+1, eh_border.set("T","D","M","M")] for i in range(3,20) if i%2==1),
+        *([i, row+1, eh_border.set("T","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+        [20,row+1, eh_border.set("T","D","D","M")]
     ]
 
     color_end_row = row+1
     if(current_marked):
         border_message = [
-            *([i,row+2, helper.Border_style.set("M","M","M","M")] for i in [2,22]),
-            *([i, row+2, helper.Border_style.set("M","D","M","M")] for i in range(3,20) if i%2==1),
-            *([i, row+2, helper.Border_style.set("M","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
-            [20,row+2, helper.Border_style.set("M","D","D","M")]
+            *([i,row+2, eh_border.set("M","M","M","M")] for i in [2,22]),
+            *([i, row+2, eh_border.set("M","D","M","M")] for i in range(3,20) if i%2==1),
+            *([i, row+2, eh_border.set("M","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+            [20,row+2, eh_border.set("M","D","D","M")]
         ]
         cell_border.extend(border_message) 
 
         color_end_row = row+2
 
     cell_color= [
-        [3, date_row, 4, color_end_row, helper.Color_style.PALE_MINT],
-        [5, date_row, 6, color_end_row, helper.Color_style.SATIN_GREEN],
-        [7, date_row, 8, color_end_row, helper.Color_style.PALE_PINK],
-        [9, date_row, 10, color_end_row, helper.Color_style.LIGHT_BLUE],
-        [11, date_row, 12, color_end_row, helper.Color_style.SKY_BLUE],
-        [13, date_row, 14, color_end_row, helper.Color_style.PEACH],
-        [15, date_row, 16, color_end_row, helper.Color_style.LACENDER],
-        [17, date_row, 18, color_end_row, helper.Color_style.BEIGE],
-        [19, date_row, 21, color_end_row, helper.Color_style.LIGHT_CORAL],
-        [22, date_row, 22, color_end_row, helper.Color_style.YELLOW_GREEN]
+        [3, date_row, 4, color_end_row, eh_color.PALE_MINT],
+        [5, date_row, 6, color_end_row, eh_color.SATIN_GREEN],
+        [7, date_row, 8, color_end_row, eh_color.PALE_PINK],
+        [9, date_row, 10, color_end_row, eh_color.LIGHT_BLUE],
+        [11, date_row, 12, color_end_row, eh_color.SKY_BLUE],
+        [13, date_row, 14, color_end_row, eh_color.PEACH],
+        [15, date_row, 16, color_end_row, eh_color.LACENDER],
+        [17, date_row, 18, color_end_row, eh_color.BEIGE],
+        [19, date_row, 21, color_end_row, eh_color.LIGHT_CORAL],
+        [22, date_row, 22, color_end_row, eh_color.YELLOW_GREEN]
     ]
     range_cell_set_color(ws, cell_color) 
     cell_set_border(ws,cell_border)
@@ -512,8 +504,8 @@ def day_finish(ws, date, row):
 def money_excel_process():
     message_out("Money excel processing")
 
-    file_first_line = read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
-    if(is_date(file_first_line)):
+    file_first_line = eh_funct.read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
+    if((file_first_line)):
         f_day, f_month, f_year = file_first_line.split('/')
         MONEY_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "money")
         MONEY_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "money.xlsx")
@@ -542,7 +534,7 @@ def money_excel_process():
         if(message == ''):
             continue
 
-        if is_date(message):
+        if eh_funct.is_date(message):
 
             if(current_date != None):
                 last_day = current_date

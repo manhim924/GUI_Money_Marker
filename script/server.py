@@ -7,6 +7,7 @@ from json import (loads as json_loads,
                   JSONDecodeError as json_JSONDecodeError)
 from os import (path as os_path,
                 makedirs as os_makedirs)
+from shutil import (copy2 as shutil_copy2)
 import config
 
 # --- verable setup start --- #
@@ -41,8 +42,19 @@ def status_check():
     # --- receive file function start --- #
 @server.route('/upload', methods=['POST'])
 def get_file():
+    if os_path.exists(SAVE_FILE_PATH):
+        backup_file_path = os_path.join(os_path.dirname(SAVE_FILE_PATH), "backup.json")
+        shutil_copy2(SAVE_FILE_PATH, backup_file_path)
+    else:
+        print(f"Skipping backup: {SAVE_FILE_PATH} not found.")
+
+    message_output("Server file backuped") 
+
     with open(SAVE_FILE_PATH, "w", encoding="utf-8") as f:
         pass
+
+    message_output("Server file clear")
+
     try:
         data = flask_request.get_json(force=True) # get file
         
@@ -82,8 +94,6 @@ def get_file():
     # --- receive file function start --- #
     
 def server_start():
-    
-    print("Old json file is cleared")
     print("The server is started!")
     server.run(host='0.0.0.0', port=PORT)
 

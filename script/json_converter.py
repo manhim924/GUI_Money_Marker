@@ -9,6 +9,19 @@ JSON_FILE_PATH = config.path.SERVER_OUTPUT_FILE
  
 ALL_FILE_LIST = list(map(lambda files_: os_path.join(TXT_FOLDER_PATH, files_) ,config.path.EXCEL_INPUT_FILE_LIST))
 
+def backup_old_file():
+    for file_path in ALL_FILE_LIST:
+        if os_path.exists(file_path):
+            backup_dir = os_path.join(os_path.dirname(file_path), "backup")
+            os_makedirs(backup_dir, exist_ok=True)
+            file_name = os_path.basename(file_path)
+            backup_file_path = os_path.join(backup_dir, file_name)
+            shutil_copy2(file_path, backup_file_path)
+            with open(file_path, "w", encoding="utf-8") as file:
+                pass
+        else:
+            print(f"Skipping backup: {file_path} not found.")
+
 def save_date(date):
     for file_path in ALL_FILE_LIST:
         with open(file_path ,'a',encoding='utf-8') as file:
@@ -75,14 +88,7 @@ def water_fill(json):
     save_to_file(ALL_FILE_LIST[5],message)
 
 def convert():
-    for file_path in ALL_FILE_LIST:
-        backup_dir = os_path.join(os_path.dirname(file_path), "backup")
-        os_makedirs(backup_dir, exist_ok=True)
-        file_name = os_path.basename(file_path)
-        backup_file_path = os_path.join(backup_dir, file_name)
-        shutil_copy2(file_path, backup_file_path)
-        with open(file_path, "w", encoding="utf-8") as file:
-            pass
+    backup_old_file() 
 
     with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
         data = json_load(json_file)
@@ -120,7 +126,6 @@ def convert():
                     feeling(each_action) 
                 elif(operation == "Water fill"):
                     water_fill(each_action)
-        open(JSON_FILE_PATH,'w', encoding="utf-8").close()
 
 if __name__ == "__main__":
     convert()

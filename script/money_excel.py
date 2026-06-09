@@ -8,6 +8,7 @@ from datetime import datetime
 from decimal import Decimal
 from shutil import (copy as shutil_copy)
 from shlex import (split as shlex_split)
+
 import config
 from excel_helper import (Color_style as eh_color,
                           Font_style as eh_font,
@@ -25,50 +26,6 @@ def set_message_out(function):
     global message_out
     message_out = function
 
-def check_and_open_excel(file):
-    if os_path.exists(file):
-        wb = load_workbook(file)
-    else:
-        wb = Workbook()
-    return wb
-
-def read_file_data(file):
-    with open(file,'r', encoding="utf-8") as file:
-        data = file.read().splitlines()
-    return data
-
-def month_int_to_string(month):
-    month_dict = {
-        1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
-        7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
-    }
-    return month_dict.get(month)
-
-def open_month_ws(wb,ws):
-    if ws in wb.sheetnames:
-        return wb[ws]
-    else:
-        return wb.create_sheet(ws)
-
-def get_max_row_by_value(ws):
-    for row in range(ws.max_row, 0, -1):
-        if any(cell.value is not None for cell in ws[row]):
-            return row
-    return 0
-
-# the pass number is the amount to pass the return false
-def is_first_time_of_ws(ws, pass_number):
-    last_row = get_max_row_by_value(ws)
-    for i in range(last_row,1,-1):
-        cell = f"B{i}"
-        value = ws[cell].value
-        if value != None:
-            if eh_funct.is_date(ws[cell].value):
-                if(pass_number == 0):
-                    return False
-                else:
-                    pass_number-=1
-    return True
 
 def find_last_value_row(ws, value, row):
     for i in range(row,3,-1):
@@ -89,11 +46,11 @@ def get_last_month_money_message(wb, month, year):
             return None
     else:
         try:
-            last_month_ws = wb[month_int_to_string(int(month)-1)]
+            last_month_ws = wb[eh_funct.month_int_to_string(int(month)-1)]
         except KeyError:
             return None
 
-    ws_last_row = get_max_row_by_value(last_month_ws)
+    ws_last_row = eh_funct.get_max_row_by_value(last_month_ws)
     cell = f"B{ws_last_row}"
     ws_last_row_colB_value = last_month_ws[cell].value
 
@@ -194,7 +151,7 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     range_merge_cell(ws, merge_cell)
 
 def is_date_duplicate(ws,date):
-    last_row = get_max_row_by_value(ws)
+    last_row = eh_funct.get_max_row_by_value(ws)
     for row in range(last_row, 1,-1):
         cell = f"B{row}"
         value = ws[cell].value
@@ -206,7 +163,7 @@ def is_date_duplicate(ws,date):
                     return False            
 
 def find_start_row(ws):
-    last_row = get_max_row_by_value(ws)
+    last_row = eh_funct.get_max_row_by_value(ws)
 
     for i in range(last_row, 1, -1):
         if any(cell.value is not None for cell in ws[i]):
@@ -298,7 +255,7 @@ def day_summary(ws, date, end_row):
     if (date_start_row == None):
         message_out(f"Money Excel: Error, cannot find last cell of value: {date}")
 
-    if(is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
+    if(eh_funct.is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
         last_row = find_last_value_row(ws, "Last", end_row)
     else:
         last_row = find_last_value_row(ws, "sum", end_row)
@@ -369,7 +326,7 @@ def day_total(ws, date, row):
     current_countable_sum_in_value = Decimal(str(ws[current_countable_sum_in_cell].value))
     current_countable_sum_out_value = Decimal(str(ws[current_countable_sum_out_cell].value))
 
-    if(is_first_time_of_ws(ws, 1)):
+    if(eh_funct.is_first_time_of_ws(ws, 1)):
         message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
     else:
         last_row = find_last_value_row(ws, "total", row)
@@ -396,7 +353,7 @@ def day_total(ws, date, row):
 
 def mark_current_amount(ws, date, row):
     if(os_path.exists(CURRENT_HAVE_FILE_PATH)):
-        full_file = read_file_data(CURRENT_HAVE_FILE_PATH)
+        full_file = eh_funct.read_file_data(CURRENT_HAVE_FILE_PATH)
 
         message = [[2, row, "current have"]]
         is_current_day = False
@@ -505,7 +462,7 @@ def money_excel_process():
     message_out("Money excel processing")
 
     file_first_line = eh_funct.read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
-    if((file_first_line)):
+    if((eh_funct.is_date(file_first_line))):
         f_day, f_month, f_year = file_first_line.split('/')
         MONEY_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "money")
         MONEY_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "money.xlsx")
@@ -521,12 +478,12 @@ def money_excel_process():
     if(os_path.exists(MONEY_FILE_PATH)):
         shutil_copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
 
-    wb = check_and_open_excel(MONEY_FILE_PATH)
+    wb = eh_funct.check_and_open_excel(MONEY_FILE_PATH)
     ws = wb.active
 
     current_date = None
     last_day = None
-    money_message_list = read_file_data(MONEY_MESSAGE_FILE_PATH)
+    money_message_list = eh_funct.read_file_data(MONEY_MESSAGE_FILE_PATH)
     START_COL = 2
     have_previous_date = False
     can_save = True
@@ -543,12 +500,12 @@ def money_excel_process():
                 day_finish(ws, last_day, start_row + record)
                 
             day, month, year = message.split('/') 
-            month_str = month_int_to_string(int(month))
-            ws = open_month_ws(wb, month_str)
+            month_str = eh_funct.month_int_to_string(int(month))
+            ws = eh_funct.open_month_ws(wb, month_str)
 
             current_date = message
 
-            if(is_first_time_of_ws(ws,0)): 
+            if(eh_funct.is_first_time_of_ws(ws,0)): 
                 sheet_init(wb, ws, month, year)
             else:
                 if(is_date_duplicate(ws,message)):

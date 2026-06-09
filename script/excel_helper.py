@@ -1,5 +1,7 @@
 from openpyxl.styles import PatternFill, Font, Border, Side
+from openpyxl import Workbook, load_workbook
 from datetime import datetime
+from os import (path as os_path)
 
 class Color_style():
     PALE_MINT = PatternFill(fill_type="solid", fgColor="EBF1DE") 
@@ -39,14 +41,57 @@ class Border_style():
         )
 
 class Function():
-
-    def read_first_line_of_file(file):
+    def read_first_line_of_file(self,file):
         with open(file, 'r', encoding='utf-8') as f:
             return f.readline().strip()
 
-    def is_date(data):
+    def is_date(self, data):
         try:
             datetime.strptime(data, "%d/%m/%Y")
             return True
         except ValueError:
             return False
+
+    def check_and_open_excel(self, file):
+        if os_path.exists(file):
+            wb = load_workbook(file)
+        else:
+            wb = Workbook()
+        return wb
+
+    def read_file_data(self, file):
+        with open(file,'r', encoding="utf-8") as file:
+            data = file.read().splitlines()
+        return data
+
+    def month_int_to_string(self, month):
+        month_dict = {
+            1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+            7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
+        }
+        return month_dict.get(month)
+
+    def open_month_ws(self,wb,ws):
+        if ws in wb.sheetnames:
+            return wb[ws]
+        else:
+            return wb.create_sheet(ws)
+
+    def get_max_row_by_value(self, ws):
+        for row in range(ws.max_row, 0, -1):
+            if any(cell.value is not None for cell in ws[row]):
+                return row
+        return 0
+
+    def is_first_time_of_ws(self,ws, pass_number):
+        last_row = self.get_max_row_by_value(ws)
+        for i in range(last_row,1,-1):
+            cell = f"B{i}"
+            value = ws[cell].value
+            if value != None:
+                if self.is_date(ws[cell].value):
+                    if(pass_number == 0):
+                        return False
+                    else:
+                        pass_number-=1
+        return True

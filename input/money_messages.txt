@@ -1,10 +1,2 @@
-1/1/2026
-200 "H" "C" true  
-100 "O" "Lunch" true  
-10000 "Dad" "H" true  
-1861 "Dad" "H" false  
-2/1/2026
-200 "H" "C" true  
-100 "O" "Lunch" true  
-10000 "Dad" "H" true  
-1861 "Dad" "H" false  
+09/06/2026
+2.2 "O" "LRT" True  

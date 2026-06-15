@@ -11,8 +11,7 @@ from shlex import (split as shlex_split)
 import config
 from excel_helper import (Color_style as eh_color,
                           Font_style as eh_font,
-                          Border_style as eh_border,
-                          Function as eh_funct)
+                          Border_style as eh_border)
 
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
 WATER_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[5])

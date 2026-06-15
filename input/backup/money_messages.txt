@@ -1,10 +1,16 @@
-1/1/2026
-200 "H" "C" true  
-100 "O" "Lunch" true  
-10000 "Dad" "H" true  
-1861 "Dad" "H" false  
-2/1/2026
-200 "H" "C" true  
-100 "O" "Lunch" true  
-10000 "Dad" "H" true  
-1861 "Dad" "H" false  
+13/06/2026
+16.5 "O" "Bus" True
+3.51 "H" "AP" True  
+3.51 "AP" "MTR" True  
+2.34 "H" "AP" True  
+2.34 "AP" "MTR" True  
+3.51 "H" "AP" True  
+3.51 "AP" "MTR" True  
+14/06/2026
+2.34 "H" "AP" False  
+2.34 "AP" "MTR" True  
+2.34 "H" "AP" True  
+2.34 "AP" "MTR" True  
+2.34 "H" "AP" True  
+2.34 "AP" "MTR" True  
+16.5 "O" "Bus" True

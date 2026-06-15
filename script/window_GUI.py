@@ -154,19 +154,19 @@ class Main_window(QMainWindow):
         current_year = datetime.now().year
         current_year_file_path = os_path.join(self.OUTPUT_FOLDER, str(current_year))
 
-        money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"money"))])
+        money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"money"), "money.xlsx"), lambda: self.log_window_message_output("Money excel reloaded")])
         money_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"work"))])
+        work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"work"), "work.xlsx"), lambda: self.log_window_message_output("Work excel reloaded")])
         work_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path, "sleep"))])
+        sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path, "sleep"),"sleep.xlsx"), lambda: self.log_window_message_output("Sleep excel reloaded")])
         sleep_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"feeling"))])
+        feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"feeling"),"feeling.xlsx"), lambda: self.log_window_message_output("Feeling excel reloaded")])
         feeling_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"water"))])
+        water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"water"),"water.xlsx"), lambda: self.log_window_message_output("Water excel reloaded")])
         water_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
         l_reload_excel_layout = QVBoxLayout()
@@ -253,6 +253,7 @@ class Main_window(QMainWindow):
         self.user_input_window.setStyleSheet(self.USER_STYLE_SHEET)
 
         user_input_save_button = self.Button("Save",True, [lambda: self.Save_file()]) 
+        user_input_save_button.setShortcut("Ctrl+s")
         user_input_save_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
         clear_user_input_window_button = self.Button("Clear", True, [lambda: self.user_input_window.clear()] )
@@ -395,14 +396,14 @@ class Main_window(QMainWindow):
         message = f"{time}: {input}"
         self.log_window.append(message) 
 
-    def reload_file(self, file_path):
-        remove_file_path = os_path.join(file_path, "main.xlsx")
+    def reload_file(self, file_path, file_name):
+        remove_file_path = os_path.join(file_path, file_name)
         reload_file_path = os_path.join(file_path, "backup.xlsx")
         if(os_path.exists(remove_file_path) and os_path.exists(reload_file_path)):
-            os_remove(reload_file_path)
+            os_remove(remove_file_path)
             os_rename(reload_file_path, remove_file_path)
         else:
-            self.log_window_message_output(f"file path {file_path} not exist")
+            self.log_window_message_output(f"file path \"{file_path}\" not exist")
 
     def open_file(self, file_path):
         if (not os_path.exists(file_path)):
@@ -413,7 +414,7 @@ class Main_window(QMainWindow):
 
         if (current_os == "Windows"):
             os_startfile(file_path)
-        elif(current_os == "Darwin"):
+        elif(current_os == "Darwin"): # MAC os
             subprocess_run(["open"], file_path)
         elif(current_os == "Linux"):
             subprocess_run(["xdg-open", file_path])

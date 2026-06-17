@@ -1,7 +1,11 @@
-15/06/2026
-2.2 "O" "LRT" True  
-100 "H" "HKJC" False  
-8.8 "O" "MTR" True  
-44 "H" "AP" True  
-44 "AP" "Lunch" True  
-11 "O" "LRT" True  
+16/06/2026
+48.48 "H" "TnG" True  
+2.6 "O " "MTR" True  
+28 "H" "AP" True  
+28 "AP" "Lunch" True  
+58 "H" "AP" True  
+58 "AP" "Lunch" True  
+58 "H" "AP" True  
+58 "AP" "Dinner" True  
+2.6 "O" "MRT" True
+48.48 "TnG" "Spotify" True

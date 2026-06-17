@@ -90,6 +90,7 @@ def water_fill(json):
 def convert():
     backup_old_file() 
 
+
     with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
         data = json_load(json_file)
 
@@ -99,6 +100,9 @@ def convert():
         full_list = data
 
     for data in full_list:
+        with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
+            pass
+
         for date_key , data_list in data.items():
             save_date(date_key)
 

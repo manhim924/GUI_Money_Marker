@@ -294,6 +294,14 @@ def day_summary(ws, date, end_row):
         message = [[col, end_row, total_input],[col+1, end_row, total_output]]
 
         cell_type_message(ws, message)
+    
+    if(message_out):
+        message_out("------------------------------------------------------------------")
+        message_out(f"Excel money {date} input is \"{total_input}\"", True)
+        message_out(f"Excel money {date} output is \"{total_output}\"", True)
+    else:
+        message_out(f"Excel money {date} input is \"{total_input}\"")
+        message_out(f"Excel money {date} output is \"{total_output}\"")
 
 
     last_have_value = Decimal(str(ws[f"{get_column_letter(21)}{last_row}"].value)).quantize(Decimal("0.00"))
@@ -311,7 +319,7 @@ def day_summary(ws, date, end_row):
     cell_type_message(ws, message)
     return True
 
-def day_total(ws, date, row):
+def day_total(ws, date, row, summary_correct):
     day, month, year = date.split('/')
     current_real_sum_in_cell = f"S{row-1}"
     current_real_sum_out_cell = f"T{row-1}"
@@ -341,14 +349,29 @@ def day_total(ws, date, row):
         total_out_value = last_real_total_out_value + current_real_sum_out_value
 
         countable_total_in_value = last_countable_sum_in_value + current_countable_sum_in_value
-        countalbe_total_out_value = last_countable_sum_out_value + current_countable_sum_out_value
+        countable_total_out_value = last_countable_sum_out_value + current_countable_sum_out_value
+
+        if(summary_correct):
+            message_out(f"so far total income is \"{total_in_value}\"")
+            if(message_out):
+                message_out(f"and total output is \"{total_out_value}\"", True)
+            else:
+                message_out(f"and total output is \"{total_out_value}\"")
+
+            message_out(f"and countable income is \"{countable_total_in_value}\"")
+
+            if(message_out):
+                message_out(f"countable outcome is \"{countable_total_out_value}\"", True)
+            else:
+                message_out(f"countable outcome is \"{countable_total_out_value}\"")
 
 
-        message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countalbe_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
+
+        message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countable_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
 
     cell_type_message(ws, message)
 
-def mark_current_amount(ws, date, row):
+def mark_current_amount(ws, date, row, summary_correct):
     if(os_path.exists(CURRENT_HAVE_FILE_PATH)):
         full_file = excel_helper.read_file_data(CURRENT_HAVE_FILE_PATH)
 
@@ -389,6 +412,12 @@ def mark_current_amount(ws, date, row):
         is_equal = "True" if (total_have_value == total_amount) else "False"
         if(is_equal == "False"):
             message_out(f"Money excel current correct is False, total ahve value is {total_have_value} and total amount is {total_amount}")
+
+        if(is_equal == "True" and summary_correct):
+            message_out(f"total have money \"{total_have_value}\"")
+
+        if(message_out):
+                message_out("------------------------------------------------------------------")
 
         message.append([21, row, total_amount]) 
         message.append([22, row, is_equal])
@@ -459,9 +488,9 @@ def day_set_style(ws, date, row, current_marked):
     cell_set_border(ws,cell_border)
 
 def day_finish(ws, date, row):
-    day_summary(ws, date, row)
-    day_total(ws, date, row+1)
-    current_marked = mark_current_amount(ws, date, row+2)
+    summary_correct = day_summary(ws, date, row)
+    day_total(ws, date, row+1, summary_correct)
+    current_marked = mark_current_amount(ws, date, row+2, summary_correct)
     day_set_style(ws, date, row, current_marked)
 
 def money_excel_process():
@@ -476,7 +505,6 @@ def money_excel_process():
     else:
         if(message_out):
             message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
-            sys_exit(0)
 
     if(not os_path.exists(MONEY_FOLDER_PATH)):
         os_makedirs(MONEY_FOLDER_PATH)
@@ -516,7 +544,6 @@ def money_excel_process():
             else:
                 if(is_date_duplicate(ws,message)):
                     message_out(f"Money_excel : date {message} is marked!")
-                    sys_exit(0) # for just in testing, may need to change after apply to gui
 
             start_row = input_date(ws,message)
             have_previous_date = True

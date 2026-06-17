@@ -391,9 +391,11 @@ class Main_window(QMainWindow):
             button.pressed.connect(func)
         return button
 
-    def log_window_message_output(self, input):
+    def log_window_message_output(self, input, new_line = False):
         time = datetime.now().strftime("%H:%M:%S") 
         message = f"{time}: {input}"
+        if(new_line):
+            message += "\n"
         self.log_window.append(message) 
 
     def reload_file(self, file_path, file_name):

@@ -100,10 +100,10 @@ def convert():
         full_list = data
 
     for data in full_list:
-        with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
-            pass
-
         for date_key , data_list in data.items():
+            with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
+                pass
+
             save_date(date_key)
 
             if(isinstance(data_list , list)):

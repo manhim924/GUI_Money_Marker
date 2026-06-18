@@ -1,11 +1,7 @@
-16/06/2026
-48.48 "H" "TnG" True  
-2.6 "O " "MTR" True  
-28 "H" "AP" True  
-28 "AP" "Lunch" True  
-58 "H" "AP" True  
-58 "AP" "Lunch" True  
-58 "H" "AP" True  
-58 "AP" "Dinner" True  
-2.6 "O" "MRT" True
-48.48 "TnG" "Spotify" True
+17/06/2026
+58.51 "H" "AP" True  
+58.51 "AP" "canva" True  
+18/06/2026
+250 "H" "AP" True  
+250 "AP" "Heal care " True  
+2.2  "O" "LRT" True  

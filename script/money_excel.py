@@ -411,7 +411,7 @@ def mark_current_amount(ws, date, row, summary_correct):
 
         is_equal = "True" if (total_have_value == total_amount) else "False"
         if(is_equal == "False"):
-            message_out(f"Money excel current correct is False, total ahve value is {total_have_value} and total amount is {total_amount}")
+            message_out(f"Money excel current correct is False, total have value is {total_have_value} and total amount is {total_amount}")
 
         if(is_equal == "True" and summary_correct):
             message_out(f"total have money \"{total_have_value}\"")

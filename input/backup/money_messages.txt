@@ -1,7 +1,7 @@
-15/06/2026
-2.2 "O" "LRT" True  
-100 "H" "HKJC" False  
-8.8 "O" "MTR" True  
-44 "H" "AP" True  
-44 "AP" "Lunch" True  
-11 "O" "LRT" True  
+17/06/2026
+58.51 "H" "AP" True  
+58.51 "AP" "canva" True  
+18/06/2026
+250 "H" "AP" True  
+250 "AP" "Heal care " True  
+2.2  "O" "LRT" True  

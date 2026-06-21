@@ -5,6 +5,7 @@ config/
 private/
 data_received/
 
+
 # docs folder 
 docs/*
 !docs/excel_color_code.txt

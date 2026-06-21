@@ -4,15 +4,18 @@ from PyQt6.QtWidgets import (QApplication,  QWidget , QMainWindow, QPushButton,
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction
 from datetime import datetime
+from platform import system as platform_system
 from os import (path as os_path,
                 makedirs as os_makedirs,
                 remove as os_remove,
-                rename as os_rename,
-                startfile as os_startfile)
+                rename as os_rename)
+
+if( platform_system() == "Windows"):
+    from os import  startfile as os_startfile
+
 from sys import argv as sys_argv
 from json import (dump as json_dump,
                   load as json_load)
-from platform import system as platform_system
 from subprocess import run as subprocess_run
 import config 
 
@@ -407,6 +410,7 @@ class Main_window(QMainWindow):
         else:
             self.log_window_message_output(f"file path \"{file_path}\" not exist")
 
+
     def open_file(self, file_path):
         if (not os_path.exists(file_path)):
             self.log_window_message_output(f"File {file_path} not exist")
@@ -417,7 +421,7 @@ class Main_window(QMainWindow):
         if (current_os == "Windows"):
             os_startfile(file_path)
         elif(current_os == "Darwin"): # MAC os
-            subprocess_run(["open"], file_path)
+            subprocess_run(["open", file_path] )
         elif(current_os == "Linux"):
             subprocess_run(["xdg-open", file_path])
         else:

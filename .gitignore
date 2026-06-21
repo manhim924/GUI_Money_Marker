@@ -6,7 +6,6 @@ private/
 data_received/
 .venv/
 
-
 # docs folder 
 docs/*
 !docs/excel_color_code.txt

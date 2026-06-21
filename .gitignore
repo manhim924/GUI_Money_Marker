@@ -4,6 +4,7 @@ __pycache__/
 config/
 private/
 data_received/
+.venv/
 
 
 # docs folder 

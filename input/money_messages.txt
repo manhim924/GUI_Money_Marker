@@ -1,24 +1,7 @@
-19/06/2026
-10.16 "H" "AP" True  
-10.16 "AP" "Gundam" True  
-51.5 "H" "AP" True  
-51.5 "AP" "Breakfast" True  
-39 "H" "AP" True  
-39 "AP" "Drink" True  
-2.6 "O" "LRT" True  
-11.1 "O" "MTR" True  
-16 "H" "AP" True  
-16 "AP" "Drink" True  
-3.2 "O" "MTR" True
-55 "H" "AP" True
-55 "AP" "Dinner" True  
-29.37 "H" "AP" True  
-29.37 "AP" "Computer" True
-10.8 "O" "Bus" True
-20/6/2026
-2000 "Dad" "H" False
-1685.55 "H" "Dad" False
+26/06/2026
+29 "H" "Turnitin" True  
 3.8 "O" "LRT" True
-39.5 "H" "AP" True
-39.5 "AP" "Lunch" True
-
+250 "H" "AP" True  
+250 "AP" "Heal care" True  
+87 "H" "AP" True  
+87 "AP" "Dinner" True  

@@ -1,7 +1,21 @@
-17/06/2026
-58.51 "H" "AP" True  
-58.51 "AP" "canva" True  
-18/06/2026
-250 "H" "AP" True  
-250 "AP" "Heal care " True  
-2.2  "O" "LRT" True  
+24/06/2026
+2.2 "O" "LRT" True  
+200 "H" "O" True  
+8.8 "O" "MTR" True  
+12.3 "H" "AP" True  
+12.3 "AP" "Lunch" True  
+18 "H" "AP" True  
+18 "AP" "Drink" True
+11 "O" "MTR" True  
+146.4 "H" "AP" True  
+146.4 "AP" "Dinner" True  
+95.5 "H" "Lunch" True
+200 "Lunch" "H" True
+25/06/2026
+250 "H" "AP" True
+250 "AP" "Heal care" True
+2.2 "O" "LRT" True
+14.6 "O" "Bus" True
+16 "H" "AP" True
+16 "AP" "Drink" True
+7.3 "O" "Bus" True

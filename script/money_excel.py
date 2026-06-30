@@ -249,7 +249,7 @@ def day_summary(ws, date, end_row):
     date_start_row = find_last_value_row(ws, date, end_row)
 
     if (date_start_row == None):
-        message_out(f"Money Excel: Error, cannot find last cell of value: {date}")
+        message_out(f"Money Excel: Error, cannot find last cell of value: {date}", color="red")
 
     if(excel_helper.is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
         last_row = find_last_value_row(ws, "Last", end_row)
@@ -297,8 +297,8 @@ def day_summary(ws, date, end_row):
     
     if(message_out):
         message_out("------------------------------------------------------------------")
-        message_out(f"Excel money {date} input is \"{total_input}\"", True)
-        message_out(f"Excel money {date} output is \"{total_output}\"", True)
+        message_out(f"Excel money {date} input is \"{total_input}\"", new_line = True)
+        message_out(f"Excel money {date} output is \"{total_output}\"", new_line = True)
     else:
         message_out(f"Excel money {date} input is \"{total_input}\"")
         message_out(f"Excel money {date} output is \"{total_output}\"")
@@ -311,7 +311,7 @@ def day_summary(ws, date, end_row):
     
     correct_value_bool = last_have_value == current_have_value + current_output_value - current_input_value
     if (not correct_value_bool):
-        message_out("Money excel summary have false")
+        message_out("Money excel summary have false", color="red")
         return False
 
     correct_value = str(correct_value_bool)
@@ -354,14 +354,14 @@ def day_total(ws, date, row, summary_correct):
         if(summary_correct):
             message_out(f"so far total income is \"{total_in_value}\"")
             if(message_out):
-                message_out(f"and total output is \"{total_out_value}\"", True)
+                message_out(f"and total output is \"{total_out_value}\"", new_line = True )
             else:
                 message_out(f"and total output is \"{total_out_value}\"")
 
             message_out(f"and countable income is \"{countable_total_in_value}\"")
 
             if(message_out):
-                message_out(f"countable outcome is \"{countable_total_out_value}\"", True)
+                message_out(f"countable outcome is \"{countable_total_out_value}\"", new_line = True)
             else:
                 message_out(f"countable outcome is \"{countable_total_out_value}\"")
 
@@ -396,7 +396,7 @@ def mark_current_amount(ws, date, row, summary_correct):
                 correct_value_bool = (sum_value == amount)
                 
                 if(not correct_value_bool):
-                    message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False")
+                    message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False", color="red")
 
                 correct_value = "True" if (correct_value_bool) else "False"
 
@@ -411,7 +411,7 @@ def mark_current_amount(ws, date, row, summary_correct):
 
         is_equal = "True" if (total_have_value == total_amount) else "False"
         if(is_equal == "False"):
-            message_out(f"Money excel current correct is False, total have value is {total_have_value} and total amount is {total_amount}")
+            message_out(f"Money excel current correct is False, total have value is {total_have_value} and total amount is {total_amount}", color="red")
 
         if(is_equal == "True" and summary_correct):
             message_out(f"total have money \"{total_have_value}\"")
@@ -425,7 +425,7 @@ def mark_current_amount(ws, date, row, summary_correct):
         return True
 
     else:
-        message_out("Money excel money_current_have.txt not exist")
+        message_out("Money excel money_current_have.txt not exist", color="red")
         return False
 
 def day_set_style(ws, date, row, current_marked):
@@ -504,7 +504,7 @@ def money_excel_process():
         BACKUP_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "backup.xlsx")
     else:
         if(message_out):
-            message_out("Money Excel : Error, the money_messages.txt first line is not a date!") 
+            message_out("Money Excel : Error, the money_messages.txt first line is not a date!", color="red") 
 
     if(not os_path.exists(MONEY_FOLDER_PATH)):
         os_makedirs(MONEY_FOLDER_PATH)

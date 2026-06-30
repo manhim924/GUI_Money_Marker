@@ -25,6 +25,11 @@ class Server_parallel(QThread):
             server.server_start()
         except Exception as error:
             self.log_signal.emit(f"Server error: {str(error)}")
+
+    def stop_server(self):
+        server.server_stop()
+        self.quit()
+        self.wait()
 # --- parallel for pyqt6 end  --- #
 
 def main():
@@ -36,6 +41,8 @@ def main():
     message_output = window.log_window_message_output
 
     window.server_start_signal.connect(parallel.start)
+    window.server_stop_signal.connect(parallel.stop_server)
+
     parallel.log_signal.connect(message_output)
     
     excel_modules = [
@@ -43,8 +50,8 @@ def main():
         (feeling_excel, window.feeling_excel_start_signal, feeling_excel.feeling_excel_process),
         (sleep_excel, window.sleep_excel_start_signal, sleep_excel.sleep_excel_process),
         (water_excel, window.water_excel_start_signal, water_excel.water_excel_process),
-        (work_excel, window.work_excel_start_signal, work_excel.work_excel_process)
-    ]
+        (work_excel, window.work_excel_start_signal, work_excel.work_excel_process),
+            ]
 
     for module, signal, function in excel_modules:
         signal.connect(function)

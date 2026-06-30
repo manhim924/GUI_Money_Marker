@@ -1,21 +1,24 @@
-24/06/2026
+28/06/2026
+2.6 "O" "LRT" True  
+17 "C" "Drink" True    
+12.5 "H" "AP" True  
+12.5 "AP" "Bread" True  
+166 "H" "AP" True  
+166 "AP" "Dinner" True  
+95.5 "H" "AP" False   
+95.5 "AP" "Lunch" False  
+2.6 "O" "LRT" True
+29/06/2026
 2.2 "O" "LRT" True  
-200 "H" "O" True  
+2745 "H" "Dad" False  
 8.8 "O" "MTR" True  
-12.3 "H" "AP" True  
-12.3 "AP" "Lunch" True  
-18 "H" "AP" True  
-18 "AP" "Drink" True
+4.6 "H" "AP" True  
+4.6 "AP" "Breakfast" True  
+4 "H" "AP" True  
+4 "AP" "Gym" True  
 11 "O" "MTR" True  
-146.4 "H" "AP" True  
-146.4 "AP" "Dinner" True  
-95.5 "H" "Lunch" True
-200 "Lunch" "H" True
-25/06/2026
-250 "H" "AP" True
-250 "AP" "Heal care" True
-2.2 "O" "LRT" True
-14.6 "O" "Bus" True
-16 "H" "AP" True
-16 "AP" "Drink" True
-7.3 "O" "Bus" True
+27 "C" "Drink" True  
+39 "H" "AP" True  
+39 "AP" "Mini fo" True  
+2.6 "O" "LRT" True  
+39 "CH" "C" True

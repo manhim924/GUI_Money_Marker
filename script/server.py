@@ -8,6 +8,8 @@ from json import (loads as json_loads,
 from os import (path as os_path,
                 makedirs as os_makedirs)
 from shutil import (copy2 as shutil_copy2)
+from werkzeug.serving import make_server
+
 import config
 
 # --- verable setup start --- #
@@ -16,6 +18,7 @@ PORT = config.server.SERVER_PORT_NUM
 folder_path = os_path.dirname(SAVE_FILE_PATH)
 if folder_path and not os_path.exists(folder_path):
     os_makedirs(folder_path)
+flask_server_instance = None
 # --- verable setup end --- #
 
 # --- setup function for main.py start --- #
@@ -94,8 +97,21 @@ def get_file():
     # --- receive file function start --- #
     
 def server_start():
-    print("The server is started!")
-    server.run(host='0.0.0.0', port=PORT)
+    global flask_server_instance
+    message_output("Server: server started!")
+
+    flask_server_instance = make_server("0.0.0.0", PORT, server)
+
+    flask_server_instance.serve_forever()
+
+def server_stop():
+    global flask_server_instance
+    if flask_server_instance:
+        flask_server_instance.shutdown()
+        message_output("Server: server stoped!")
+    else:
+        message_output("Server: server not started, cannot stop", color="red")
+
 
 if __name__ == "__main__":
     # import json_converter

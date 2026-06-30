@@ -1,7 +1,7 @@
-26/06/2026
-29 "H" "Turnitin" True  
-3.8 "O" "LRT" True
-250 "H" "AP" True  
-250 "AP" "Heal care" True  
-87 "H" "AP" True  
-87 "AP" "Dinner" True  
+30/06/2026
+2.2 "O" "LRT" True 
+250 "H" "AP" True
+250 "AP" "heal care" True
+2.2 "O" "LRT" True
+58 "H" "AP" True
+58 "AP" "Lunch" True

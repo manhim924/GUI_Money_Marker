@@ -68,6 +68,7 @@ class Main_window(QMainWindow):
     # --- signal for main.py setup start --- #
     current_opening_file = None
     server_start_signal = pyqtSignal()
+    server_stop_signal = pyqtSignal()
     money_excel_start_signal = pyqtSignal()
     work_excel_start_signal = pyqtSignal()
     sleep_excel_start_signal = pyqtSignal()
@@ -113,6 +114,9 @@ class Main_window(QMainWindow):
         server_start_button = self.Button("Server Start", True, [self.server_start_signal.emit])
         server_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
+        server_stop_button = self.Button("Server Stop", True, [self.server_stop_signal.emit])
+        server_stop_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
         money_excel_start_button = self.Button("Money Excel Start", True, [self.money_excel_start_signal.emit]) 
         money_excel_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET) 
 
@@ -124,6 +128,7 @@ class Main_window(QMainWindow):
 
         l_money_marking_layout= QVBoxLayout() 
         l_money_marking_layout.addWidget(server_start_button)
+        l_money_marking_layout.addWidget(server_stop_button)
         l_money_marking_layout.addWidget(money_excel_start_button)
         l_money_marking_layout.addWidget(load_money_message)
         l_money_marking_layout.addWidget(load_current_have)
@@ -229,9 +234,14 @@ class Main_window(QMainWindow):
         self.log_window.setReadOnly(True)
         self.log_window.setStyleSheet(self.LOG_WINDOW_STYLE_SHEET)
 
+        log_window_clear_text_button = self.Button("Clear Log Window", True, [lambda: self.log_window.clear()])
+        log_window_clear_text_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+
+
         right_top_layout = QVBoxLayout()
         right_top_layout.addWidget(log_window_text)
         right_top_layout.addWidget(self.log_window)
+        right_top_layout.addWidget(log_window_clear_text_button)
 
         right_top_widget = self.Color_widget(layout = right_top_layout, bgc="#b5b5b5", border="2px solid #000000", margin="5px") 
         # --- log widget end --- # 
@@ -259,7 +269,7 @@ class Main_window(QMainWindow):
         user_input_save_button.setShortcut("Ctrl+s")
         user_input_save_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
-        clear_user_input_window_button = self.Button("Clear", True, [lambda: self.user_input_window.clear()] )
+        clear_user_input_window_button = self.Button("Clear Text Box", True, [lambda: self.user_input_window.clear()] )
         clear_user_input_window_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
 
         start_all_job_button = self.Button("Start All Excel", True, [
@@ -394,11 +404,16 @@ class Main_window(QMainWindow):
             button.pressed.connect(func)
         return button
 
-    def log_window_message_output(self, input, new_line = False):
+    def log_window_message_output(self, input, color = None, new_line = False):
         time = datetime.now().strftime("%H:%M:%S") 
-        message = f"{time}: {input}"
+        if(color):
+            message = f"<span style= 'color: {color};'>{time}: {input}</span>"
+        else:
+            message = f"{time}: {input}"
+
         if(new_line):
             message += "\n"
+
         self.log_window.append(message) 
 
     def reload_file(self, file_path, file_name):
@@ -427,12 +442,9 @@ class Main_window(QMainWindow):
         else:
             self.log_window_message_output(f"Unsupproted OS : {current_os}") 
 
-def test():
+if __name__ == "__main__":
     app = QApplication(sys_argv)
     window = Main_window(1920,1080) 
     window.show()
 
     app.exec() 
-
-if __name__ == "__main__":
-    test()

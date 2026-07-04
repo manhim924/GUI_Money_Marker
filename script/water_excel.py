@@ -11,7 +11,8 @@ from shlex import (split as shlex_split)
 import config
 from excel_helper import (Color_style as eh_color,
                           Font_style as eh_font,
-                          Border_style as eh_border)
+                          Border_style as eh_border,
+                          Function as eh_funct)
 
 INPUT_FOLDER_PATH = config.path.INPUT_FOLDER
 WATER_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPUT_FILE_LIST[5])
@@ -22,6 +23,26 @@ message_out = print
 def set_message_out(function):
     global message_out
     message_out = function
+
+def sheet_init(wb, ws, month, year):
+    ws.column_dimensions['B'].width = 14.5
+
+    for i in range(3,23):
+        col = get_column_letter(i)
+        ws.column_dimensions[col].width = 12
+
+    cell_message = []
+
+    cell_color = []
+
+    cell_border = []
+
+    merge_cell = []
+
+    eh_funct.cell_type_message(ws, cell_message)
+    eh_funct.range_cell_set_color(ws, cell_color)
+    eh_funct.cell_set_border(ws, cell_border)
+    eh_funct.range_merage_cell(ws, merge_cell)    
 
 def water_excel_process():
     message_out("Water excel started!")
@@ -61,7 +82,8 @@ def water_excel_process():
                 last_day = current_date
 
             if(have_previous_date):
-                day_finish(ws, last_day, start_row + record)
+                # day_finish(ws, last_day, start_row + record)
+                pass
 
             day, month, year = message.split('/')
             month_str = eh_funct.month_int_to_string(int(month))
@@ -70,7 +92,7 @@ def water_excel_process():
             current_date = message
 
             if(eh_funct.is_first_time_of_ws(ws,0)):
-                #money_excel.py line 508
+                sheet_init(wb, ws, month, year)
                 pass
 
 

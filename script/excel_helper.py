@@ -1,4 +1,5 @@
-from openpyxl.styles import PatternFill, Font, Border, Side
+from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
+from openpyxl.utils import get_column_letter
 from openpyxl import Workbook, load_workbook
 from datetime import datetime
 from os import (path as os_path)
@@ -39,58 +40,95 @@ class Border_style():
             left = cls.border_dict.get(l),         
             right = cls.border_dict.get(r)         
         )
+class Function():
+    @classmethod
+    def read_first_line_of_file(self, file):
+        with open(file, 'r', encoding='utf-8') as f:
+            return f.readline().strip()
 
-def read_first_line_of_file(file):
-    with open(file, 'r', encoding='utf-8') as f:
-        return f.readline().strip()
+    @classmethod
+    def is_date(self, data):
+        try:
+            datetime.strptime(data, "%d/%m/%Y")
+            return True
+        except ValueError:
+            return False
 
-def is_date(data):
-    try:
-        datetime.strptime(data, "%d/%m/%Y")
+    @classmethod
+    def check_and_open_excel(self, file):
+        if os_path.exists(file):
+            wb = load_workbook(file)
+        else:
+            wb = Workbook()
+        return wb
+
+    @classmethod
+    def read_file_data(self, file):
+        with open(file,'r', encoding="utf-8") as file:
+            data = file.read().splitlines()
+        return data
+
+    @classmethod
+    def month_int_to_string(self, month):
+        month_dict = {
+            1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+            7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
+        }
+        return month_dict.get(month)
+
+    @classmethod
+    def open_month_ws(self, wb, ws):
+        if ws in wb.sheetnames:
+            return wb[ws]
+        else:
+            return wb.create_sheet(ws)
+
+    @classmethod
+    def get_max_row_by_value(self ,ws):
+        for row in range(ws.max_row, 0, -1):
+            if any(cell.value is not None for cell in ws[row]):
+                return row
+        return 0
+
+    @classmethod
+    def is_first_time_of_ws(self, ws, pass_number):
+        last_row = self .get_max_row_by_value(ws)
+        for i in range(last_row,1,-1):
+            cell = f"B{i}"
+            value = ws[cell].value
+            if value != None:
+                if self .is_date(ws[cell].value):
+                    if(pass_number == 0):
+                        return False
+                    else:
+                        pass_number-=1
         return True
-    except ValueError:
-        return False
+    
+    @classmethod
+    def cell_type_message(self, ws,item): # item = [ [row(int), col(int), value(String)],[row1, col1, value1],...   ]
+        for col, row, message in item:
+            cell = f"{get_column_letter(col)}{row}"
+            ws[cell].value = message
+            ws[cell].font = Font_style.FONT
 
-def check_and_open_excel(file):
-    if os_path.exists(file):
-        wb = load_workbook(file)
-    else:
-        wb = Workbook()
-    return wb
+    @classmethod
+    def range_cell_set_color(self, ws, item): # item = [ [col1,row1,col2,row2,color1],[col1,row1,col2,row2,color]]
+        for col1, row1, col2, row2, color in item:
+            for row in ws.iter_rows(min_col = col1 , min_row = row1,
+                                    max_col = col2 , max_row = row2):
+                for cell in row:
+                    cell.fill = color
 
-def read_file_data(file):
-    with open(file,'r', encoding="utf-8") as file:
-        data = file.read().splitlines()
-    return data
+    @classmethod
+    def cell_set_border(self, ws, item): # item = [ [col1, row1, border1], [col2, row2, border2], ...]
+        for col, row, border in item:
+            cell = f"{get_column_letter(col)}{row}"
+            ws[cell].border = border 
 
-def month_int_to_string(month):
-    month_dict = {
-        1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
-        7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
-    }
-    return month_dict.get(month)
-
-def open_month_ws(wb,ws):
-    if ws in wb.sheetnames:
-        return wb[ws]
-    else:
-        return wb.create_sheet(ws)
-
-def get_max_row_by_value(ws):
-    for row in range(ws.max_row, 0, -1):
-        if any(cell.value is not None for cell in ws[row]):
-            return row
-    return 0
-
-def is_first_time_of_ws(ws, pass_number):
-    last_row = get_max_row_by_value(ws)
-    for i in range(last_row,1,-1):
-        cell = f"B{i}"
-        value = ws[cell].value
-        if value != None:
-            if is_date(ws[cell].value):
-                if(pass_number == 0):
-                    return False
-                else:
-                    pass_number-=1
-    return True
+    @classmethod
+    def range_merge_cell(self, ws, item): # item = [ [[col1, row1 (start cell)],[col2, row2 (end cell)]], ... ]
+        for start , end in item:
+            start_cell = f"{get_column_letter(start[0])}{start[1]}"
+            end_cell = f"{get_column_letter(end[0])}{end[1]}"
+            ws.merge_cells(f"{start_cell}:{end_cell}")
+            ws[start_cell].alignment = Alignment(horizontal='center', vertical='top')

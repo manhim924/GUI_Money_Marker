@@ -19,6 +19,8 @@ WATER_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPU
 
 OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
 
+CONTAINER_LIST = [ ["home", 950], ["outside", 1100]]
+
 message_out = print
 def set_message_out(function):
     global message_out
@@ -31,18 +33,28 @@ def sheet_init(wb, ws, month, year):
         col = get_column_letter(i)
         ws.column_dimensions[col].width = 12
 
-    cell_message = []
+    cell_message = [
+        [2, 2, "Date"], 
+        [3, 2, "Water Fill"], 
+        [4, 2, "ml"],
+        [5, 2, "Aim"],
+        [6, 2, "Total ml"]
+    ]
 
-    cell_color = []
+    cell_color = [
+        [3, 2, 3, 2, eh_color.PALE_MINT],
+        [4, 2, 4, 2, eh_color.PALE_PINK],
+        [5, 2, 5, 2, eh_color.LIGHT_BLUE],
+        [6, 2, 6, 2, eh_color.SKY_BLUE]
+    ]
 
-    cell_border = []
-
-    merge_cell = []
+    cell_border = [
+        *([2+i , 2, eh_border.set("M", "M", "M", "M")] for i in range(0,5))
+    ]
 
     eh_funct.cell_type_message(ws, cell_message)
     eh_funct.range_cell_set_color(ws, cell_color)
     eh_funct.cell_set_border(ws, cell_border)
-    eh_funct.range_merage_cell(ws, merge_cell)    
 
 def water_excel_process():
     message_out("Water excel started!")
@@ -73,6 +85,7 @@ def water_excel_process():
     START_COL = 2
     have_previous_date = False
     can_save = True
+
     for message in water_excel_process:
         if(message == ''):
             continue
@@ -94,8 +107,19 @@ def water_excel_process():
             if(eh_funct.is_first_time_of_ws(ws,0)):
                 sheet_init(wb, ws, month, year)
                 pass
+            else:
+                if(eh_funct.is_date_duplicate(ws, message)):
+                    message_out(f"Water_excel : date {message} is marked", color = "red")
+
+            start_row = eh_funct.input_date(ws, message)
+            have_previous_date = True
+            record = 0
+        else:
+            container, *rest = shlex_split(message) 
+            container = container.strip('"')
+                    
 
 
 
 if __name__ == "__main__":
-    water_excel_process();
+    water_excel_process()

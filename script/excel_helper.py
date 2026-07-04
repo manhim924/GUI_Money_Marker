@@ -132,3 +132,22 @@ class Function():
             end_cell = f"{get_column_letter(end[0])}{end[1]}"
             ws.merge_cells(f"{start_cell}:{end_cell}")
             ws[start_cell].alignment = Alignment(horizontal='center', vertical='top')
+    
+    @classmethod
+    def is_date_duplicate(self, ws, date):
+        last_row = self.get_max_row_by_value(ws)
+        for row in range(last_row, 1,-1):
+            cell = f"B{row}"
+            value = ws[cell].value
+            if value != None:
+                if self.is_date(value):
+                    if (value == date):
+                        return True
+                    else:
+                        return False
+
+    def input_date(self, ws, message):
+        start_row = self.find_start_row(ws)
+        cell_value = [[2,start_row, message]]
+        self.cell_type_message(ws, cell_value)
+        return start_row

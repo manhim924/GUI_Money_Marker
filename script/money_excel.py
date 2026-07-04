@@ -125,18 +125,6 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     eh_funct.cell_set_border(ws, cell_border)
     eh_funct.range_merge_cell(ws, merge_cell)
 
-def is_date_duplicate(ws,date):
-    last_row = eh_funct.get_max_row_by_value(ws)
-    for row in range(last_row, 1,-1):
-        cell = f"B{row}"
-        value = ws[cell].value
-        if value != None:
-            if eh_funct.is_date(value):
-                if (value == date):
-                    return True
-                else:
-                    return False            
-
 def find_start_row(ws):
     last_row = eh_funct.get_max_row_by_value(ws)
 
@@ -144,12 +132,6 @@ def find_start_row(ws):
         if any(cell.value is not None for cell in ws[i]):
             return i+1
     return 5
-
-def input_date(ws, message):
-    start_row = find_start_row(ws)
-    cell_value = [[2,start_row, message]]
-    eh_funct.cell_type_message(ws, cell_value)
-    return start_row
 
 ACCOUNT_LIST = [ ["C", 1], ["CH", 3] ,["H", 5], ["O", 7], ["AP", 9], ["TnG", 11], ["P", 13]]
 
@@ -520,10 +502,10 @@ def money_excel_process():
             if(eh_funct.is_first_time_of_ws(ws,0)): 
                 sheet_init(wb, ws, month, year)
             else:
-                if(is_date_duplicate(ws,message)):
-                    message_out(f"Money_excel : date {message} is marked!")
+                if(eh_funct.is_date_duplicate(ws,message)):
+                    message_out(f"Money_excel : date {message} is marked!", color = "red")
 
-            start_row = input_date(ws,message)
+            start_row = eh_funct.input_date(ws, message)
             have_previous_date = True
             record = 0
         else: 

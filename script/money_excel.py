@@ -125,14 +125,6 @@ def sheet_init(wb, ws, month, year): # funciton for the first day of every month
     eh_funct.cell_set_border(ws, cell_border)
     eh_funct.range_merge_cell(ws, merge_cell)
 
-def find_start_row(ws):
-    last_row = eh_funct.get_max_row_by_value(ws)
-
-    for i in range(last_row, 1, -1):
-        if any(cell.value is not None for cell in ws[i]):
-            return i+1
-    return 5
-
 ACCOUNT_LIST = [ ["C", 1], ["CH", 3] ,["H", 5], ["O", 7], ["AP", 9], ["TnG", 11], ["P", 13]]
 
 def self_convert(ws, amount, account, to, record_list):

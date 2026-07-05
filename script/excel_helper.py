@@ -146,6 +146,16 @@ class Function():
                     else:
                         return False
 
+    @classmethod
+    def find_start_row(self, ws):
+        last_row = self.get_max_row_by_value(ws)
+
+        for i in range(last_row, 1, -1):
+            if any(cell.value is not None for cell in ws[i]):
+                return i+1
+        return 5
+
+    @classmethod
     def input_date(self, ws, message):
         start_row = self.find_start_row(ws)
         cell_value = [[2,start_row, message]]

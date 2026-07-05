@@ -1,9 +1,20 @@
-03/07/2026
-29 "H" "AP" True  
-29 "AP" "Breakfast" True
-17.7 "O" "Bus" True  
-34.5 "H" "P" True  
-34.5 "P" "Lunch" True  
-17.2 "O" "Bus" True
-115 "H" "AP" True  
-115 "AP" "Dinner" True  
+04/07/2026
+90 "H" "Dinner" True
+18 "H" "AP" True
+18 "AP" "Drink" True
+
+05/07/2026
+2.6 "O" "LRT" True
+49.5 "H" "AP" True
+49.5 "AP" "Breakfast" True
+15 "C" "Drink " True  
+59.8 "H" "AP" True  
+59.8 "AP" "hairspray *2" True  
+25 "C" "Mini food" True  
+20 "O" "piggy play" True  
+500 "H" "O" True  
+3.5 "O" "MTR" True  
+159 "H" "AP" True
+159 "AP" "Lunch" True
+3 "O" "LRT" True
+60 "CH" "C" True

@@ -12,3 +12,6 @@ docs/*
 !docs/excel_template.xlsx
 !docs/problem.txt
 !docs/to_do.txt
+
+# input folder
+input/*

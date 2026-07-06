@@ -24,15 +24,6 @@ def set_message_out(function):
     global message_out
     message_out = function
 
-
-def find_last_value_row(ws, value, row):
-    for i in range(row,3,-1):
-        cell = f"B{i}" 
-        cell_value = ws[cell].value
-        if (cell_value == value):
-            return i
-    return None
-
 def get_last_month_money_message(wb, month, year):
     if(month == "1" or month == "01"):
         try:
@@ -54,7 +45,7 @@ def get_last_month_money_message(wb, month, year):
 
 
     if(ws_last_row_colB_value != "current have"):
-        ws_last_row = find_last_value_row(last_month_ws, "sum", ws_last_row)
+        ws_last_row = eh_funct.find_last_value_row(last_month_ws, "sum", ws_last_row)
 
     result = []
     for col in [3,5,7,9,11,13,15,21]:
@@ -173,21 +164,14 @@ def pay(ws, amount, account, to, countable, record_list):
 
     eh_funct.cell_type_message(ws, message)
 
-def is_num(num):
-    try:
-        float(num)  
-        return True
-    except ValueError:
-        return False
-
 def cal_sum_in_outcome(ws, col, start_row, end_row):
-    return_value = Decimal(0);
+    return_value = Decimal(0)
     for row in range(start_row, end_row):
 
         cell = f"{get_column_letter(col)}{row}"
         try:
             cell_value = ws[cell].value
-            if(is_num(cell_value)):
+            if(eh_funct.is_num(cell_value)):
                 cal_value =  Decimal(cell_value)
             else:
                 cal_value = Decimal('0')
@@ -198,15 +182,15 @@ def cal_sum_in_outcome(ws, col, start_row, end_row):
     return return_value
 
 def day_summary(ws, date, end_row):
-    date_start_row = find_last_value_row(ws, date, end_row)
+    date_start_row = eh_funct.find_last_value_row(ws, date, end_row)
 
     if (date_start_row == None):
         message_out(f"Money Excel: Error, cannot find last cell of value: {date}", color="red")
 
     if(eh_funct.is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
-        last_row = find_last_value_row(ws, "Last", end_row)
+        last_row = eh_funct.find_last_value_row(ws, "Last", end_row)
     else:
-        last_row = find_last_value_row(ws, "sum", end_row)
+        last_row = eh_funct.find_last_value_row(ws, "sum", end_row)
 
     message = [ [2,end_row, "sum"]]
     eh_funct.cell_type_message(ws, message)
@@ -255,7 +239,6 @@ def day_summary(ws, date, end_row):
         message_out(f"Excel money {date} input is \"{total_input}\"")
         message_out(f"Excel money {date} output is \"{total_output}\"")
 
-
     last_have_value = Decimal(str(ws[f"{get_column_letter(21)}{last_row}"].value)).quantize(Decimal("0.00"))
     current_input_value = Decimal(str(ws[f"{get_column_letter(19)}{end_row}"].value)).quantize(Decimal("0.00"))
     current_output_value = Decimal(str(ws[f"{get_column_letter(20)}{end_row}"].value)).quantize(Decimal("0.00"))
@@ -271,8 +254,7 @@ def day_summary(ws, date, end_row):
     eh_funct.cell_type_message(ws, message)
     return True
 
-def day_total(ws, date, row, summary_correct):
-    day, month, year = date.split('/')
+def day_total(ws, row, summary_correct):
     current_real_sum_in_cell = f"S{row-1}"
     current_real_sum_out_cell = f"T{row-1}"
     current_real_sum_in_value = Decimal(str(ws[current_real_sum_in_cell].value))
@@ -286,7 +268,7 @@ def day_total(ws, date, row, summary_correct):
     if(eh_funct.is_first_time_of_ws(ws, 1)):
         message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
     else:
-        last_row = find_last_value_row(ws, "total", row)
+        last_row = eh_funct.find_last_value_row(ws, "total", row)
         last_real_total_in_cell = f"S{last_row}" 
         last_real_total_out_cell = f"T{last_row}"
         last_real_total_in_value = Decimal(str(ws[last_real_total_in_cell].value))
@@ -316,8 +298,6 @@ def day_total(ws, date, row, summary_correct):
                 message_out(f"countable outcome is \"{countable_total_out_value}\"", new_line = True)
             else:
                 message_out(f"countable outcome is \"{countable_total_out_value}\"")
-
-
 
         message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countable_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
 
@@ -358,7 +338,7 @@ def mark_current_amount(ws, date, row, summary_correct):
             else:
                 return False
 
-        sum_row = find_last_value_row(ws, "sum", row)
+        sum_row = eh_funct.find_last_value_row(ws, "sum", row)
         total_have_value = ws[f"U{sum_row}"].value
 
         is_equal = "True" if (total_have_value == total_amount) else "False"
@@ -381,7 +361,7 @@ def mark_current_amount(ws, date, row, summary_correct):
         return False
 
 def day_set_style(ws, date, row, current_marked):
-    date_row = find_last_value_row(ws, date, row)
+    date_row = eh_funct.find_last_value_row(ws, date, row)
     #row = sum row, row + 1 = total row , row + 2 = current have row
     
     cell_border = [
@@ -441,7 +421,7 @@ def day_set_style(ws, date, row, current_marked):
 
 def day_finish(ws, date, row):
     summary_correct = day_summary(ws, date, row)
-    day_total(ws, date, row+1, summary_correct)
+    day_total(ws, row+1, summary_correct)
     current_marked = mark_current_amount(ws, date, row+2, summary_correct)
     day_set_style(ws, date, row, current_marked)
 
@@ -472,7 +452,6 @@ def money_excel_process():
     money_message_list = eh_funct.read_file_data(MONEY_MESSAGE_FILE_PATH)
     START_COL = 2
     have_previous_date = False
-    can_save = True
     for message in money_message_list:
         if(message == ''):
             continue
@@ -517,9 +496,6 @@ def money_excel_process():
 
     if(current_date is not None):
         day_finish(ws, current_date, start_row + record)
-
-    if(can_save):
-        wb.save(MONEY_FILE_PATH)
 
     wb.save(MONEY_FILE_PATH)
     message_out("Money excal process done")

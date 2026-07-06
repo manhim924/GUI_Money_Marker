@@ -168,3 +168,20 @@ class Function():
             return float(value).is_integer()
         except (ValueError, TypeError):
             return False
+
+    @classmethod
+    def find_last_value_row(self, ws, value, row):
+        for i in range(row,3,-1):
+            cell = f"B{i}" 
+            cell_value = ws[cell].value
+            if (cell_value == value):
+                return i
+        return None
+
+    @classmethod
+    def is_num(self, num):
+        try:
+            float(num)  
+            return True
+        except ValueError:
+            return False

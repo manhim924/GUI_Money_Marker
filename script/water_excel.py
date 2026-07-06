@@ -68,6 +68,66 @@ def water_mark(ws, container, record_list):
     eh_funct.cell_type_message(ws, message)
 
 
+
+def get_day_total_ml(ws, date, end_row):
+    return_value = Decimal(0)
+    date_start_row = eh_funct.find_last_value_row(ws, date, end_row)
+
+    if(date_start_row == None):
+        if(not message_out):
+            message_out(f"Water Excel: Error, cannot find last cell of value: {date}", color = "red")
+
+    for row in range(date_start_row, end_row):
+        cell = f"{get_column_letter("D")}{row}"
+
+        try:
+            cell_value = ws[cell].value
+
+            if(eh_funct.is_num(cell_value)):
+                cal_value = Decimal(cell_value)
+
+            else:
+                cal_value = Decimal('0')
+
+        except TypeError:
+            cal_value = Decimal('0')
+
+        return_value += cal_value
+
+    return return_value
+
+def day_total(ws, date, row):
+    target = 3000
+    total_ml = get_day_total_ml(ws, date, row)
+    
+    target_aimed = True if target <= total_ml else False
+
+    message = [
+        [2, row, "total"],
+        [4, row, total_ml],
+        [5, row, target]
+    ]
+
+    if(not eh_funct.is_first_time_of_ws(ws, 1)):
+        last_row = eh_funct.find_last_value_row(ws, "total", row)
+        last_total_ml_cell = f"F{last_row}"
+        last_total_ml_value = Decimal(str(ws[last_total_ml_cell].value))
+
+        total_ml = total_ml+last_total_ml_value
+
+    message.append([6, row, total_ml])
+    
+    eh_funct.cell_type_message(ws, message)
+
+    return target_aimed
+
+def day_set_style(ws, date, row, target_aimed):
+    pass
+
+def day_finish(ws, date, row):
+    target_aimed = day_total(ws, date, row+1)    
+    day_set_style(ws, date, row, target_aimed)
+
 def water_excel_process():
     message_out("Water excel started!")
 
@@ -107,8 +167,7 @@ def water_excel_process():
                 last_day = current_date
 
             if(have_previous_date):
-                # day_finish(ws, last_day, start_row + record)
-                pass
+                day_finish(ws, last_day, start_row + record)
 
             day, month, year = message.split('/')
             month_str = eh_funct.month_int_to_string(int(month))
@@ -136,8 +195,11 @@ def water_excel_process():
 
             record+=1
 
-    wb.save(WATER_FILE_PATH)
+    if(current_date is not None):
+        day_finish(ws, current_date, start_row+ record)
 
+    wb.save(WATER_FILE_PATH)
+    message_out("Water excal process done")
 
 
 if __name__ == "__main__":

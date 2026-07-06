@@ -161,3 +161,10 @@ class Function():
         cell_value = [[2,start_row, message]]
         self.cell_type_message(ws, cell_value)
         return start_row
+
+    @classmethod
+    def is_int(self, value):
+        try:
+            return float(value).is_integer()
+        except (ValueError, TypeError):
+            return False

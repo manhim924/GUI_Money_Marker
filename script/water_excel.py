@@ -56,6 +56,18 @@ def sheet_init(wb, ws, month, year):
     eh_funct.range_cell_set_color(ws, cell_color)
     eh_funct.cell_set_border(ws, cell_border)
 
+def water_mark(ws, container, record_list):
+    container_capacity = next(capacity_ for container_ , capacity_ in CONTAINER_LIST if container_ == container)
+    col , row = record_list[0], record_list[1] 
+
+    message = [
+        [col+1, row, container],
+        [col+2, row, container_capacity]
+    ]
+
+    eh_funct.cell_type_message(ws, message)
+
+
 def water_excel_process():
     message_out("Water excel started!")
 
@@ -86,7 +98,7 @@ def water_excel_process():
     have_previous_date = False
     can_save = True
 
-    for message in water_excel_process:
+    for message in water_message_list: 
         if(message == ''):
             continue
 
@@ -117,7 +129,14 @@ def water_excel_process():
         else:
             container, *rest = shlex_split(message) 
             container = container.strip('"')
-                    
+
+            print(container)
+
+            water_mark(ws, container, [START_COL, start_row + record])
+
+            record+=1
+
+    wb.save(WATER_FILE_PATH)
 
 
 

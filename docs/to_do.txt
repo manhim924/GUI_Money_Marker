@@ -16,6 +16,9 @@
 
 9) every file should only import the function needed, check it
 
+10) add the button in GUI for change the aimed water drink per day
+
+
 6)excel
     6.1)    copy the old file to the temp -- done -- 
     6.2)    if have False, then print to log window with the current line -- done -- 

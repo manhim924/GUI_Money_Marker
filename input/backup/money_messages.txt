@@ -1,9 +1,0 @@
-03/07/2026
-29 "H" "AP" True  
-29 "AP" "Breakfast" True
-17.7 "O" "Bus" True  
-34.5 "H" "P" True  
-34.5 "P" "Lunch" True  
-17.2 "O" "Bus" True
-115 "H" "AP" True  
-115 "AP" "Dinner" True  

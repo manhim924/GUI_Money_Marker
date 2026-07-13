@@ -497,8 +497,14 @@ def money_excel_process():
     if(current_date is not None):
         day_finish(ws, current_date, start_row + record)
 
-    wb.save(MONEY_FILE_PATH)
-    message_out("Money excal process done")
+    try:
+      wb.save(MONEY_FILE_PATH)
+      message_out("Money excal process done")
+    except(PermissionError):
+      if(message_out):
+        message_out("The excel is currently open, close it first.", color = "red")
+      else:
+        message_out("The excel is currently open, close it first.") 
 
     # --- stop copy --- #
 

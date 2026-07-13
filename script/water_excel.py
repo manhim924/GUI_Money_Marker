@@ -19,7 +19,7 @@ WATER_MESSAGE_FILE_PATH = os_path.join(INPUT_FOLDER_PATH, config.path.EXCEL_INPU
 
 OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
 
-CONTAINER_LIST = [ ["home", 950], ["outside", 1100]]
+CONTAINER_LIST = [ ["home", 600], ["outside", 700], ["office" , 370]]
 
 message_out = print
 def set_message_out(function):
@@ -67,25 +67,26 @@ def water_mark(ws, container, record_list):
 
     eh_funct.cell_type_message(ws, message)
 
-
-
 def get_day_total_ml(ws, date, end_row):
     return_value = Decimal(0)
     date_start_row = eh_funct.find_last_value_row(ws, date, end_row)
 
     if(date_start_row == None):
-        if(not message_out):
+        if(message_out):
+            message_out(f"Water Excel: Error, cannot find last cell of value: {date}")
+        else:
             message_out(f"Water Excel: Error, cannot find last cell of value: {date}", color = "red")
 
+    print(date_start_row, end_row)
+
     for row in range(date_start_row, end_row):
-        cell = f"{get_column_letter("D")}{row}"
+        cell = f"{get_column_letter('D')}{row}"
 
         try:
             cell_value = ws[cell].value
 
             if(eh_funct.is_num(cell_value)):
                 cal_value = Decimal(cell_value)
-
             else:
                 cal_value = Decimal('0')
 
@@ -140,7 +141,7 @@ def water_excel_process():
     else:
         if(message_out):
             message_out("Water Excel : Error, the water_message.txt first line is not a date!")
-            sys_exit(0)
+        sys_exit(0)
 
     if(not os_path.exists(WATER_FOLDER_PATH)):
         os_makedirs(WATER_FOLDER_PATH)
@@ -189,8 +190,6 @@ def water_excel_process():
             container, *rest = shlex_split(message) 
             container = container.strip('"')
 
-            print(container)
-
             water_mark(ws, container, [START_COL, start_row + record])
 
             record+=1
@@ -198,9 +197,14 @@ def water_excel_process():
     if(current_date is not None):
         day_finish(ws, current_date, start_row+ record)
 
-    wb.save(WATER_FILE_PATH)
-    message_out("Water excal process done")
-
+    try:
+        wb.save(WATER_FILE_PATH)
+        message_out("Money excal process done")
+    except(PermissionError):
+        if(message_out):
+            message_out("The excel is currently open, close it first.", color = "red")
+        else:
+            message_out("The excel is currently open, close it first.") 
 
 if __name__ == "__main__":
     water_excel_process()

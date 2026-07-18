@@ -1,0 +1,3263 @@
+diff --git a/docs/to_do.txt b/docs/to_do.txt
+index 6983ea6..7fc4b1b 100644
+--- a/docs/to_do.txt
++++ b/docs/to_do.txt
+@@ -1,16 +1,16 @@
+ 1)  GUI add new button that when the excel have "False" then the GUI will tell, and will have a button that reload the back up file and so on 
+-    1.1) rename the file path ( as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path) -- done --
++    1.1 done) rename the file path (as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path) 
+     1.2) check all the reload button after is the excel.py is finish
+ 
+-2) GUI add a new button that clear the log message window -- done --
++2 done) GUI add a new button that clear the log message window  
+ 
+-3) GUI add a new button that can do all the thing -- done -- 
++3 done) GUI add a new button that can do all the thing 
+ 
+ 4) GUI add a new button that can restore the temp file to the current file -- same as 1) --
+ 
+ 5) add investment marking as a new file ( not same file as money)
+ 
+-7) GUI add a new button that open the excel file -- done -- 
++7 done) GUI add a new button that open the excel file
+ 
+ 8) GUI should not check is the file path exist, should be the job of main
+ 
+@@ -18,17 +18,20 @@
+ 
+ 10) add the button in GUI for change the aimed water drink per day
+ 
++11)water
++  11.1) shortcut set some default container
++
+ 
+ 6)excel
+-    6.1)    copy the old file to the temp -- done -- 
+-    6.2)    if have False, then print to log window with the current line -- done -- 
+-    6.3)    add coin-hold  -- done -- 
+-    6.4)    process the countless -- done --
+-    6.5)    fix accrose two month and two year -- done --
+-    6.6)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have erocess -- done --
+-    6.7)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows -- done -- 
+-    6.8)    if not every account in the current_have.txt have a amount, then tell error -- done -- 
+-    6.9)    fix the new month can just be the first day -- done -- 
+-    6.10)   when all every thing is ok, then del the input file -- done --
++    6.1 done)    copy the old file to the temp 
++    6.2 done)    if have False, then print to log window with the current line 
++    6.3 done)    add coin-hold  
++    6.4 done)    process the countless 
++    6.5 done)    fix accrose two month and two year 
++    6.6 done)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have erocess 
++    6.7 done)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows 
++    6.8 done)    if not every account in the current_have.txt have a amount, then tell error 
++    6.9 done)    fix the new month can just be the first day 
++    6.10 done)   when all every thing is ok, then del the input file 
+     
+-!) add the date back to current have ( for the excel to check when accrose two month) -- done -- 
++! done) add the date back to current have ( for the excel to check when accrose two month) 
+\ No newline at end of file
+diff --git a/output/2026/money/backup.xlsx b/output/2026/money/backup.xlsx
+index db1558d..157b8f0 100644
+Binary files a/output/2026/money/backup.xlsx and b/output/2026/money/backup.xlsx differ
+diff --git a/output/2026/money/money.xlsx b/output/2026/money/money.xlsx
+index 81c936f..6903ca6 100644
+Binary files a/output/2026/money/money.xlsx and b/output/2026/money/money.xlsx differ
+diff --git a/script/config.py b/script/config.py
+index 34a96ef..e526871 100644
+--- a/script/config.py
++++ b/script/config.py
+@@ -1,25 +1,25 @@
+ import os
+ 
+ class path():
+-    CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+-    PROJECT_ROOT_FOLDER =os.path.dirname(CURRENT_DIRECTORY)
++  CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
++  PROJECT_ROOT_FOLDER =os.path.dirname(CURRENT_DIRECTORY)
+ 
+-    INPUT_FOLDER = os.path.join(PROJECT_ROOT_FOLDER, "input")
+-    OUTPUT_FOLDER = os.path.join(PROJECT_ROOT_FOLDER, "output")
++  INPUT_FOLDER = os.path.join(PROJECT_ROOT_FOLDER, "input")
++  OUTPUT_FOLDER = os.path.join(PROJECT_ROOT_FOLDER, "output")
+ 
+-    SERVER_OUTPUT_FILE = os.path.join(PROJECT_ROOT_FOLDER,"data_received", "server_output.json") 
++  SERVER_OUTPUT_FILE = os.path.join(PROJECT_ROOT_FOLDER,"data_received", "server_output.json") 
+ 
+-    GUI_SETTING_FILE = os.path.join(PROJECT_ROOT_FOLDER, "config", "setting.txt")
++  GUI_SETTING_FILE = os.path.join(PROJECT_ROOT_FOLDER, "config", "setting.txt")
+ 
+-    EXCEL_INPUT_FILE_LIST = ["money_messages.txt","money_current_have.txt","work_message.txt","sleep_message.txt","feeling_message.txt","water_message.txt"]
++  EXCEL_INPUT_FILE_LIST = ["money_messages.txt","money_current_have.txt","work_message.txt","sleep_message.txt","feeling_message.txt","water_message.txt"]
+ 
+-    EXCEL_OUTPUT_FILE_LIST = ["money","work","sleep","feeling","water"]
++  EXCEL_OUTPUT_FILE_LIST = ["money","work","sleep","feeling","water"]
+ 
+ class server():
+-    SERVER_PORT_NUM = 5000
++  SERVER_PORT_NUM = 5000
+ 
+ def test():
+-    print(path.PROJECT_ROOT_FOLDER)
++  print(path.PROJECT_ROOT_FOLDER)
+ 
+ if __name__ == "__main__":
+-    test()
+\ No newline at end of file
++  test()
+\ No newline at end of file
+diff --git a/script/excel_helper.py b/script/excel_helper.py
+index 57887bd..f889759 100644
+--- a/script/excel_helper.py
++++ b/script/excel_helper.py
+@@ -2,186 +2,196 @@ from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
+ from openpyxl.utils import get_column_letter
+ from openpyxl import Workbook, load_workbook
+ from datetime import datetime
+-from os import (path as os_path)
++from os import path as os_path
+ 
+ class Color_style():
+-    PALE_MINT = PatternFill(fill_type="solid", fgColor="EBF1DE") 
+-    PALE_PINK = PatternFill(fill_type="solid", fgColor="F2DCDB")
+-    LIGHT_BLUE = PatternFill(fill_type="solid",fgColor="DCE6F1")
+-    SKY_BLUE = PatternFill(fill_type="solid",fgColor="C5D9F1")
+-    PEACH = PatternFill(fill_type="solid", fgColor="FDE9D9") 
+-    LACENDER = PatternFill(fill_type="solid", fgColor="E4DFEC")
+-    BEIGE = PatternFill(fill_type="solid",fgColor="DDD9C4")
+-    LIGHT_CORAL = PatternFill(fill_type="solid",fgColor="FFBDBD")
+-    YELLOW_GREEN = PatternFill(fill_type="solid",fgColor="92D050")
+-    SATIN_GREEN = PatternFill(fill_type="solid", fgColor="C6E0B4") 
+-    SPEARMINT_GREEN = PatternFill(fill_type="solid", fgColor="19ff78")
+-    FLIRTY_SALMON = PatternFill(fill_type="solid", fgColor="ff6d6d")
++  PALE_MINT = PatternFill(fill_type="solid", fgColor="EBF1DE") 
++  PALE_PINK = PatternFill(fill_type="solid", fgColor="F2DCDB")
++  LIGHT_BLUE = PatternFill(fill_type="solid",fgColor="DCE6F1")
++  SKY_BLUE = PatternFill(fill_type="solid",fgColor="C5D9F1")
++  PEACH = PatternFill(fill_type="solid", fgColor="FDE9D9") 
++  LACENDER = PatternFill(fill_type="solid", fgColor="E4DFEC")
++  BEIGE = PatternFill(fill_type="solid",fgColor="DDD9C4")
++  LIGHT_CORAL = PatternFill(fill_type="solid",fgColor="FFBDBD")
++  YELLOW_GREEN = PatternFill(fill_type="solid",fgColor="92D050")
++  SATIN_GREEN = PatternFill(fill_type="solid", fgColor="C6E0B4") 
++  SPEARMINT_GREEN = PatternFill(fill_type="solid", fgColor="19ff78")
++  FLIRTY_SALMON = PatternFill(fill_type="solid", fgColor="ff6d6d")
+ 
+ class Font_style():
+-    FONT = Font(name='Book Antiqua', size=12)
++  FONT = Font(name='Book Antiqua', size=12)
+ 
+ class Border_style():
+-    S_M = Side(border_style="medium")
+-    S_D = Side(border_style="dashed")
+-    S_T = Side(border_style="thin")
+-
+-    border_dict = {
+-        "M" : S_M,
+-        "D" : S_D,
+-        "T" : S_T
+-    }
++  S_M = Side(border_style="medium")
++  S_D = Side(border_style="dashed")
++  S_T = Side(border_style="thin")
++
++  border_dict = {
++    "M" : S_M,
++    "D" : S_D,
++    "T" : S_T
++  }
++
++  @classmethod
++  def set(cls,t=None,r=None,l=None,b=None): 
++    return Border(
++      top = cls.border_dict.get(t),         
++      bottom = cls.border_dict.get(b),         
++      left = cls.border_dict.get(l),         
++      right = cls.border_dict.get(r)         
++    )
+ 
+-    @classmethod
+-    def set(cls,t=None,r=None,l=None,b=None): 
+-        return Border(
+-            top = cls.border_dict.get(t),         
+-            bottom = cls.border_dict.get(b),         
+-            left = cls.border_dict.get(l),         
+-            right = cls.border_dict.get(r)         
+-        )
+ class Function():
+-    @classmethod
+-    def read_first_line_of_file(self, file):
+-        with open(file, 'r', encoding='utf-8') as f:
+-            return f.readline().strip()
+-
+-    @classmethod
+-    def is_date(self, data):
+-        try:
+-            datetime.strptime(data, "%d/%m/%Y")
+-            return True
+-        except ValueError:
++  @classmethod
++  def init_freeze_row(self, ws, row_num):
++    ws.freeze_panes = f"A{row_num+1}"
++
++
++  @classmethod
++  def read_first_line_of_file(self, file):
++    with open(file, 'r', encoding='utf-8') as f:
++      return f.readline().strip()
++
++  @classmethod
++  def is_date(self, data):
++    try:
++      datetime.strptime(data, "%d/%m/%Y")
++      return True
++    except ValueError:
++      return False
++
++  @classmethod
++  def check_and_open_excel(self, file):
++    if os_path.exists(file):
++      wb = load_workbook(file)
++    else:
++      wb = Workbook()
++    return wb
++
++  @classmethod
++  def read_file_data(self, file):
++    with open(file,'r', encoding="utf-8") as file:
++      data = file.read().splitlines()
++    return data
++
++  @classmethod
++  def month_int_to_string(self, month):
++    month_dict = {
++      1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
++      7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
++    }
++    return month_dict.get(month)
++
++  @classmethod
++  def open_month_ws(self, wb, ws):
++    if ws in wb.sheetnames:
++      return wb[ws]
++    else:
++      return wb.create_sheet(ws)
++
++  @classmethod
++  def get_max_row_by_value(self ,ws):
++    for row in range(ws.max_row, 0, -1):
++      if any(cell.value is not None for cell in ws[row]):
++        return row
++    return 0
++
++  @classmethod
++  def is_first_time_of_ws(self, ws, pass_number):
++    last_row = self.get_max_row_by_value(ws)
++    for i in range(last_row,1,-1):
++      cell = f"B{i}"
++      value = ws[cell].value
++      if value != None:
++        if self.is_date(ws[cell].value):
++          if(pass_number == 0):
+             return False
+-
+-    @classmethod
+-    def check_and_open_excel(self, file):
+-        if os_path.exists(file):
+-            wb = load_workbook(file)
+-        else:
+-            wb = Workbook()
+-        return wb
+-
+-    @classmethod
+-    def read_file_data(self, file):
+-        with open(file,'r', encoding="utf-8") as file:
+-            data = file.read().splitlines()
+-        return data
+-
+-    @classmethod
+-    def month_int_to_string(self, month):
+-        month_dict = {
+-            1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
+-            7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"
+-        }
+-        return month_dict.get(month)
+-
+-    @classmethod
+-    def open_month_ws(self, wb, ws):
+-        if ws in wb.sheetnames:
+-            return wb[ws]
+-        else:
+-            return wb.create_sheet(ws)
+-
+-    @classmethod
+-    def get_max_row_by_value(self ,ws):
+-        for row in range(ws.max_row, 0, -1):
+-            if any(cell.value is not None for cell in ws[row]):
+-                return row
+-        return 0
+-
+-    @classmethod
+-    def is_first_time_of_ws(self, ws, pass_number):
+-        last_row = self .get_max_row_by_value(ws)
+-        for i in range(last_row,1,-1):
+-            cell = f"B{i}"
+-            value = ws[cell].value
+-            if value != None:
+-                if self .is_date(ws[cell].value):
+-                    if(pass_number == 0):
+-                        return False
+-                    else:
+-                        pass_number-=1
+-        return True
+-    
+-    @classmethod
+-    def cell_type_message(self, ws,item): # item = [ [row(int), col(int), value(String)],[row1, col1, value1],...   ]
+-        for col, row, message in item:
+-            cell = f"{get_column_letter(col)}{row}"
+-            ws[cell].value = message
+-            ws[cell].font = Font_style.FONT
+-
+-    @classmethod
+-    def range_cell_set_color(self, ws, item): # item = [ [col1,row1,col2,row2,color1],[col1,row1,col2,row2,color]]
+-        for col1, row1, col2, row2, color in item:
+-            for row in ws.iter_rows(min_col = col1 , min_row = row1,
+-                                    max_col = col2 , max_row = row2):
+-                for cell in row:
+-                    cell.fill = color
+-
+-    @classmethod
+-    def cell_set_border(self, ws, item): # item = [ [col1, row1, border1], [col2, row2, border2], ...]
+-        for col, row, border in item:
+-            cell = f"{get_column_letter(col)}{row}"
+-            ws[cell].border = border 
+-
+-    @classmethod
+-    def range_merge_cell(self, ws, item): # item = [ [[col1, row1 (start cell)],[col2, row2 (end cell)]], ... ]
+-        for start , end in item:
+-            start_cell = f"{get_column_letter(start[0])}{start[1]}"
+-            end_cell = f"{get_column_letter(end[0])}{end[1]}"
+-            ws.merge_cells(f"{start_cell}:{end_cell}")
+-            ws[start_cell].alignment = Alignment(horizontal='center', vertical='top')
+-    
+-    @classmethod
+-    def is_date_duplicate(self, ws, date):
+-        last_row = self.get_max_row_by_value(ws)
+-        for row in range(last_row, 1,-1):
+-            cell = f"B{row}"
+-            value = ws[cell].value
+-            if value != None:
+-                if self.is_date(value):
+-                    if (value == date):
+-                        return True
+-                    else:
+-                        return False
+-
+-    @classmethod
+-    def find_start_row(self, ws):
+-        last_row = self.get_max_row_by_value(ws)
+-
+-        for i in range(last_row, 1, -1):
+-            if any(cell.value is not None for cell in ws[i]):
+-                return i+1
+-        return 5
+-
+-    @classmethod
+-    def input_date(self, ws, message):
+-        start_row = self.find_start_row(ws)
+-        cell_value = [[2,start_row, message]]
+-        self.cell_type_message(ws, cell_value)
+-        return start_row
+-
+-    @classmethod
+-    def is_int(self, value):
+-        try:
+-            return float(value).is_integer()
+-        except (ValueError, TypeError):
++          else:
++            pass_number-=1
++    return True
++  
++  @classmethod
++  def cell_type_message(self, ws,item): # item = [ [row(int), col(int), value(String)],[row1, col1, value1],...   ]
++    for col, row, message in item:
++      cell = f"{get_column_letter(col)}{row}"
++      ws[cell].value = message
++      ws[cell].font = Font_style.FONT
++
++  @classmethod
++  def range_cell_set_color(self, ws, item): # item = [ [col1,row1,col2,row2,color1],[col1,row1,col2,row2,color]]
++    for col1, row1, col2, row2, color in item:
++      for row in ws.iter_rows(min_col = col1 , min_row = row1,
++                             max_col = col2 , max_row = row2):
++        for cell in row:
++          cell.fill = color
++
++  @classmethod
++  def cell_set_border(self, ws, item): # item = [ [col1, row1, border1], [col2, row2, border2], ...]
++    for col, row, border in item:
++      cell = f"{get_column_letter(col)}{row}"
++      ws[cell].border = border 
++
++  @classmethod
++  def range_merge_cell(self, ws, item): # item = [ [[col1, row1 (start cell)],[col2, row2 (end cell)]], ... ]
++    for start , end in item:
++      start_cell = f"{get_column_letter(start[0])}{start[1]}"
++      end_cell = f"{get_column_letter(end[0])}{end[1]}"
++      ws.merge_cells(f"{start_cell}:{end_cell}")
++      ws[start_cell].alignment = Alignment(horizontal='center', vertical='top')
++  
++  @classmethod
++  def is_date_duplicate(self, ws, date):
++    last_row = self.get_max_row_by_value(ws)
++    for row in range(last_row, 1,-1):
++      cell = f"B{row}"
++      value = ws[cell].value
++      if value != None:
++        if self.is_date(value):
++          if (value == date):
++            return True
++          else:
+             return False
+ 
+-    @classmethod
+-    def find_last_value_row(self, ws, value, row):
+-        for i in range(row,3,-1):
+-            cell = f"B{i}" 
+-            cell_value = ws[cell].value
+-            if (cell_value == value):
+-                return i
+-        return None
+-
+-    @classmethod
+-    def is_num(self, num):
+-        try:
+-            float(num)  
+-            return True
+-        except ValueError:
+-            return False
+\ No newline at end of file
++  @classmethod
++  def find_start_row(self, ws):
++    last_row = self.get_max_row_by_value(ws)
++
++    for i in range(last_row, 1, -1):
++      if any(cell.value is not None for cell in ws[i]):
++        return i+1
++    return 5
++
++  @classmethod
++  def input_date(self, ws, message):
++    start_row = self.find_start_row(ws)
++    cell_value = [[2,start_row, message]]
++    self.cell_type_message(ws, cell_value)
++    return start_row
++
++  @classmethod
++  def is_int(self, value):
++    try:
++      return float(value).is_integer()
++    except (ValueError, TypeError):
++      return False
++
++  @classmethod
++  def find_last_value_row(self, ws, value, row, last_find_row):
++    for i in range(row, last_find_row, -1):
++      cell = f"B{i}" 
++      cell_value = ws[cell].value
++      if (cell_value == value):
++        return i
++    return None
++
++  @classmethod
++  def is_num(self, num):
++    try:
++      float(num)  
++      return True
++    except ValueError:
++      return False
++
++
++if __name__ == "__main__":
++  pass
+\ No newline at end of file
+diff --git a/script/feeling_excel.py b/script/feeling_excel.py
+index cd7837f..2b845a3 100644
+--- a/script/feeling_excel.py
++++ b/script/feeling_excel.py
+@@ -7,23 +7,23 @@ OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
+ 
+ message_out = print
+ def set_message_out(function):
+-    global message_out
+-    message_out = function
++  global message_out
++  message_out = function
+ 
+ def check_file_exist():
+-    pass
++  pass
+ 
+ def read_data():
+-    # with open()
+-    pass
++  # with open()
++  pass
+ 
+ def feeling_excel_process():
+-    print("money feeling started!")
+-    message_out("Feeling excel processing")
+-    pass
++  print("money feeling started!")
++  message_out("Feeling excel processing")
++  pass
+ 
+ def main():
+-    check_file_exist()
++  check_file_exist()
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++  main()
+\ No newline at end of file
+diff --git a/script/json_converter.py b/script/json_converter.py
+index 305bcf2..b3ae3e4 100644
+--- a/script/json_converter.py
++++ b/script/json_converter.py
+@@ -1,135 +1,142 @@
+-from json import (load as json_load)
+-from os import (path as os_path, makedirs as os_makedirs)
+-from shutil import (copy2 as shutil_copy2)
++from json import load as json_load
++from os import path as os_path, makedirs as os_makedirs
++from shutil import copy2 as shutil_copy2
+ import config
+ 
+ TXT_FOLDER_PATH = config.path.INPUT_FOLDER
+ JSON_FILE_PATH = config.path.SERVER_OUTPUT_FILE
+ 
+- 
+-ALL_FILE_LIST = list(map(lambda files_: os_path.join(TXT_FOLDER_PATH, files_) ,config.path.EXCEL_INPUT_FILE_LIST))
++ALL_FILE_LIST = list(map(lambda files_: os_path.join(TXT_FOLDER_PATH, files_), config.path.EXCEL_INPUT_FILE_LIST))
+ 
+ def backup_old_file():
+-    for file_path in ALL_FILE_LIST:
+-        if os_path.exists(file_path):
+-            backup_dir = os_path.join(os_path.dirname(file_path), "backup")
+-            os_makedirs(backup_dir, exist_ok=True)
+-            file_name = os_path.basename(file_path)
+-            backup_file_path = os_path.join(backup_dir, file_name)
+-            shutil_copy2(file_path, backup_file_path)
+-            with open(file_path, "w", encoding="utf-8") as file:
+-                pass
+-        else:
+-            print(f"Skipping backup: {file_path} not found.")
++  for file_path in ALL_FILE_LIST:
++    if os_path.exists(file_path):
++      backup_dir = os_path.join(os_path.dirname(file_path), "backup")
++      os_makedirs(backup_dir, exist_ok=True)
++      file_name = os_path.basename(file_path)
++      backup_file_path = os_path.join(backup_dir, file_name)
++      shutil_copy2(file_path, backup_file_path)
++      with open(file_path, "w", encoding="utf-8") as file:
++        pass
++    else:
++      print(f"Skipping backup: {file_path} not found.")
+ 
+ def save_date(date):
+-    for file_path in ALL_FILE_LIST:
+-        with open(file_path ,'a',encoding='utf-8') as file:
+-            file.write(date +'\n')
+-                
+-                
++  for file_path in ALL_FILE_LIST:
++    with open(file_path, 'a', encoding='utf-8') as file:
++      file.write(date + '\n')
++
+ def save_to_file(file_path, message):
+-    with open(file_path, 'a', encoding=('utf-8')) as file:
+-        file.write(message + ' \n')
++  with open(file_path, 'a', encoding='utf-8') as file:
++    file.write(message + ' \n')
+ 
+ def money_message(json):
+-    message = (
+-        f"{json.get("amount")} "
+-        f"\"{json.get("from")}\" "
+-        f"\"{json.get("to")}\" "
+-        f"{json.get("countable")} "
+-    )
+-    save_to_file(ALL_FILE_LIST[0], message)
++  message = (
++    f"{json.get('amount')} "
++    f"\"{json.get('from')}\" "
++    f"\"{json.get('to')}\" "
++    f"{json.get('countable')} "
++  )
++  save_to_file(ALL_FILE_LIST[0], message)
+ 
+ def money_curreny_have(json, date):
+-    with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
+-        pass
+-    message =f'{date}\n'
+-    for account , value in json.get("message").items():
+-        message  += f"{account} {value}\n"
+-    save_to_file(ALL_FILE_LIST[1],message)
++  with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
++    pass
++  message = f'{date}\n'
++  for account, value in json.get("message").items():
++    message += f"{account} {value}\n"
++  save_to_file(ALL_FILE_LIST[1], message)
+ 
+ def work_start(json):
+-    message = (
+-        "start "
+-        f"{json.get("time")} "
+-        f"\"{json.get("work for")}\""
+-    )
+-    save_to_file(ALL_FILE_LIST[2],message)
++  message = (
++    "start "
++    f"{json.get('time')} "
++    f"\"{json.get('work for')}\""
++  )
++  save_to_file(ALL_FILE_LIST[2], message)
+ 
+ def work_end(json):
+-    message = (
+-        "end "
+-        f"{json.get("time")}"
+-        f"\"{json.get("work for")}\""
+-    )
+-    save_to_file(ALL_FILE_LIST[2],message)
+-    
++  message = (
++    "end "
++    f"{json.get('time')}"
++    f"\"{json.get('work for')}\""
++  )
++  save_to_file(ALL_FILE_LIST[2], message)
++
+ def sleep_start(json):
+-    message = (
+-        "start "
+-        f"{json.get("time")}"
+-    )
+-    save_to_file(ALL_FILE_LIST[3],message)
++  message = (
++    "start "
++    f"{json.get('time')}"
++  )
++  save_to_file(ALL_FILE_LIST[3], message)
+ 
+ def sleep_end(json):
+-    message = (
+-        "end "
+-        f"{json.get("time")}"
+-    )
+-    save_to_file(ALL_FILE_LIST[3],message)
++  message = (
++    "end "
++    f"{json.get('time')}"
++  )
++  save_to_file(ALL_FILE_LIST[3], message)
+ 
+ def feeling(json):
+-    message = f"\"{json.get("feel")}\""
+-    save_to_file(ALL_FILE_LIST[4],message)
++  message = f"\"{json.get('feel')}\""
++  save_to_file(ALL_FILE_LIST[4], message)
+ 
+ def water_fill(json):
+-    message = f"\"{json.get("container")}\""
+-    save_to_file(ALL_FILE_LIST[5],message)
++  message = f"\"{json.get('container')}\""
++  save_to_file(ALL_FILE_LIST[5], message)
++
++def money_curreny_have_account_mark():
++  message = f"C\nCH\nH\nO\nAP\nTnG\nP\n"
++  save_to_file(ALL_FILE_LIST[1], message)
+ 
+ def convert():
+-    backup_old_file() 
++  backup_old_file()
+ 
++  with open(JSON_FILE_PATH, 'r', encoding='utf-8') as json_file:
++    data = json_load(json_file)
+ 
+-    with open(JSON_FILE_PATH,'r',encoding='utf-8') as json_file:
+-        data = json_load(json_file)
++  if isinstance(data, dict):
++    full_list = [data]
++  else:
++    full_list = data
+ 
+-    if isinstance(data, dict):
+-        full_list = [data]
+-    else:
+-        full_list = data
+-
+-    for data in full_list:
+-        for date_key , data_list in data.items():
+-            with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
+-                pass
+-
+-            save_date(date_key)
+-
+-            if(isinstance(data_list , list)):
+-                action_list = data_list
+-            else:
+-                action_list = [data_list]
+-            
+-            for each_action in action_list:
+-                operation = each_action.get("operation")
+-
+-                if (operation == "Money message"):
+-                    money_message(each_action)
+-                elif(operation == "Money current have"):
+-                    money_curreny_have(each_action, date_key)                 
+-                elif(operation == "Work start"):
+-                    work_start(each_action) 
+-                elif(operation == "Work end"):
+-                    work_end(each_action)
+-                elif(operation == "Sleep start"):
+-                    sleep_start(each_action)
+-                elif(operation == "Sleep end"):
+-                    sleep_end(each_action)
+-                elif(operation == "Feeling"):
+-                    feeling(each_action) 
+-                elif(operation == "Water fill"):
+-                    water_fill(each_action)
++  for data in full_list:
++    for date_key, data_list in data.items():
++      with open(ALL_FILE_LIST[1], 'w', encoding="utf-8") as file:
++        pass
++
++      save_date(date_key)
++
++      if isinstance(data_list, list):
++        action_list = data_list
++      else:
++        action_list = [data_list]
++
++      current_have_flag = True
++
++      for each_action in action_list:
++        operation = each_action.get("operation")
++
++        if operation == "Money message":
++          money_message(each_action)
++        elif operation == "Money current have":
++          money_curreny_have(each_action, date_key)
++          current_have_flag = False
++        elif operation == "Work start":
++          work_start(each_action)
++        elif operation == "Work end":
++          work_end(each_action)
++        elif operation == "Sleep start":
++          sleep_start(each_action)
++        elif operation == "Sleep end":
++          sleep_end(each_action)
++        elif operation == "Feeling":
++          feeling(each_action)
++        elif operation == "Water fill":
++          water_fill(each_action)
++
++      if (current_have_flag):
++        money_curreny_have_account_mark()
+ 
+ if __name__ == "__main__":
+-    convert()
+\ No newline at end of file
++  convert()
+\ No newline at end of file
+diff --git a/script/main.py b/script/main.py
+index cb7d682..25254e1 100644
+--- a/script/main.py
++++ b/script/main.py
+@@ -12,53 +12,53 @@ from PyQt6.QtCore import QThread, pyqtSignal
+ 
+ # --- parallel for pyqt6 start --- #
+ class Server_parallel(QThread):
+-    log_signal = pyqtSignal(str)
++  log_signal = pyqtSignal(str)
+ 
+-    def send_log_to_gui(self, message):
+-        self.log_signal.emit(message)
++  def send_log_to_gui(self, message):
++    self.log_signal.emit(message)
+ 
+-    def run(self):
+-        self.log_signal.emit("Sysyem: Attempting to start server...")
+-        server.set_message_output(self.send_log_to_gui)
+-        try:
+-            server.set_json_converter(json_converter.convert)
+-            server.server_start()
+-        except Exception as error:
+-            self.log_signal.emit(f"Server error: {str(error)}")
++  def run(self):
++    self.log_signal.emit("Sysyem: Attempting to start server...")
++    server.set_message_output(self.send_log_to_gui)
++    try:
++      server.set_json_converter(json_converter.convert)
++      server.server_start()
++    except Exception as error:
++      self.log_signal.emit(f"Server error: {str(error)}")
+ 
+-    def stop_server(self):
+-        server.server_stop()
+-        self.quit()
+-        self.wait()
++  def stop_server(self):
++    server.server_stop()
++    self.quit()
++    self.wait()
+ # --- parallel for pyqt6 end  --- #
+ 
+ def main():
+-    app = QApplication(sys_argv)
++  app = QApplication(sys_argv)
+ 
+-    window = window_GUI.Main_window(1920,1080)
+-    parallel = Server_parallel()
++  window = window_GUI.Main_window(1920,1080)
++  parallel = Server_parallel()
+ 
+-    message_output = window.log_window_message_output
++  message_output = window.log_window_message_output
+ 
+-    window.server_start_signal.connect(parallel.start)
+-    window.server_stop_signal.connect(parallel.stop_server)
++  window.server_start_signal.connect(parallel.start)
++  window.server_stop_signal.connect(parallel.stop_server)
+ 
+-    parallel.log_signal.connect(message_output)
+-    
+-    excel_modules = [
+-        (money_excel, window.money_excel_start_signal, money_excel.money_excel_process),
+-        (feeling_excel, window.feeling_excel_start_signal, feeling_excel.feeling_excel_process),
+-        (sleep_excel, window.sleep_excel_start_signal, sleep_excel.sleep_excel_process),
+-        (water_excel, window.water_excel_start_signal, water_excel.water_excel_process),
+-        (work_excel, window.work_excel_start_signal, work_excel.work_excel_process),
+-            ]
++  parallel.log_signal.connect(message_output)
++  
++  excel_modules = [
++    (money_excel, window.money_excel_start_signal, money_excel.money_excel_process),
++    (feeling_excel, window.feeling_excel_start_signal, feeling_excel.feeling_excel_process),
++    (sleep_excel, window.sleep_excel_start_signal, sleep_excel.sleep_excel_process),
++    (water_excel, window.water_excel_start_signal, water_excel.water_excel_process),
++    (work_excel, window.work_excel_start_signal, work_excel.work_excel_process),
++  ]
+ 
+-    for module, signal, function in excel_modules:
+-        signal.connect(function)
+-        module.set_message_out(message_output)
++  for module, signal, function in excel_modules:
++    signal.connect(function)
++    module.set_message_out(message_output)
+ 
+-    window.show()
+-    app.exec()
++  window.show()
++  app.exec()
+ 
+ if __name__ == '__main__':
+-    main()
+\ No newline at end of file
++  main()
+\ No newline at end of file
+diff --git a/script/money_excel.py b/script/money_excel.py
+index 648382f..72cc068 100644
+--- a/script/money_excel.py
++++ b/script/money_excel.py
+@@ -21,492 +21,494 @@ OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
+ 
+ message_out = print
+ def set_message_out(function):
+-    global message_out
+-    message_out = function
++  global message_out
++  message_out = function
+ 
+ def get_last_month_money_message(wb, month, year):
+-    if(month == "1" or month == "01"):
+-        try:
+-            last_year = int(year) - 1 
+-            last_year_wb = load_workbook(os_path.join(OUTPUT_FOLDER_PATH, str(last_year),"money","money.xlsx"))
+-            last_month_ws = last_year_wb["Dec"]
+-
+-        except FileNotFoundError:
+-            return None
+-    else:
+-        try:
+-            last_month_ws = wb[eh_funct.month_int_to_string(int(month)-1)]
+-        except KeyError:
+-            return None
+-
+-    ws_last_row = eh_funct.get_max_row_by_value(last_month_ws)
+-    cell = f"B{ws_last_row}"
+-    ws_last_row_colB_value = last_month_ws[cell].value
+-
+-
+-    if(ws_last_row_colB_value != "current have"):
+-        ws_last_row = eh_funct.find_last_value_row(last_month_ws, "sum", ws_last_row)
+-
+-    result = []
+-    for col in [3,5,7,9,11,13,15,21]:
+-        cell = f"{get_column_letter(col)}{ws_last_row}"
+-        value = last_month_ws[cell].value
+-        result.append(value)
+-    return result 
++  if(month == "1" or month == "01"):
++    try:
++      last_year = int(year) - 1 
++      last_year_wb = load_workbook(os_path.join(OUTPUT_FOLDER_PATH, str(last_year),"money","money.xlsx"))
++      last_month_ws = last_year_wb["Dec"]
+ 
++    except FileNotFoundError:
++      return None
++  else:
++    try:
++      last_month_ws = wb[eh_funct.month_int_to_string(int(month)-1)]
++    except KeyError:
++      return None
+ 
++  ws_last_row = eh_funct.get_max_row_by_value(last_month_ws)
++  cell = f"B{ws_last_row}"
++  ws_last_row_colB_value = last_month_ws[cell].value
+ 
+-def sheet_init(wb, ws, month, year): # funciton for the first day of every month
+-    ws.column_dimensions['B'].width = 14.5
+ 
+-    for i in range(3,23):
+-        col = get_column_letter(i)
+-        ws.column_dimensions[col].width = 12
++  if(ws_last_row_colB_value != "current have"):
++    ws_last_row = eh_funct.find_last_value_row(last_month_ws, "sum", ws_last_row, 3)
+ 
+-    last_month_have = get_last_month_money_message(wb, month, year)
+-
+-    cell_message = [ 
+-        [2, 2, "Date"], [3 , 2, "Cash"], [5,2, "Coin-hold"], [7, 2, "HSBC"], [9, 2, "Octopus"], [11, 2, "AliPay"], [13, 2, "Tap and Go"], [15, 2, "Payme"], [ 17, 2, "Countable Total"], [19, 2, "Real Total"], [22, 2, "Correct"], 
+-        [2, 3, "DD/MM/YY"], [3, 3, 'I'], [4, 3, 'O'], [5, 3, 'I'], [6, 3, 'O'], [7, 3, 'I'], [8, 3, 'O'], [9, 3, 'I'], [10, 3, 'O'], [11, 3, 'I'], [12, 3, 'O'], [13, 3, 'I'], [14, 3, 'O'], [15, 3, 'I'], [16, 3, 'O'], [17, 3, 'I'], [18, 3, 'O'], [19, 3, 'I'], [20, 3, 'O'], [21, 3, "Have"]
+-    ]
++  result = []
++  for col in [3,5,7,9,11,13,15,21]:
++    cell = f"{get_column_letter(col)}{ws_last_row}"
++    value = last_month_ws[cell].value
++    result.append(value)
++  return result 
+ 
+-    if(last_month_have != None):
+-        last_message =[2, 4, "Last"], [3, 4, last_month_have[0]], [5, 4,last_month_have[1]], [7, 4,last_month_have[2] ], [9, 4,last_month_have[3] ], [11, 4,last_month_have[4] ], [13, 4,last_month_have[5] ],[15,4,last_month_have[6]],[ 21, 4,last_month_have[7] ]
+-    else:
+-        last_message= [2, 4, "Last"], [3, 4, "None"], [5, 4, "None"], [7, 4, "None"], [9, 4, "None"], [11, 4, "None"], [13, 4, "None"],[15, 4, "None"], [ 21, 4, "None"]
+-    
+-    cell_message.extend(last_message)
+-
+-    cell_color = [
+-        [3, 2, 4, 4, eh_color.PALE_MINT],
+-        [5, 2, 6, 4, eh_color.SATIN_GREEN],
+-        [7, 2, 8, 4, eh_color.PALE_PINK],
+-        [9, 2, 10, 4, eh_color.LIGHT_BLUE],
+-        [11, 2, 12, 4, eh_color.SKY_BLUE],
+-        [13, 2, 14, 4, eh_color.PEACH],
+-        [15, 2, 16, 4, eh_color.LACENDER],
+-        [17, 2, 18, 4, eh_color.BEIGE],
+-        [19, 2, 21, 4, eh_color.LIGHT_CORAL],
+-        [22, 2, 22, 4, eh_color.YELLOW_GREEN],
+-    ]
+ 
+-    cell_border = [ 
+-        *([2+i, 2 , eh_border.set("M","M","M","M") ] for i in range(0,21)),
+-        *([2+i, 2+j , eh_border.set("M","M","M","M")] for i in [0,20] for j in [1,2]),
+-        *([2+i, 2+j , eh_border.set("M","D","M","M")] for i in range(1,18) if i%2==1 for j in [1,2]),
+-        *([2+i, 2+j , eh_border.set("M","M","D","M")] for i in range(1,18) if i%2==0 for j in [1,2]),
+-        *([20, 2+j, eh_border.set("M","D","D","M")] for j in [1,2]),
+-        *([21, 2+j, eh_border.set("M","M","D","M")] for j in [1,2]),
+-    ] 
+-
+-    merge_cell = [
+-        [[3, 2], [4, 2]],
+-        [[5, 2], [6, 2]],
+-        [[7, 2], [8, 2]],
+-        [[9, 2], [10, 2]],
+-        [[11, 2], [12, 2]],
+-        [[13, 2], [14, 2]],
+-        [[15, 2], [16, 2]],
+-        [[17, 2], [18, 2]],
+-        [[19, 2], [21, 2]]
+-    ]
+ 
+-    eh_funct.cell_type_message(ws,cell_message)
+-    eh_funct.range_cell_set_color(ws, cell_color)
+-    eh_funct.cell_set_border(ws, cell_border)
+-    eh_funct.range_merge_cell(ws, merge_cell)
++def sheet_init(wb, ws, month, year): # funciton for the first day of every month
++  ws.column_dimensions['B'].width = 14.5
++
++  eh_funct.init_freeze_row(ws, 3)  
++
++  for i in range(3,23):
++    col = get_column_letter(i)
++    ws.column_dimensions[col].width = 12
++
++  last_month_have = get_last_month_money_message(wb, month, year)
++
++  cell_message = [ 
++    [2, 2, "Date"], [3 , 2, "Cash"], [5,2, "Coin-hold"], [7, 2, "HSBC"], [9, 2, "Octopus"], [11, 2, "AliPay"], [13, 2, "Tap and Go"], [15, 2, "Payme"], [ 17, 2, "Countable Total"], [19, 2, "Real Total"], [22, 2, "Correct"], 
++    [2, 3, "DD/MM/YY"], [3, 3, 'I'], [4, 3, 'O'], [5, 3, 'I'], [6, 3, 'O'], [7, 3, 'I'], [8, 3, 'O'], [9, 3, 'I'], [10, 3, 'O'], [11, 3, 'I'], [12, 3, 'O'], [13, 3, 'I'], [14, 3, 'O'], [15, 3, 'I'], [16, 3, 'O'], [17, 3, 'I'], [18, 3, 'O'], [19, 3, 'I'], [20, 3, 'O'], [21, 3, "Have"]
++  ]
++
++  if(last_month_have != None):
++    last_message =[2, 4, "Last"], [3, 4, last_month_have[0]], [5, 4,last_month_have[1]], [7, 4,last_month_have[2] ], [9, 4,last_month_have[3] ], [11, 4,last_month_have[4] ], [13, 4,last_month_have[5] ],[15,4,last_month_have[6]],[ 21, 4,last_month_have[7] ]
++  else:
++    last_message= [2, 4, "Last"], [3, 4, "None"], [5, 4, "None"], [7, 4, "None"], [9, 4, "None"], [11, 4, "None"], [13, 4, "None"],[15, 4, "None"], [ 21, 4, "None"]
++  
++  cell_message.extend(last_message)
++
++  cell_color = [
++    [3, 2, 4, 4, eh_color.PALE_MINT],
++    [5, 2, 6, 4, eh_color.SATIN_GREEN],
++    [7, 2, 8, 4, eh_color.PALE_PINK],
++    [9, 2, 10, 4, eh_color.LIGHT_BLUE],
++    [11, 2, 12, 4, eh_color.SKY_BLUE],
++    [13, 2, 14, 4, eh_color.PEACH],
++    [15, 2, 16, 4, eh_color.LACENDER],
++    [17, 2, 18, 4, eh_color.BEIGE],
++    [19, 2, 21, 4, eh_color.LIGHT_CORAL],
++    [22, 2, 22, 4, eh_color.YELLOW_GREEN],
++  ]
++
++  cell_border = [ 
++    *([2+i, 2 , eh_border.set("M","M","M","M") ] for i in range(0,21)),
++    *([2+i, 2+j , eh_border.set("M","M","M","M")] for i in [0,20] for j in [1,2]),
++    *([2+i, 2+j , eh_border.set("M","D","M","M")] for i in range(1,18) if i%2==1 for j in [1,2]),
++    *([2+i, 2+j , eh_border.set("M","M","D","M")] for i in range(1,18) if i%2==0 for j in [1,2]),
++    *([20, 2+j, eh_border.set("M","D","D","M")] for j in [1,2]),
++    *([21, 2+j, eh_border.set("M","M","D","M")] for j in [1,2]),
++  ] 
++
++  merge_cell = [
++    [[3, 2], [4, 2]],
++    [[5, 2], [6, 2]],
++    [[7, 2], [8, 2]],
++    [[9, 2], [10, 2]],
++    [[11, 2], [12, 2]],
++    [[13, 2], [14, 2]],
++    [[15, 2], [16, 2]],
++    [[17, 2], [18, 2]],
++    [[19, 2], [21, 2]]
++  ]
++
++  eh_funct.cell_type_message(ws,cell_message)
++  eh_funct.range_cell_set_color(ws, cell_color)
++  eh_funct.cell_set_border(ws, cell_border)
++  eh_funct.range_merge_cell(ws, merge_cell)
+ 
+ ACCOUNT_LIST = [ ["C", 1], ["CH", 3] ,["H", 5], ["O", 7], ["AP", 9], ["TnG", 11], ["P", 13]]
+ 
+ def self_convert(ws, amount, account, to, record_list):
+-    account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
+-    to_add_amount = next(num for key,num in ACCOUNT_LIST if key == to)
+-    col, row  = record_list[0], record_list[1]
+-    message = [
+-        [col+account_add_amount, row, to],
+-        [col+account_add_amount+1, row, amount],
+-        [col+to_add_amount, row, amount],
+-        [col+to_add_amount+1, row, account]
+-    ]
+-    eh_funct.cell_type_message(ws, message)
++  account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
++  to_add_amount = next(num for key,num in ACCOUNT_LIST if key == to)
++  col, row  = record_list[0], record_list[1]
++  message = [
++    [col+account_add_amount, row, to],
++    [col+account_add_amount+1, row, amount],
++    [col+to_add_amount, row, amount],
++    [col+to_add_amount+1, row, account]
++  ]
++  eh_funct.cell_type_message(ws, message)
+ 
+ def income(ws, amount, account, to, countable, record_list):
+-    to_add_amount = next(num for key, num in ACCOUNT_LIST if key == to)  
+-    col , row = record_list[0],record_list[1]
+-    message = [
+-        [col+to_add_amount, row, amount],
+-        [col+to_add_amount+1, row, account],
+-        [col+15, row , amount],
+-        [col+16, row, account],
+-        [col+17, row, amount],
+-        [col+18, row, account]
+-    ]
+-    if(not countable):
+-        message.pop(2)
+-        message.pop(2) 
+-   
+-    eh_funct.cell_type_message(ws, message)
++  to_add_amount = next(num for key, num in ACCOUNT_LIST if key == to)  
++  col , row = record_list[0],record_list[1]
++  message = [
++    [col+to_add_amount, row, amount],
++    [col+to_add_amount+1, row, account],
++    [col+15, row , amount],
++    [col+16, row, account],
++    [col+17, row, amount],
++    [col+18, row, account]
++  ]
++  if(not countable):
++    message.pop(2)
++    message.pop(2) 
++ 
++  eh_funct.cell_type_message(ws, message)
+ 
+ def pay(ws, amount, account, to, countable, record_list):
+-    account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
+-    col, row = record_list[0], record_list[1]
+-    message = [
+-        [col+account_add_amount, row, to],
+-        [col+account_add_amount+1, row, amount],
+-        [col+15, row, to],
+-        [col+16, row, amount],
+-        [col+17, row, to],
+-        [col+18, row, amount]
+-    ]     
+-    if(not countable):
+-        message.pop(2)
+-        message.pop(2)
+-
+-    eh_funct.cell_type_message(ws, message)
++  account_add_amount = next(num for key,num in ACCOUNT_LIST if key == account)
++  col, row = record_list[0], record_list[1]
++  message = [
++    [col+account_add_amount, row, to],
++    [col+account_add_amount+1, row, amount],
++    [col+15, row, to],
++    [col+16, row, amount],
++    [col+17, row, to],
++    [col+18, row, amount]
++  ]     
++  if(not countable):
++    message.pop(2)
++    message.pop(2)
++
++  eh_funct.cell_type_message(ws, message)
+ 
+ def cal_sum_in_outcome(ws, col, start_row, end_row):
+-    return_value = Decimal(0)
+-    for row in range(start_row, end_row):
+-
+-        cell = f"{get_column_letter(col)}{row}"
+-        try:
+-            cell_value = ws[cell].value
+-            if(eh_funct.is_num(cell_value)):
+-                cal_value =  Decimal(cell_value)
+-            else:
+-                cal_value = Decimal('0')
+-
+-        except TypeError:
+-            cal_value =  Decimal('0')
+-        return_value += cal_value
+-    return return_value
++  return_value = Decimal(0)
++  for row in range(start_row, end_row):
+ 
+-def day_summary(ws, date, end_row):
+-    date_start_row = eh_funct.find_last_value_row(ws, date, end_row)
++    cell = f"{get_column_letter(col)}{row}"
++    try:
++      cell_value = ws[cell].value
++      if(eh_funct.is_num(cell_value)):
++        cal_value =  Decimal(cell_value)
++      else:
++        cal_value = Decimal('0')
+ 
+-    if (date_start_row == None):
+-        message_out(f"Money Excel: Error, cannot find last cell of value: {date}", color="red")
++    except TypeError:
++      cal_value =  Decimal('0')
++    return_value += cal_value
++  return return_value
+ 
+-    if(eh_funct.is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
+-        last_row = eh_funct.find_last_value_row(ws, "Last", end_row)
+-    else:
+-        last_row = eh_funct.find_last_value_row(ws, "sum", end_row)
++def day_summary(ws, date, end_row):
++  date_start_row = eh_funct.find_last_value_row(ws, date, end_row, 3)
+ 
+-    message = [ [2,end_row, "sum"]]
+-    eh_funct.cell_type_message(ws, message)
++  if (date_start_row == None):
++    message_out(f"Money Excel: Error, cannot find last cell of value: {date}", color="red")
+ 
+-    total_money = Decimal('0')
+-    for pair in ACCOUNT_LIST:
+-        income_money = Decimal('0')
+-        outcome_money = Decimal('0')
++  if(eh_funct.is_first_time_of_ws(ws, 1)): # 1 mean only have one date, which is the current date, so if just only current date need to sum, this is the first time
++    last_row = eh_funct.find_last_value_row(ws, "Last", end_row, 3)
++  else:
++    last_row = eh_funct.find_last_value_row(ws, "sum", end_row, 3)
+ 
+-        col = 2 + pair[1]
++  message = [ [2,end_row, "sum"]]
++  eh_funct.cell_type_message(ws, message)
+ 
+-        last_cell = f"{get_column_letter(col)}{last_row}"
+-        last_money_raw_value = ws[last_cell].value 
+-        
+-        if (last_money_raw_value is None or last_money_raw_value == "None"):
+-            last_money = Decimal('0')
+-        else:
+-            last_money = Decimal(str(last_money_raw_value))
++  total_money = Decimal('0')
++  for pair in ACCOUNT_LIST:
++    income_money = Decimal('0')
++    outcome_money = Decimal('0')
+ 
+-        income_money = cal_sum_in_outcome(ws, col, date_start_row, end_row) 
+-        outcome_money = cal_sum_in_outcome(ws, col+1, date_start_row, end_row)
++    col = 2 + pair[1]
+ 
+-        total_value = last_money +  income_money - outcome_money 
+-        total_money += total_value
++    last_cell = f"{get_column_letter(col)}{last_row}"
++    last_money_raw_value = ws[last_cell].value 
++    
++    if (last_money_raw_value is None or last_money_raw_value == "None"):
++      last_money = Decimal('0')
++    else:
++      last_money = Decimal(str(last_money_raw_value))
+ 
+-        message = [[col, end_row, total_value]]
++    income_money = cal_sum_in_outcome(ws, col, date_start_row, end_row) 
++    outcome_money = cal_sum_in_outcome(ws, col+1, date_start_row, end_row)
+ 
+-        eh_funct.cell_type_message(ws,message)
++    total_value = last_money +  income_money - outcome_money 
++    total_money += total_value
+ 
+-    message = [[21, end_row, total_money]]
+-    eh_funct.cell_type_message(ws, message)
++    message = [[col, end_row, total_value]]
+ 
+-    for col in [17,19]:
+-        total_input = cal_sum_in_outcome(ws, col , date_start_row, end_row)
+-        total_output = cal_sum_in_outcome(ws, col+1 , date_start_row, end_row)
++    eh_funct.cell_type_message(ws,message)
+ 
+-        message = [[col, end_row, total_input],[col+1, end_row, total_output]]
++  message = [[21, end_row, total_money]]
++  eh_funct.cell_type_message(ws, message)
+ 
+-        eh_funct.cell_type_message(ws, message)
+-    
+-    if(message_out):
+-        message_out("------------------------------------------------------------------")
+-        message_out(f"Excel money {date} input is \"{total_input}\"", new_line = True)
+-        message_out(f"Excel money {date} output is \"{total_output}\"", new_line = True)
+-    else:
+-        message_out(f"Excel money {date} input is \"{total_input}\"")
+-        message_out(f"Excel money {date} output is \"{total_output}\"")
++  for col in [17,19]:
++    total_input = cal_sum_in_outcome(ws, col , date_start_row, end_row)
++    total_output = cal_sum_in_outcome(ws, col+1 , date_start_row, end_row)
+ 
+-    last_have_value = Decimal(str(ws[f"{get_column_letter(21)}{last_row}"].value)).quantize(Decimal("0.00"))
+-    current_input_value = Decimal(str(ws[f"{get_column_letter(19)}{end_row}"].value)).quantize(Decimal("0.00"))
+-    current_output_value = Decimal(str(ws[f"{get_column_letter(20)}{end_row}"].value)).quantize(Decimal("0.00"))
+-    current_have_value = Decimal(str(ws[f"{get_column_letter(21)}{end_row}"].value)).quantize(Decimal("0.00"))
+-    
+-    correct_value_bool = last_have_value == current_have_value + current_output_value - current_input_value
+-    if (not correct_value_bool):
+-        message_out("Money excel summary have false", color="red")
+-        return False
++    message = [[col, end_row, total_input],[col+1, end_row, total_output]]
+ 
+-    correct_value = str(correct_value_bool)
+-    message = [[22, end_row, correct_value]]
+     eh_funct.cell_type_message(ws, message)
+-    return True
++  
++  if(message_out):
++    message_out("------------------------------------------------------------------")
++    message_out(f"Excel money {date} input is \"{total_input}\"", new_line = True)
++    message_out(f"Excel money {date} output is \"{total_output}\"", new_line = True)
++  else:
++    message_out(f"Excel money {date} input is \"{total_input}\"")
++    message_out(f"Excel money {date} output is \"{total_output}\"")
++
++  last_have_value = Decimal(str(ws[f"{get_column_letter(21)}{last_row}"].value)).quantize(Decimal("0.00"))
++  current_input_value = Decimal(str(ws[f"{get_column_letter(19)}{end_row}"].value)).quantize(Decimal("0.00"))
++  current_output_value = Decimal(str(ws[f"{get_column_letter(20)}{end_row}"].value)).quantize(Decimal("0.00"))
++  current_have_value = Decimal(str(ws[f"{get_column_letter(21)}{end_row}"].value)).quantize(Decimal("0.00"))
++  
++  correct_value_bool = last_have_value == current_have_value + current_output_value - current_input_value
++  if (not correct_value_bool):
++    message_out("Money excel summary have false", color="red")
++    return False
++
++  correct_value = str(correct_value_bool)
++  message = [[22, end_row, correct_value]]
++  eh_funct.cell_type_message(ws, message)
++  return True
+ 
+ def day_total(ws, row, summary_correct):
+-    current_real_sum_in_cell = f"S{row-1}"
+-    current_real_sum_out_cell = f"T{row-1}"
+-    current_real_sum_in_value = Decimal(str(ws[current_real_sum_in_cell].value))
+-    current_real_sum_out_value = Decimal(str(ws[current_real_sum_out_cell].value))
+-
+-    current_countable_sum_in_cell = f"Q{row-1}"
+-    current_countable_sum_out_cell = f"R{row-1}"
+-    current_countable_sum_in_value = Decimal(str(ws[current_countable_sum_in_cell].value))
+-    current_countable_sum_out_value = Decimal(str(ws[current_countable_sum_out_cell].value))
+-
+-    if(eh_funct.is_first_time_of_ws(ws, 1)):
+-        message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
+-    else:
+-        last_row = eh_funct.find_last_value_row(ws, "total", row)
+-        last_real_total_in_cell = f"S{last_row}" 
+-        last_real_total_out_cell = f"T{last_row}"
+-        last_real_total_in_value = Decimal(str(ws[last_real_total_in_cell].value))
+-        last_real_total_out_value = Decimal(str(ws[last_real_total_out_cell].value))
++  current_real_sum_in_cell = f"S{row-1}"
++  current_real_sum_out_cell = f"T{row-1}"
++  current_real_sum_in_value = Decimal(str(ws[current_real_sum_in_cell].value))
++  current_real_sum_out_value = Decimal(str(ws[current_real_sum_out_cell].value))
++
++  current_countable_sum_in_cell = f"Q{row-1}"
++  current_countable_sum_out_cell = f"R{row-1}"
++  current_countable_sum_in_value = Decimal(str(ws[current_countable_sum_in_cell].value))
++  current_countable_sum_out_value = Decimal(str(ws[current_countable_sum_out_cell].value))
++
++  if(eh_funct.is_first_time_of_ws(ws, 1)):
++    message = [[2, row, "total"], [17, row, current_countable_sum_in_value], [18, row, current_countable_sum_out_value],[19, row, current_real_sum_in_value], [20, row, current_real_sum_out_value]] 
++  else:
++    last_row = eh_funct.find_last_value_row(ws, "total", row, 3)
++    last_real_total_in_cell = f"S{last_row}" 
++    last_real_total_out_cell = f"T{last_row}"
++    last_real_total_in_value = Decimal(str(ws[last_real_total_in_cell].value))
++    last_real_total_out_value = Decimal(str(ws[last_real_total_out_cell].value))
++
++    last_countable_sum_in_cell = f"Q{last_row}"
++    last_countable_sum_out_cell = f"R{last_row}"
++    last_countable_sum_in_value = Decimal(str(ws[last_countable_sum_in_cell].value))
++    last_countable_sum_out_value = Decimal(str(ws[last_countable_sum_out_cell].value))
++
++    total_in_value = last_real_total_in_value + current_real_sum_in_value
++    total_out_value = last_real_total_out_value + current_real_sum_out_value
++
++    countable_total_in_value = last_countable_sum_in_value + current_countable_sum_in_value
++    countable_total_out_value = last_countable_sum_out_value + current_countable_sum_out_value
++
++    if(summary_correct):
++      message_out(f"so far total income is \"{total_in_value}\"")
++      if(message_out):
++        message_out(f"and total output is \"{total_out_value}\"", new_line = True )
++      else:
++        message_out(f"and total output is \"{total_out_value}\"")
+ 
+-        last_countable_sum_in_cell = f"Q{last_row}"
+-        last_countable_sum_out_cell = f"R{last_row}"
+-        last_countable_sum_in_value = Decimal(str(ws[last_countable_sum_in_cell].value))
+-        last_countable_sum_out_value = Decimal(str(ws[last_countable_sum_out_cell].value))
++      message_out(f"and countable income is \"{countable_total_in_value}\"")
+ 
+-        total_in_value = last_real_total_in_value + current_real_sum_in_value
+-        total_out_value = last_real_total_out_value + current_real_sum_out_value
++      if(message_out):
++        message_out(f"countable outcome is \"{countable_total_out_value}\"", new_line = True)
++      else:
++        message_out(f"countable outcome is \"{countable_total_out_value}\"")
+ 
+-        countable_total_in_value = last_countable_sum_in_value + current_countable_sum_in_value
+-        countable_total_out_value = last_countable_sum_out_value + current_countable_sum_out_value
++    message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countable_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
+ 
+-        if(summary_correct):
+-            message_out(f"so far total income is \"{total_in_value}\"")
+-            if(message_out):
+-                message_out(f"and total output is \"{total_out_value}\"", new_line = True )
+-            else:
+-                message_out(f"and total output is \"{total_out_value}\"")
++  eh_funct.cell_type_message(ws, message)
+ 
+-            message_out(f"and countable income is \"{countable_total_in_value}\"")
++def mark_current_amount(ws, date, row, summary_correct):
++  if(os_path.exists(CURRENT_HAVE_FILE_PATH)):
++    full_file = eh_funct.read_file_data(CURRENT_HAVE_FILE_PATH)
++
++    message = [[2, row, "current have"]]
++    is_current_day = False
++    total_amount = Decimal("0.00")
++    for line in full_file:
++      line = line.strip()
++      if( is_current_day == False and line == date):
++        is_current_day = True
++        continue
++      elif(is_current_day):
++        account , amount = line.split(' ')
++        amount = Decimal(amount)
++        col = next(num for key, num in ACCOUNT_LIST if account == key)
++
++        sum_cell = f"{get_column_letter(2+col)}{row-2}"
++        sum_value = Decimal(str(ws[sum_cell].value)).quantize(Decimal("0.00"))
++
++        total_amount += amount
++
++        correct_value_bool = (sum_value == amount)
++        
++        if(not correct_value_bool):
++          message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False", color="red")
+ 
+-            if(message_out):
+-                message_out(f"countable outcome is \"{countable_total_out_value}\"", new_line = True)
+-            else:
+-                message_out(f"countable outcome is \"{countable_total_out_value}\"")
++        correct_value = "True" if (correct_value_bool) else "False"
+ 
+-        message = [[2, row, "total"], [17, row, countable_total_in_value], [18, row, countable_total_out_value], [19, row, total_in_value], [20, row, total_out_value]]
++        message.append([2+col, row, amount])
++        message.append([2+col+1, row, correct_value]) 
++      
++      else:
++        return False
+ 
+-    eh_funct.cell_type_message(ws, message)
++    sum_row = eh_funct.find_last_value_row(ws, "sum", row, 3)
++    total_have_value = ws[f"U{sum_row}"].value
+ 
+-def mark_current_amount(ws, date, row, summary_correct):
+-    if(os_path.exists(CURRENT_HAVE_FILE_PATH)):
+-        full_file = eh_funct.read_file_data(CURRENT_HAVE_FILE_PATH)
+-
+-        message = [[2, row, "current have"]]
+-        is_current_day = False
+-        total_amount = Decimal("0.00")
+-        for line in full_file:
+-            line = line.strip()
+-            if( is_current_day == False and line == date):
+-                is_current_day = True
+-                continue
+-            elif(is_current_day):
+-                account , amount = line.split(' ')
+-                amount = Decimal(amount)
+-                col = next(num for key, num in ACCOUNT_LIST if account == key)
+-
+-                sum_cell = f"{get_column_letter(2+col)}{row-2}"
+-                sum_value = Decimal(str(ws[sum_cell].value)).quantize(Decimal("0.00"))
+-
+-                total_amount += amount
+-
+-                correct_value_bool = (sum_value == amount)
+-                
+-                if(not correct_value_bool):
+-                    message_out(f"Money excel mark currnet amount for \"{account}\" in \"{date}\" have False", color="red")
+-
+-                correct_value = "True" if (correct_value_bool) else "False"
+-
+-                message.append([2+col, row, amount])
+-                message.append([2+col+1, row, correct_value]) 
+-            
+-            else:
+-                return False
+-
+-        sum_row = eh_funct.find_last_value_row(ws, "sum", row)
+-        total_have_value = ws[f"U{sum_row}"].value
+-
+-        is_equal = "True" if (total_have_value == total_amount) else "False"
+-        if(is_equal == "False"):
+-            message_out(f"Money excel current correct is False, total have value is {total_have_value} and total amount is {total_amount}", color="red")
+-
+-        if(is_equal == "True" and summary_correct):
+-            message_out(f"total have money \"{total_have_value}\"")
+-
+-        if(message_out):
+-                message_out("------------------------------------------------------------------")
+-
+-        message.append([21, row, total_amount]) 
+-        message.append([22, row, is_equal])
+-        eh_funct.cell_type_message(ws, message)
+-        return True
++    is_equal = "True" if (total_have_value == total_amount) else "False"
++    if(is_equal == "False"):
++      message_out(f"Money excel current correct is False, total have value is {total_have_value} and total amount is {total_amount}", color="red")
+ 
+-    else:
+-        message_out("Money excel money_current_have.txt not exist", color="red")
+-        return False
++    if(is_equal == "True" and summary_correct):
++      message_out(f"total have money \"{total_have_value}\"")
+ 
+-def day_set_style(ws, date, row, current_marked):
+-    date_row = eh_funct.find_last_value_row(ws, date, row)
+-    #row = sum row, row + 1 = total row , row + 2 = current have row
+-    
+-    cell_border = [
+-        # the date_row style part
+-        *([i, date_row, eh_border.set("M","M","M","D")] for i in [2,22]),
+-        *([i, date_row, eh_border.set("M","D","M","D")] for i in range(3,20) if i%2==1),
+-        *([i, date_row, eh_border.set("M","M","D","D")] for i in range(4,21) if i%2==0),
+-        [20,date_row , eh_border.set("M","D","D","D")],
+-        # middle part 
+-        *([i, j, eh_border.set("D","M","M","D")] for i in [2,22] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
+-        *([i ,j, eh_border.set("D","D","M","D")] for i in range(3,20) if i%2==1 for j in range(date_row+1, row-1)),
+-        *([i, j, eh_border.set("D","M","D","D")] for i in range(4,22) if (i%2==0 or i==21) for j in range(date_row+1, row-1)),
+-        *([20,j, eh_border.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
+-        # the row about the sum row
+-        *([i,row-1, eh_border.set("D","M","M","T")] for i in [2,22]),
+-        *([i, row-1, eh_border.set("D","D","M","T")] for i in range(3,20) if i%2==1),
+-        *([i, row-1, eh_border.set("D","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+-        [20,row-1, eh_border.set("D","D","D","T")],
+-        # the sum row
+-        *([i,row, eh_border.set("T","M","M","T")] for i in [2,22]),
+-        *([i, row, eh_border.set("T","D","M","T")] for i in range(3,20) if i%2==1),
+-        *([i, row, eh_border.set("T","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
+-        [20,row, eh_border.set("T","D","D","T")],
+-        # the total row
+-        *([i,row+1, eh_border.set("T","M","M","M")] for i in [2,22]),
+-        *([i, row+1, eh_border.set("T","D","M","M")] for i in range(3,20) if i%2==1),
+-        *([i, row+1, eh_border.set("T","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+-        [20,row+1, eh_border.set("T","D","D","M")]
+-    ]
++    if(message_out):
++      message_out("------------------------------------------------------------------")
++
++    message.append([21, row, total_amount]) 
++    message.append([22, row, is_equal])
++    eh_funct.cell_type_message(ws, message)
++    return True
++
++  else:
++    message_out("Money excel money_current_have.txt not exist", color="red")
++    return False
+ 
+-    color_end_row = row+1
+-    if(current_marked):
+-        border_message = [
+-            *([i,row+2, eh_border.set("M","M","M","M")] for i in [2,22]),
+-            *([i, row+2, eh_border.set("M","D","M","M")] for i in range(3,20) if i%2==1),
+-            *([i, row+2, eh_border.set("M","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
+-            [20,row+2, eh_border.set("M","D","D","M")]
+-        ]
+-        cell_border.extend(border_message) 
+-
+-        color_end_row = row+2
+-
+-    cell_color= [
+-        [3, date_row, 4, color_end_row, eh_color.PALE_MINT],
+-        [5, date_row, 6, color_end_row, eh_color.SATIN_GREEN],
+-        [7, date_row, 8, color_end_row, eh_color.PALE_PINK],
+-        [9, date_row, 10, color_end_row, eh_color.LIGHT_BLUE],
+-        [11, date_row, 12, color_end_row, eh_color.SKY_BLUE],
+-        [13, date_row, 14, color_end_row, eh_color.PEACH],
+-        [15, date_row, 16, color_end_row, eh_color.LACENDER],
+-        [17, date_row, 18, color_end_row, eh_color.BEIGE],
+-        [19, date_row, 21, color_end_row, eh_color.LIGHT_CORAL],
+-        [22, date_row, 22, color_end_row, eh_color.YELLOW_GREEN]
++def day_set_style(ws, date, row, current_marked):
++  date_row = eh_funct.find_last_value_row(ws, date, row, 3)
++  #row = sum row, row + 1 = total row , row + 2 = current have row
++  
++  cell_border = [
++    # the date_row style part
++    *([i, date_row, eh_border.set("M","M","M","D")] for i in [2,22]),
++    *([i, date_row, eh_border.set("M","D","M","D")] for i in range(3,20) if i%2==1),
++    *([i, date_row, eh_border.set("M","M","D","D")] for i in range(4,21) if i%2==0),
++    [20,date_row , eh_border.set("M","D","D","D")],
++    # middle part 
++    *([i, j, eh_border.set("D","M","M","D")] for i in [2,22] for j in range(date_row+1,row-1)), # only for the 2 and 20 col of the middle part
++    *([i, j, eh_border.set("D","D","M","D")] for i in range(3,20) if i%2==1 for j in range(date_row+1, row-1)),
++    *([i, j, eh_border.set("D","M","D","D")] for i in range(4,22) if (i%2==0 or i==21) for j in range(date_row+1, row-1)),
++    *([20, j, eh_border.set("D","D","D","D")] for j in range(date_row+1, row-1)), #only col 18
++    # the row about the sum row
++    *([i, row-1, eh_border.set("D","M","M","T")] for i in [2,22]),
++    *([i, row-1, eh_border.set("D","D","M","T")] for i in range(3,20) if i%2==1),
++    *([i, row-1, eh_border.set("D","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
++    [20, row-1, eh_border.set("D","D","D","T")],
++    # the sum row
++    *([i, row, eh_border.set("T","M","M","T")] for i in [2,22]),
++    *([i, row, eh_border.set("T","D","M","T")] for i in range(3,20) if i%2==1),
++    *([i, row, eh_border.set("T","M","D","T")] for i in range(4,22) if i%2==0 or i == 21),
++    [20, row, eh_border.set("T","D","D","T")],
++    # the total row
++    *([i, row+1, eh_border.set("T","M","M","M")] for i in [2,22]),
++    *([i, row+1, eh_border.set("T","D","M","M")] for i in range(3,20) if i%2==1),
++    *([i, row+1, eh_border.set("T","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
++    [20, row+1, eh_border.set("T","D","D","M")]
++  ]
++
++  color_end_row = row+1
++  if(current_marked):
++    border_message = [
++      *([i, row+2, eh_border.set("M","M","M","M")] for i in [2,22]),
++      *([i, row+2, eh_border.set("M","D","M","M")] for i in range(3,20) if i%2==1),
++      *([i, row+2, eh_border.set("M","M","D","M")] for i in range(4,22) if i%2==0 or i == 21),
++      [20, row+2, eh_border.set("M","D","D","M")]
+     ]
+-    eh_funct.range_cell_set_color(ws, cell_color) 
+-    eh_funct.cell_set_border(ws,cell_border)
++    cell_border.extend(border_message) 
++
++    color_end_row = row+2
++
++  cell_color= [
++    [3, date_row, 4, color_end_row, eh_color.PALE_MINT],
++    [5, date_row, 6, color_end_row, eh_color.SATIN_GREEN],
++    [7, date_row, 8, color_end_row, eh_color.PALE_PINK],
++    [9, date_row, 10, color_end_row, eh_color.LIGHT_BLUE],
++    [11, date_row, 12, color_end_row, eh_color.SKY_BLUE],
++    [13, date_row, 14, color_end_row, eh_color.PEACH],
++    [15, date_row, 16, color_end_row, eh_color.LACENDER],
++    [17, date_row, 18, color_end_row, eh_color.BEIGE],
++    [19, date_row, 21, color_end_row, eh_color.LIGHT_CORAL],
++    [22, date_row, 22, color_end_row, eh_color.YELLOW_GREEN]
++  ]
++  eh_funct.range_cell_set_color(ws, cell_color) 
++  eh_funct.cell_set_border(ws,cell_border)
+ 
+ def day_finish(ws, date, row):
+-    summary_correct = day_summary(ws, date, row)
+-    day_total(ws, row+1, summary_correct)
+-    current_marked = mark_current_amount(ws, date, row+2, summary_correct)
+-    day_set_style(ws, date, row, current_marked)
++  summary_correct = day_summary(ws, date, row)
++  day_total(ws, row+1, summary_correct)
++  current_marked = mark_current_amount(ws, date, row+2, summary_correct)
++  day_set_style(ws, date, row, current_marked)
+ 
+ def money_excel_process():
+-    message_out("Money excel processing")
+-
+-    file_first_line = eh_funct.read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
+-    if((eh_funct.is_date(file_first_line))):
+-        f_day, f_month, f_year = file_first_line.split('/')
+-        MONEY_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "money")
+-        MONEY_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "money.xlsx")
+-        BACKUP_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "backup.xlsx")
+-    else:
+-        if(message_out):
+-            message_out("Money Excel : Error, the money_messages.txt first line is not a date!", color="red") 
+-
+-    if(not os_path.exists(MONEY_FOLDER_PATH)):
+-        os_makedirs(MONEY_FOLDER_PATH)
+-
+-    if(os_path.exists(MONEY_FILE_PATH)):
+-        shutil_copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
+-
+-    wb = eh_funct.check_and_open_excel(MONEY_FILE_PATH)
+-    ws = wb.active
+-
+-    current_date = None
+-    last_day = None
+-    money_message_list = eh_funct.read_file_data(MONEY_MESSAGE_FILE_PATH)
+-    START_COL = 2
+-    have_previous_date = False
+-    for message in money_message_list:
+-        if(message == ''):
+-            continue
+-
+-        if eh_funct.is_date(message):
+-
+-            if(current_date != None):
+-                last_day = current_date
+-
+-            if(have_previous_date):
+-                day_finish(ws, last_day, start_row + record)
+-                
+-            day, month, year = message.split('/') 
+-            month_str = eh_funct.month_int_to_string(int(month))
+-            ws = eh_funct.open_month_ws(wb, month_str)
+-
+-            current_date = message
+-
+-            if(eh_funct.is_first_time_of_ws(ws,0)): 
+-                sheet_init(wb, ws, month, year)
+-            else:
+-                if(eh_funct.is_date_duplicate(ws,message)):
+-                    message_out(f"Money_excel : date {message} is marked!", color = "red")
+-
+-            start_row = eh_funct.input_date(ws, message)
+-            have_previous_date = True
+-            record = 0
+-        else: 
+-            amount, account, to, countable, *rest = shlex_split(message)  # *rest is just let the code can run successfully 
+-            account = account.strip('"')
+-            account = account.strip()
+-            to = to.strip('"')
+-            to = to.strip()
+-            countable = (countable == "True")
+-            if any(to == pair[0] for pair in ACCOUNT_LIST) and any(account == pair[0] for pair in ACCOUNT_LIST ):
+-                self_convert(ws, amount, account, to, [START_COL, start_row + record])
+-            elif any(to == pair[0] for pair in ACCOUNT_LIST):
+-                income(ws,amount, account, to , countable, [START_COL, start_row + record])
+-            else:
+-                pay(ws, amount, account, to, countable, [START_COL, start_row + record])
+-            record+=1
+-
+-    if(current_date is not None):
+-        day_finish(ws, current_date, start_row + record)
++  message_out("Money excel processing")
++
++  file_first_line = eh_funct.read_first_line_of_file(MONEY_MESSAGE_FILE_PATH)
++  if((eh_funct.is_date(file_first_line))):
++    f_day, f_month, f_year = file_first_line.split('/')
++    MONEY_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "money")
++    MONEY_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "money.xlsx")
++    BACKUP_FILE_PATH = os_path.join(MONEY_FOLDER_PATH, "backup.xlsx")
++  else:
++    if(message_out):
++      message_out("Money Excel : Error, the money_messages.txt first line is not a date!", color="red") 
+ 
+-    try:
+-      wb.save(MONEY_FILE_PATH)
+-      message_out("Money excal process done")
+-    except(PermissionError):
+-      if(message_out):
+-        message_out("The excel is currently open, close it first.", color = "red")
++  if(not os_path.exists(MONEY_FOLDER_PATH)):
++    os_makedirs(MONEY_FOLDER_PATH)
++
++  if(os_path.exists(MONEY_FILE_PATH)):
++    shutil_copy(MONEY_FILE_PATH, BACKUP_FILE_PATH)
++
++  wb = eh_funct.check_and_open_excel(MONEY_FILE_PATH)
++  ws = wb.active
++
++  current_date = None
++  last_day = None
++  money_message_list = eh_funct.read_file_data(MONEY_MESSAGE_FILE_PATH)
++  START_COL = 2
++  have_previous_date = False
++  for message in money_message_list:
++    if(message == ''):
++      continue
++
++    if eh_funct.is_date(message):
++
++      if(current_date != None):
++        last_day = current_date
++
++      if(have_previous_date):
++        day_finish(ws, last_day, start_row + record)
++        
++      day, month, year = message.split('/') 
++      month_str = eh_funct.month_int_to_string(int(month))
++      ws = eh_funct.open_month_ws(wb, month_str)
++
++      current_date = message
++
++      if(eh_funct.is_first_time_of_ws(ws,0)): 
++        sheet_init(wb, ws, month, year)
++      else:
++        if(eh_funct.is_date_duplicate(ws,message)):
++          message_out(f"Money_excel : date {message} is marked!", color = "red")
++
++      start_row = eh_funct.input_date(ws, message)
++      have_previous_date = True
++      record = 0
++    else: 
++      amount, account, to, countable, *rest = shlex_split(message)  # *rest is just let the code can run successfully 
++      account = account.strip('"')
++      account = account.strip()
++      to = to.strip('"')
++      to = to.strip()
++      countable = (countable == "True")
++      if any(to == pair[0] for pair in ACCOUNT_LIST) and any(account == pair[0] for pair in ACCOUNT_LIST ):
++        self_convert(ws, amount, account, to, [START_COL, start_row + record])
++      elif any(to == pair[0] for pair in ACCOUNT_LIST):
++        income(ws,amount, account, to , countable, [START_COL, start_row + record])
+       else:
+-        message_out("The excel is currently open, close it first.") 
++        pay(ws, amount, account, to, countable, [START_COL, start_row + record])
++      record+=1
++
++  if(current_date is not None):
++    day_finish(ws, current_date, start_row + record)
++
++  try:
++    wb.save(MONEY_FILE_PATH)
++    message_out("Money excal process done")
++  except(PermissionError):
++    if(message_out):
++      message_out("The excel is currently open, close it first.", color = "red")
++    else:
++      message_out("The excel is currently open, close it first.") 
+ 
+-    # --- stop copy --- #
++  # --- stop copy --- #
+ 
+ if __name__ == "__main__":
+-    money_excel_process()
+\ No newline at end of file
++  money_excel_process()
+\ No newline at end of file
+diff --git a/script/server.py b/script/server.py
+index 81af985..9a9dac2 100644
+--- a/script/server.py
++++ b/script/server.py
+@@ -17,103 +17,102 @@ SAVE_FILE_PATH = config.path.SERVER_OUTPUT_FILE
+ PORT = config.server.SERVER_PORT_NUM
+ folder_path = os_path.dirname(SAVE_FILE_PATH)
+ if folder_path and not os_path.exists(folder_path):
+-    os_makedirs(folder_path)
++  os_makedirs(folder_path)
+ flask_server_instance = None
+ # --- verable setup end --- #
+ 
+ # --- setup function for main.py start --- #
+ message_output = print
+ def set_message_output(function):
+-    global message_output
+-    message_output = function
++  global message_output
++  message_output = function
+ 
+ json_converter = None
+ def set_json_converter(function):
+-    global json_converter
+-    json_converter = function
++  global json_converter
++  json_converter = function
+ # --- setup function for main.py end --- #
+ 
+ # --- main function start --- # 
+ server = flask_Flask(__name__)
+ 
+-    # --- server accessable test start --- #
++# --- server accessable test start --- #
+ @server.route('/status', methods=['GET'])
+ def status_check():
+-    return flask_jsonify({"status":"online"}), 200
+-    # --- server accessable test end --- #
++  return flask_jsonify({"status":"online"}), 200
++# --- server accessable test end --- #
+ 
+-    # --- receive file function start --- #
++# --- receive file function start --- #
+ @server.route('/upload', methods=['POST'])
+ def get_file():
+-    if os_path.exists(SAVE_FILE_PATH):
+-        backup_file_path = os_path.join(os_path.dirname(SAVE_FILE_PATH), "backup.json")
+-        shutil_copy2(SAVE_FILE_PATH, backup_file_path)
+-    else:
+-        print(f"Skipping backup: {SAVE_FILE_PATH} not found.")
++  if os_path.exists(SAVE_FILE_PATH):
++    backup_file_path = os_path.join(os_path.dirname(SAVE_FILE_PATH), "backup.json")
++    shutil_copy2(SAVE_FILE_PATH, backup_file_path)
++  else:
++    print(f"Skipping backup: {SAVE_FILE_PATH} not found.")
+ 
+-    message_output("Server file backuped") 
++  message_output("Server file backuped") 
+ 
+-    with open(SAVE_FILE_PATH, "w", encoding="utf-8") as f:
+-        pass
++  with open(SAVE_FILE_PATH, "w", encoding="utf-8") as f:
++    pass
+ 
+-    message_output("Server file clear")
++  message_output("Server file clear")
+ 
+-    try:
+-        data = flask_request.get_json(force=True) # get file
+-        
+-        if not data: 
+-            data = json_loads(flask_request.data.decode('utf-8'))  
+-        
+-        if not data:
+-            return flask_jsonify({"status": "error", "message":"No data found"}), 400
++  try:
++    data = flask_request.get_json(force=True) # get file
++    
++    if not data: 
++      data = json_loads(flask_request.data.decode('utf-8'))  
++    
++    if not data:
++      return flask_jsonify({"status": "error", "message":"No data found"}), 400
+ 
++    file_old_data = []
++    if os_path.exists(SAVE_FILE_PATH):
++      try:
++        with open(SAVE_FILE_PATH, 'r', encoding='utf-8') as file:
++          file_old_data = json_load(file)
++      except json_JSONDecodeError:
+         file_old_data = []
+-        if os_path.exists(SAVE_FILE_PATH):
+-            try:
+-                with open(SAVE_FILE_PATH, 'r', encoding='utf-8') as file:
+-                    file_old_data = json_load(file)
+-            except json_JSONDecodeError:
+-                file_old_data = []
+-
+-        if isinstance(data, list):
+-            file_old_data.extend(data)
+-        else:
+-            file_old_data.append(data)
+-        
+-        with open(SAVE_FILE_PATH, 'w', encoding='utf-8') as file:
+-            json_dump(file_old_data, file, indent=4 , ensure_ascii=False)
+-
+-        message_output(f"Server : Rreceived data! Saved to {os_path.basename(SAVE_FILE_PATH)}")
+-
+-        if json_converter:
+-            json_converter()
+-            message_output(f"Server : Json convereted")
+-
+-        return flask_jsonify({"status": "success"}), 200
+-        
+-    except Exception as error:
+-        message_output(f"Server Error: {str(error)}")
+-        return flask_jsonify({"status": "error", "message": str(error)}), 500
+-    # --- receive file function start --- #
++
++    if isinstance(data, list):
++      file_old_data.extend(data)
++    else:
++      file_old_data.append(data)
+     
++    with open(SAVE_FILE_PATH, 'w', encoding='utf-8') as file:
++      json_dump(file_old_data, file, indent=4 , ensure_ascii=False)
++
++    message_output(f"Server : Rreceived data! Saved to {os_path.basename(SAVE_FILE_PATH)}")
++
++    if json_converter:
++      json_converter()
++      message_output(f"Server : Json convereted")
++
++    return flask_jsonify({"status": "success"}), 200
++    
++  except Exception as error:
++    message_output(f"Server Error: {str(error)}")
++    return flask_jsonify({"status": "error", "message": str(error)}), 500
++# --- receive file function start --- #
++  
+ def server_start():
+-    global flask_server_instance
+-    message_output("Server: server started!")
++  global flask_server_instance
++  message_output("Server: server started!")
+ 
+-    flask_server_instance = make_server("0.0.0.0", PORT, server)
++  flask_server_instance = make_server("0.0.0.0", PORT, server)
+ 
+-    flask_server_instance.serve_forever()
++  flask_server_instance.serve_forever()
+ 
+ def server_stop():
+-    global flask_server_instance
+-    if flask_server_instance:
+-        flask_server_instance.shutdown()
+-        message_output("Server: server stoped!")
+-    else:
+-        message_output("Server: server not started, cannot stop", color="red")
+-
++  global flask_server_instance
++  if flask_server_instance:
++    flask_server_instance.shutdown()
++    message_output("Server: server stoped!")
++  else:
++    message_output("Server: server not started, cannot stop", color="red")
+ 
+ if __name__ == "__main__":
+-    # import json_converter
+-    # set_json_converter(json_converter.convert)
+-    server_start()
+\ No newline at end of file
++  # import json_converter
++  # set_json_converter(json_converter.convert)
++  server_start()
+\ No newline at end of file
+diff --git a/script/sleep_excel.py b/script/sleep_excel.py
+index 85cd641..cd12f42 100644
+--- a/script/sleep_excel.py
++++ b/script/sleep_excel.py
+@@ -7,23 +7,23 @@ OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
+ 
+ message_out = print
+ def set_message_out(function):
+-    global message_out
+-    message_out = function
++  global message_out
++  message_out = function
+ 
+ def check_file_exist():
+-    pass
++  pass
+ 
+ def read_data():
+-    # with open()
+-    pass
++  # with open()
++  pass
+ 
+ def sleep_excel_process():
+-    print("Sleep excel started!") 
+-    message_out("Sleep excel processing")
+-    pass
++  print("Sleep excel started!") 
++  message_out("Sleep excel processing")
++  pass
+ 
+ def main():
+-    check_file_exist()
++  check_file_exist()
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++  main()
+\ No newline at end of file
+diff --git a/script/water_excel.py b/script/water_excel.py
+index 1e123a5..8c147aa 100644
+--- a/script/water_excel.py
++++ b/script/water_excel.py
+@@ -23,188 +23,190 @@ CONTAINER_LIST = [ ["home", 600], ["outside", 700], ["office" , 370]]
+ 
+ message_out = print
+ def set_message_out(function):
+-    global message_out
+-    message_out = function
++  global message_out
++  message_out = function
+ 
+ def sheet_init(wb, ws, month, year):
+-    ws.column_dimensions['B'].width = 14.5
+-
+-    for i in range(3,23):
+-        col = get_column_letter(i)
+-        ws.column_dimensions[col].width = 12
+-
+-    cell_message = [
+-        [2, 2, "Date"], 
+-        [3, 2, "Water Fill"], 
+-        [4, 2, "ml"],
+-        [5, 2, "Aim"],
+-        [6, 2, "Total ml"]
+-    ]
+-
+-    cell_color = [
+-        [3, 2, 3, 2, eh_color.PALE_MINT],
+-        [4, 2, 4, 2, eh_color.PALE_PINK],
+-        [5, 2, 5, 2, eh_color.LIGHT_BLUE],
+-        [6, 2, 6, 2, eh_color.SKY_BLUE]
+-    ]
+-
+-    cell_border = [
+-        *([2+i , 2, eh_border.set("M", "M", "M", "M")] for i in range(0,5))
+-    ]
+-
+-    eh_funct.cell_type_message(ws, cell_message)
+-    eh_funct.range_cell_set_color(ws, cell_color)
+-    eh_funct.cell_set_border(ws, cell_border)
++  ws.column_dimensions['B'].width = 14.5
++
++  eh_funct.init_freeze_row(ws, 2)
++
++  for i in range(3,23):
++    col = get_column_letter(i)
++    ws.column_dimensions[col].width = 12
++
++  cell_message = [
++    [2, 2, "Date"], 
++    [3, 2, "Water Fill"], 
++    [4, 2, "ml"],
++    [5, 2, "Aim"],
++    [6, 2, "Total ml"]
++  ]
++
++  cell_color = [
++    [3, 2, 3, 2, eh_color.PALE_MINT],
++    [4, 2, 4, 2, eh_color.PALE_PINK],
++    [5, 2, 5, 2, eh_color.LIGHT_BLUE],
++    [6, 2, 6, 2, eh_color.SKY_BLUE]
++  ]
++
++  cell_border = [
++    *([2+i , 2, eh_border.set("M", "M", "M", "M")] for i in range(0,5))
++  ]
++
++  eh_funct.cell_type_message(ws, cell_message)
++  eh_funct.range_cell_set_color(ws, cell_color)
++  eh_funct.cell_set_border(ws, cell_border)
+ 
+ def water_mark(ws, container, record_list):
+-    container_capacity = next(capacity_ for container_ , capacity_ in CONTAINER_LIST if container_ == container)
+-    col , row = record_list[0], record_list[1] 
++  container_capacity = next(capacity_ for container_ , capacity_ in CONTAINER_LIST if container_ == container)
++  col , row = record_list[0], record_list[1] 
+ 
+-    message = [
+-        [col+1, row, container],
+-        [col+2, row, container_capacity]
+-    ]
++  message = [
++    [col+1, row, container],
++    [col+2, row, container_capacity]
++  ]
+ 
+-    eh_funct.cell_type_message(ws, message)
++  eh_funct.cell_type_message(ws, message)
+ 
+ def get_day_total_ml(ws, date, end_row):
+-    return_value = Decimal(0)
+-    date_start_row = eh_funct.find_last_value_row(ws, date, end_row)
++  return_value = Decimal(0)
++  
+ 
+-    if(date_start_row == None):
+-        if(message_out):
+-            message_out(f"Water Excel: Error, cannot find last cell of value: {date}")
+-        else:
+-            message_out(f"Water Excel: Error, cannot find last cell of value: {date}", color = "red")
++  date_start_row = eh_funct.find_last_value_row(ws, date, end_row, 2)
+ 
+-    print(date_start_row, end_row)
++  if(date_start_row == None):
++    if(message_out):
++      message_out(f"Water Excel: Error, cannot find last cell of value: {date}")
++    else:
++      message_out(f"Water Excel: Error, cannot find last cell of value: {date}", color = "red")
+ 
+-    for row in range(date_start_row, end_row):
+-        cell = f"{get_column_letter('D')}{row}"
++  for row in range(date_start_row, end_row):
++    cell = f"D{row}"
+ 
+-        try:
+-            cell_value = ws[cell].value
++    try:
++      cell_value = ws[cell].value
+ 
+-            if(eh_funct.is_num(cell_value)):
+-                cal_value = Decimal(cell_value)
+-            else:
+-                cal_value = Decimal('0')
++      if(eh_funct.is_num(cell_value)):
++        cal_value = Decimal(cell_value)
++      else:
++        cal_value = Decimal('0')
+ 
+-        except TypeError:
+-            cal_value = Decimal('0')
++    except TypeError:
++      cal_value = Decimal('0')
+ 
+-        return_value += cal_value
++    return_value += cal_value
+ 
+-    return return_value
++  return return_value
+ 
+ def day_total(ws, date, row):
+-    target = 3000
+-    total_ml = get_day_total_ml(ws, date, row)
+-    
+-    target_aimed = True if target <= total_ml else False
++  target = 3000
++  total_ml = get_day_total_ml(ws, date, row)
++  
++  target_aimed = True if target <= total_ml else False
+ 
+-    message = [
+-        [2, row, "total"],
+-        [4, row, total_ml],
+-        [5, row, target]
+-    ]
++  message = [
++    [2, row, "total"],
++    [4, row, total_ml],
++    [5, row, target]
++  ]
+ 
+-    if(not eh_funct.is_first_time_of_ws(ws, 1)):
+-        last_row = eh_funct.find_last_value_row(ws, "total", row)
+-        last_total_ml_cell = f"F{last_row}"
+-        last_total_ml_value = Decimal(str(ws[last_total_ml_cell].value))
++  if(not eh_funct.is_first_time_of_ws(ws, 1)):
++    last_row = eh_funct.find_last_value_row(ws, "total", row, 2)
++    last_total_ml_cell = f"F{last_row}"
++    last_total_ml_value = Decimal(str(ws[last_total_ml_cell].value))
+ 
+-        total_ml = total_ml+last_total_ml_value
++    total_ml = total_ml+last_total_ml_value
+ 
+-    message.append([6, row, total_ml])
+-    
+-    eh_funct.cell_type_message(ws, message)
++  message.append([6, row, total_ml])
++  
++  eh_funct.cell_type_message(ws, message)
+ 
+-    return target_aimed
++  return target_aimed
+ 
+ def day_set_style(ws, date, row, target_aimed):
+-    pass
++  pass
+ 
+ def day_finish(ws, date, row):
+-    target_aimed = day_total(ws, date, row+1)    
+-    day_set_style(ws, date, row, target_aimed)
++  target_aimed = day_total(ws, date, row+1)    
++  day_set_style(ws, date, row, target_aimed)
+ 
+ def water_excel_process():
+-    message_out("Water excel started!")
+-
+-    file_first_line = eh_funct.read_first_line_of_file(WATER_MESSAGE_FILE_PATH)
+-    if(eh_funct.is_date(file_first_line)):
+-        f_day, f_month, f_year = file_first_line.split('/')
+-        WATER_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "water")
+-        WATER_FILE_PATH = os_path.join(WATER_FOLDER_PATH, "water.xlsx")
+-        BACKUP_FILE_PATH = os_path.join(WATER_FOLDER_PATH, "backup.xlsx")
++  message_out("Water excel started!")
++
++  file_first_line = eh_funct.read_first_line_of_file(WATER_MESSAGE_FILE_PATH)
++  if(eh_funct.is_date(file_first_line)):
++    f_day, f_month, f_year = file_first_line.split('/')
++    WATER_FOLDER_PATH = os_path.join(OUTPUT_FOLDER_PATH, f_year, "water")
++    WATER_FILE_PATH = os_path.join(WATER_FOLDER_PATH, "water.xlsx")
++    BACKUP_FILE_PATH = os_path.join(WATER_FOLDER_PATH, "backup.xlsx")
++  else:
++    if(message_out):
++      message_out("Water Excel : Error, the water_message.txt first line is not a date!")
++    sys_exit(0)
++
++  if(not os_path.exists(WATER_FOLDER_PATH)):
++    os_makedirs(WATER_FOLDER_PATH)
++  
++  if(os_path.exists(WATER_FILE_PATH)):
++    shutil_copy(WATER_FILE_PATH, BACKUP_FILE_PATH)
++
++  wb = eh_funct.check_and_open_excel(WATER_FILE_PATH)
++  ws = wb.active
++
++  current_date = None
++  last_day = None
++  water_message_list = eh_funct.read_file_data(WATER_MESSAGE_FILE_PATH)
++  START_COL = 2
++  have_previous_date = False
++  can_save = True
++
++  for message in water_message_list: 
++    if(message == ''):
++      continue
++
++    if eh_funct.is_date(message):
++      if(current_date != None):
++        last_day = current_date
++
++      if(have_previous_date):
++        day_finish(ws, last_day, start_row + record)
++
++      day, month, year = message.split('/')
++      month_str = eh_funct.month_int_to_string(int(month))
++      ws = eh_funct.open_month_ws(wb, month_str)
++
++      current_date = message
++
++      if(eh_funct.is_first_time_of_ws(ws,0)):
++        sheet_init(wb, ws, month, year)
++        pass
++      else:
++        if(eh_funct.is_date_duplicate(ws, message)):
++          message_out(f"Water_excel : date {message} is marked", color = "red")
++
++      start_row = eh_funct.input_date(ws, message)
++      have_previous_date = True
++      record = 0
+     else:
+-        if(message_out):
+-            message_out("Water Excel : Error, the water_message.txt first line is not a date!")
+-        sys_exit(0)
+-
+-    if(not os_path.exists(WATER_FOLDER_PATH)):
+-        os_makedirs(WATER_FOLDER_PATH)
+-    
+-    if(os_path.exists(WATER_FILE_PATH)):
+-        shutil_copy(WATER_FILE_PATH, BACKUP_FILE_PATH)
+-
+-    wb = eh_funct.check_and_open_excel(WATER_FILE_PATH)
+-    ws = wb.active
++      container, *rest = shlex_split(message) 
++      container = container.strip('"')
+ 
+-    current_date = None
+-    last_day = None
+-    water_message_list = eh_funct.read_file_data(WATER_MESSAGE_FILE_PATH)
+-    START_COL = 2
+-    have_previous_date = False
+-    can_save = True
++      water_mark(ws, container, [START_COL, start_row + record])
+ 
+-    for message in water_message_list: 
+-        if(message == ''):
+-            continue
++      record+=1
+ 
+-        if eh_funct.is_date(message):
+-            if(current_date != None):
+-                last_day = current_date
++  if(current_date is not None):
++    day_finish(ws, current_date, start_row+ record)
+ 
+-            if(have_previous_date):
+-                day_finish(ws, last_day, start_row + record)
+-
+-            day, month, year = message.split('/')
+-            month_str = eh_funct.month_int_to_string(int(month))
+-            ws = eh_funct.open_month_ws(wb, month_str)
+-
+-            current_date = message
+-
+-            if(eh_funct.is_first_time_of_ws(ws,0)):
+-                sheet_init(wb, ws, month, year)
+-                pass
+-            else:
+-                if(eh_funct.is_date_duplicate(ws, message)):
+-                    message_out(f"Water_excel : date {message} is marked", color = "red")
+-
+-            start_row = eh_funct.input_date(ws, message)
+-            have_previous_date = True
+-            record = 0
+-        else:
+-            container, *rest = shlex_split(message) 
+-            container = container.strip('"')
+-
+-            water_mark(ws, container, [START_COL, start_row + record])
+-
+-            record+=1
+-
+-    if(current_date is not None):
+-        day_finish(ws, current_date, start_row+ record)
+-
+-    try:
+-        wb.save(WATER_FILE_PATH)
+-        message_out("Money excal process done")
+-    except(PermissionError):
+-        if(message_out):
+-            message_out("The excel is currently open, close it first.", color = "red")
+-        else:
+-            message_out("The excel is currently open, close it first.") 
++  try:
++    wb.save(WATER_FILE_PATH)
++    message_out("Money excal process done")
++  except(PermissionError):
++    if(message_out):
++      message_out("The excel is currently open, close it first.", color = "red")
++    else:
++      message_out("The excel is currently open, close it first.") 
+ 
+ if __name__ == "__main__":
+-    water_excel_process()
+\ No newline at end of file
++  water_excel_process()
+\ No newline at end of file
+diff --git a/script/window_GUI.py b/script/window_GUI.py
+index 6f4a780..cd89af2 100644
+--- a/script/window_GUI.py
++++ b/script/window_GUI.py
+@@ -11,7 +11,7 @@ from os import (path as os_path,
+                 rename as os_rename)
+ 
+ if( platform_system() == "Windows"):
+-    from os import  startfile as os_startfile
++  from os import  startfile as os_startfile
+ 
+ from sys import argv as sys_argv
+ from json import (dump as json_dump,
+@@ -20,431 +20,424 @@ from subprocess import run as subprocess_run
+ import config 
+ 
+ class Main_window(QMainWindow):
+-    BUTTON_STYLE_SHEET=("""
+-        QPushButton{
+-            color: #ffffff;
+-            background-color: #55000000;
+-            font-size: 20px;
+-            border: 1px solid #000000;
+-            border-radius : 5px;
+-        }
+-
+-        QPushButton:hover{
+-            background-color: #AA000000;
+-        }
++  BUTTON_STYLE_SHEET=("""
++    QPushButton{
++        color: #ffffff;
++        background-color: #55000000;
++        font-size: 20px;
++        border: 1px solid #000000;
++        border-radius : 5px;
++    }
++
++    QPushButton:hover{
++        background-color: #AA000000;
++    }
++  """)
++  LOG_WINDOW_STYLE_SHEET=(""" 
++    QTextEdit{
++        background-color : #002D07;
++        color: #00ff00;
++        font-family: Consolas, Monospace;
++        font-size: 20px;
++        border: 3px solid #0f0f0f;                          
++        margin: 10px;
++        border-radius : 5px;
++    } 
++  """)
++  TEXT_STYLE_SHEET=("""
++    QLabel{
++       font-size: 20px;               
++       font-weight: 700;
++    }
++  """)
++  USER_STYLE_SHEET=("""
++    QTextEdit{
++        font-size: 20px;
++        border:3px solid #0f0f0f;
++        font-family: Georgia;
++        margin: 10px;
++        border-radius : 5px;
++    }
++  """)
++
++  CURRENT_DIRECTORY = config.path.PROJECT_ROOT_FOLDER
++  SETTING_FILE =  config.path.GUI_SETTING_FILE
++  INPUT_FOLDER = config.path.INPUT_FOLDER
++  OUTPUT_FOLDER = config.path.OUTPUT_FOLDER
++
++  # --- signal for main.py setup start --- #
++  current_opening_file = None
++  server_start_signal = pyqtSignal()
++  server_stop_signal = pyqtSignal()
++  money_excel_start_signal = pyqtSignal()
++  work_excel_start_signal = pyqtSignal()
++  sleep_excel_start_signal = pyqtSignal()
++  water_excel_start_signal = pyqtSignal()
++  feeling_excel_start_signal = pyqtSignal()
++  # --- singal for main.py setup end --- #        
++
++  def __init__(self, width, height):
++    super().__init__()
++    # --- basic window setting start --- # 
++    self.width = width
++    self.height = height
++    self.setWindowTitle("GUI Daily Marker")
++    self.resize(width, height) 
++    # --- basic window setting end --- #
++
++    # --- menu bar start --- #
++    menu_bar = self.menuBar()
++    view_button = menu_bar.addMenu("&View")
++
++    view_action_1 = QAction("Show money marking", self)
++    view_action_1.setShortcut("Ctrl+1")
++    view_action_1.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(0))
++    view_button.addAction(view_action_1)
++
++    view_action_2 = QAction("Show daily marking", self)
++    view_action_2.setShortcut("Ctrl+2")
++    view_action_2.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(1))
++    view_button.addAction(view_action_2)
++
++    view_action_3 = QAction("Show all excel reload", self)
++    view_action_3.setShortcut("Ctrl+3")
++    view_action_3.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(2))
++    view_button.addAction(view_action_3)
++    
++    view_action_4 = QAction("Show all excel reload", self)
++    view_action_4.setShortcut("Ctrl+4")
++    view_action_4.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(3))
++    view_button.addAction(view_action_4)
++    # --- menu bar end --- #
++
++    # --- left main widget money marking button start --- #
++    server_start_button = self.Button("Server Start", True, [self.server_start_signal.emit])
++    server_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    server_stop_button = self.Button("Server Stop", True, [self.server_stop_signal.emit])
++    server_stop_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    money_excel_start_button = self.Button("Money Excel Start", True, [self.money_excel_start_signal.emit]) 
++    money_excel_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET) 
++
++    load_current_have = self.Button("Load Current Have", True,  [lambda: self.Load_file("money_current_have.txt")])
++    load_current_have.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    load_money_message = self.Button("Load Money Message", True, [lambda: self.Load_file("money_messages.txt")])
++    load_money_message.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    l_money_marking_layout= QVBoxLayout() 
++    l_money_marking_layout.addWidget(server_start_button)
++    l_money_marking_layout.addWidget(server_stop_button)
++    l_money_marking_layout.addWidget(money_excel_start_button)
++    l_money_marking_layout.addWidget(load_money_message)
++    l_money_marking_layout.addWidget(load_current_have)
++
++    l_money_marking_widget_set = self.Color_widget(layout=l_money_marking_layout, bgc="#6d6d6d", border="2px solid #000000")  
++    # --- left main widget money marking button end --- #
++
++    # --- left main widget daily marking button start --- #
++    water_start_button = self.Button("Water Start Mark", True,  [self.water_excel_start_signal.emit])
++    water_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    feeling_start_button = self.Button("Feeling Start Mark", True,  [self.feeling_excel_start_signal.emit])
++    feeling_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    working_start_button = self.Button("Working Start Mark", True, [self.work_excel_start_signal.emit])
++    working_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    sleeping_start_button = self.Button("Sleeping Start Mark", True, [self.sleep_excel_start_signal.emit])
++    sleeping_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++    
++    l_daily_marking_layout = QVBoxLayout()
++    l_daily_marking_layout.addWidget(water_start_button)
++    l_daily_marking_layout.addWidget(feeling_start_button)
++    l_daily_marking_layout.addWidget(working_start_button)
++    l_daily_marking_layout.addWidget(sleeping_start_button)
++
++    l_daily_marking_widget_set = self.Color_widget(layout=l_daily_marking_layout, bgc="#6d6d6d", border="2px solid #000000")  
++    # --- left main widget daily marking button end --- #
++
++    # --- left main widget all reload button start --- #
++    current_year = datetime.now().year
++    current_year_file_path = os_path.join(self.OUTPUT_FOLDER, str(current_year))
++
++    money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"money"), "money.xlsx"), lambda: self.log_window_message_output("Money excel reloaded")])
++    money_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"work"), "work.xlsx"), lambda: self.log_window_message_output("Work excel reloaded")])
++    work_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path, "sleep"),"sleep.xlsx"), lambda: self.log_window_message_output("Sleep excel reloaded")])
++    sleep_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"feeling"),"feeling.xlsx"), lambda: self.log_window_message_output("Feeling excel reloaded")])
++    feeling_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"water"),"water.xlsx"), lambda: self.log_window_message_output("Water excel reloaded")])
++    water_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    l_reload_excel_layout = QVBoxLayout()
++    l_reload_excel_layout.addWidget(money_excel_reload_button)
++    l_reload_excel_layout.addWidget(work_excel_reload_button)
++    l_reload_excel_layout.addWidget(sleep_excel_reload_button)
++    l_reload_excel_layout.addWidget(feeling_excel_reload_button)
++    l_reload_excel_layout.addWidget(water_excel_reload_button)
++
++    l_reload_excel_widget_set = self.Color_widget(layout=l_reload_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
++    # --- left main widget all reload button end  --- #
++
++    # --- left main widget open file butten start --- #
++    money_excel_open_button = self.Button("Open Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "money.xlsx"))])
++    money_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    money_backup_excel_open_button = self.Button("Open Backup Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "backup.xlsx"))])
++    money_backup_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    work_excel_open_button = self.Button("Open Work Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "work", "work.xlsx"))])
++    work_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    sleep_excel_open_button = self.Button("Open Sleep Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "sleep", "sleep.xlsx"))])
++    sleep_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    feeling_excel_open_button = self.Button("Open Feeling Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "feeling", "feeling.xlsx"))])
++    feeling_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    water_excel_open_button = self.Button("Open Water Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "water", "water.xlsx"))])
++    water_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++    
++    l_open_excel_layout = QVBoxLayout()
++    l_open_excel_layout.addWidget(money_excel_open_button)
++    l_open_excel_layout.addWidget(money_backup_excel_open_button)
++    l_open_excel_layout.addWidget(work_excel_open_button)
++    l_open_excel_layout.addWidget(sleep_excel_open_button)
++    l_open_excel_layout.addWidget(feeling_excel_open_button)
++    l_open_excel_layout.addWidget(water_excel_open_button)
++
++    l_open_excel_widget_set = self.Color_widget(layout=l_open_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
++    # --- left main widget open file butten end --- #
++
++    # --- left stacked widget start --- #
++    self.l_stacked_w = QStackedWidget()
++    self.l_stacked_w.addWidget(l_money_marking_widget_set) # index 0
++    self.l_stacked_w.addWidget(l_daily_marking_widget_set) # index 1
++    self.l_stacked_w.addWidget(l_reload_excel_widget_set)  # index 2
++    self.l_stacked_w.addWidget(l_open_excel_widget_set) # index 3
++    # --- left stacked widget end --- #
++
++    # --- log widget start--- #
++    log_window_text = QLabel("Application Message")
++    log_window_text.setStyleSheet(self.TEXT_STYLE_SHEET)
++    log_window_text.setAlignment(Qt.AlignmentFlag.AlignHCenter)
++    self.log_window = QTextEdit()
++    self.log_window.setReadOnly(True)
++    self.log_window.setStyleSheet(self.LOG_WINDOW_STYLE_SHEET)
++
++    log_window_clear_text_button = self.Button("Clear Log Window", True, [lambda: self.log_window.clear()])
++    log_window_clear_text_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    right_top_layout = QVBoxLayout()
++    right_top_layout.addWidget(log_window_text)
++    right_top_layout.addWidget(self.log_window)
++    right_top_layout.addWidget(log_window_clear_text_button)
++
++    right_top_widget = self.Color_widget(layout = right_top_layout, bgc="#b5b5b5", border="2px solid #000000", margin="5px") 
++    # --- log widget end --- # 
++
++    # --- folder checking start --- #
++    for folder in ["config", "input", "output"]:
++      folder_path = os_path.join(self.CURRENT_DIRECTORY, folder)
++      if not os_path.exists(folder_path):
++        self.log_window_message_output(f"System: Folder \"{folder}\" not found")
++        os_makedirs(folder_path)
++        self.log_window_message_output(f"System: Folder \"{folder}\" is created") 
++    # --- folder checking end --- #
++
++    # --- user input widget start --- #    
++    user_input_text = QLabel("User Input")
++    user_input_text.setStyleSheet(self.TEXT_STYLE_SHEET)
++    user_input_text.setAlignment(Qt.AlignmentFlag.AlignHCenter)
++
++    self.user_input_window = QTextEdit()
++    self.user_input_window.setStyleSheet(self.USER_STYLE_SHEET)
++
++    user_input_save_button = self.Button("Save",True, [lambda: self.Save_file()]) 
++    user_input_save_button.setShortcut("Ctrl+s")
++    user_input_save_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    clear_user_input_window_button = self.Button("Clear Text Box", True, [lambda: self.user_input_window.clear()] )
++    clear_user_input_window_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    start_all_job_button = self.Button("Start All Excel", True, [
++      self.money_excel_start_signal.emit,
++      self.work_excel_start_signal.emit,
++      self.sleep_excel_start_signal.emit,
++      self.water_excel_start_signal.emit,
++      self.feeling_excel_start_signal.emit            
++    ])
++    start_all_job_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
++
++    right_bottom_button_layout = QHBoxLayout()
++    right_bottom_button_layout.addWidget(user_input_save_button)
++    right_bottom_button_layout.addWidget(clear_user_input_window_button)
++    right_bottom_button_layout.addWidget(start_all_job_button)
++
++    right_bottom_layout= QVBoxLayout()
++    right_bottom_layout.addWidget(user_input_text)
++    right_bottom_layout.addWidget(self.user_input_window)
++    right_bottom_layout.addLayout(right_bottom_button_layout)
++
++    right_bottom_widget = self.Color_widget(layout=right_bottom_layout, bgc="#b5b5b5", border="2px solid #000000",margin="5px") 
++    # --- user input widget end --- #
++
++    self.right_main_splitter = QSplitter(Qt.Orientation.Vertical)
++    self.right_main_splitter.addWidget(right_top_widget)
++    self.right_main_splitter.addWidget(right_bottom_widget)
++    self.right_main_splitter.setSizes([540,540])
++
++    self.main_splitter = QSplitter(Qt.Orientation.Horizontal)
++    self.main_splitter.addWidget(self.l_stacked_w)
++    self.main_splitter.addWidget(self.right_main_splitter)
++
++    self.main_splitter.setSizes([384,1536])
++    self.setCentralWidget(self.main_splitter)
++
++    self.Load_setting()
++
++  def closeEvent(self, event):
++    self.Save_settings()
++    super().closeEvent(event)
++
++  def Save_settings(self):
++    location = self.geometry()
++
++    setting = {
++      "x": location.x(),
++      "y": location.y(),
++      "width": location.width(),
++      "height": location.height(),
++      "main_splitter_sizes": self.main_splitter.sizes(),
++      "right_main_splitter_sizes" : self.right_main_splitter.sizes()             
++    }
++
++    with open(self.SETTING_FILE,'w') as file:
++      json_dump(setting, file, indent=4)
++    print("Setting saved")
++
++  def Load_setting(self):
++    if not os_path.exists(self.SETTING_FILE):
++      return
++      
++    with open(self.SETTING_FILE, 'r') as file:  
++      data = json_load(file)
++
++    if "x" in data and "y" in data:
++      self.move(data["x"], data["y"])
++    
++    if "width" in data and "height" in data:
++      self.resize(data["width"], data["height"])
++    
++    if "main_splitter_sizes" in data:
++      self.main_splitter.setSizes(data["main_splitter_sizes"])
++
++    if "right_main_splitter_sizes" in data:
++      self.right_main_splitter.setSizes(data["right_main_splitter_sizes"])
++
++  def Load_file(self, file_name):
++    self.user_input_window.clear()
++       
++    file_path= os_path.join(self.INPUT_FOLDER, file_name)
++
++    try:
++      with open(file_path, 'r', encoding="utf-8") as file:
++        data = file.read()
++      self.user_input_window.append(data)
++      self.log_window_message_output(f"File {file_name} is loaded!")
++
++    except FileNotFoundError:
++      self.log_window_message_output(f"File {file_name} not exists")
++
++      with open(file_path, 'w',encoding="utf-8" ) as file:
++        pass
++      self.log_window_message_output(f"File {file_name} created")    
++
++    self.current_opening_file = file_path
++    self.user_input_window.document().clearUndoRedoStacks()
++
++  def Save_file(self):
++    try:
++      text_to_save =  self.user_input_window.toPlainText()
++      with open(self.current_opening_file, 'w',encoding="utf-8") as file:
++        file.write(text_to_save)
++      self.user_input_window.clear()
++      self.log_window_message_output(f"File {os_path.basename(self.current_opening_file)} is saved!")
++      self.current_opening_file = None
++    except TypeError:
++      self.log_window_message_output(f"Nothing is not opening!")
++      self.log_window_message_output(f"Please open some file before saving!")      
++
++  def Color_widget(self, layout ,border="",bgc = "#ffffff", margin=""):
++    widget = QWidget()
++    widget.setObjectName("this_widget")
++    widget.setStyleSheet(f"""
++        #this_widget{{
++            background-color: {bgc};
++            border : {border};
++            margin : {margin};
++        }}
+     """)
+-    LOG_WINDOW_STYLE_SHEET=(""" 
+-        QTextEdit{
+-            background-color : #002D07;
+-            color: #00ff00;
+-            font-family: Consolas, Monospace;
+-            font-size: 20px;
+-            border: 3px solid #0f0f0f;                          
+-            margin: 10px;
+-            border-radius : 5px;
+-        } 
+-    """)
+-    TEXT_STYLE_SHEET=("""
+-        QLabel{
+-           font-size: 20px;               
+-           font-weight: 700;
+-        }
+-    """)
+-    USER_STYLE_SHEET=("""
+-        QTextEdit{
+-            font-size: 20px;
+-            border:3px solid #0f0f0f;
+-            font-family: Georgia;
+-            margin: 10px;
+-            border-radius : 5px;
+-        }
+-    """)
+-
+-    CURRENT_DIRECTORY = config.path.PROJECT_ROOT_FOLDER
+-    SETTING_FILE =  config.path.GUI_SETTING_FILE
+-    INPUT_FOLDER = config.path.INPUT_FOLDER
+-    OUTPUT_FOLDER = config.path.OUTPUT_FOLDER
+-
+-    # --- signal for main.py setup start --- #
+-    current_opening_file = None
+-    server_start_signal = pyqtSignal()
+-    server_stop_signal = pyqtSignal()
+-    money_excel_start_signal = pyqtSignal()
+-    work_excel_start_signal = pyqtSignal()
+-    sleep_excel_start_signal = pyqtSignal()
+-    water_excel_start_signal = pyqtSignal()
+-    feeling_excel_start_signal = pyqtSignal()
+-    # --- singal for main.py setup end --- #        
+-
+-    def __init__(self, width, height):
+-        super().__init__()
+-        # --- basic window setting start --- # 
+-        self.width = width
+-        self.height = height
+-        self.setWindowTitle("GUI Daily Marker")
+-        self.resize(width, height) 
+-        # --- basic window setting end --- #
+-
+-        # --- menu bar start --- #
+-        menu_bar = self.menuBar()
+-        view_button = menu_bar.addMenu("&View")
+-
+-        view_action_1 = QAction("Show money marking", self)
+-        view_action_1.setShortcut("Ctrl+1")
+-        view_action_1.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(0))
+-        view_button.addAction(view_action_1)
+-
+-        view_action_2 = QAction("Show daily marking", self)
+-        view_action_2.setShortcut("Ctrl+2")
+-        view_action_2.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(1))
+-        view_button.addAction(view_action_2)
+-
+-        view_action_3 = QAction("Show all excel reload", self)
+-        view_action_3.setShortcut("Ctrl+3")
+-        view_action_3.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(2))
+-        view_button.addAction(view_action_3)
+-        
+-        view_action_4 = QAction("Show all excel reload", self)
+-        view_action_4.setShortcut("Ctrl+4")
+-        view_action_4.triggered.connect(lambda :self.l_stacked_w.setCurrentIndex(3))
+-        view_button.addAction(view_action_4)
+-        # --- menu bar end --- #
+-
+-        # --- left main widget money marking button start --- #
+-        server_start_button = self.Button("Server Start", True, [self.server_start_signal.emit])
+-        server_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        server_stop_button = self.Button("Server Stop", True, [self.server_stop_signal.emit])
+-        server_stop_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        money_excel_start_button = self.Button("Money Excel Start", True, [self.money_excel_start_signal.emit]) 
+-        money_excel_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET) 
+-
+-        load_current_have = self.Button("Load Current Have", True,  [lambda: self.Load_file("money_current_have.txt")])
+-        load_current_have.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        load_money_message = self.Button("Load Money Message", True, [lambda: self.Load_file("money_messages.txt")])
+-        load_money_message.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        l_money_marking_layout= QVBoxLayout() 
+-        l_money_marking_layout.addWidget(server_start_button)
+-        l_money_marking_layout.addWidget(server_stop_button)
+-        l_money_marking_layout.addWidget(money_excel_start_button)
+-        l_money_marking_layout.addWidget(load_money_message)
+-        l_money_marking_layout.addWidget(load_current_have)
+-
+-        l_money_marking_widget_set = self.Color_widget(layout=l_money_marking_layout, bgc="#6d6d6d", border="2px solid #000000")  
+-        # --- left main widget money marking button end --- #
+-
+-        # --- left main widget daily marking button start --- #
+-        water_start_button = self.Button("Water Start Mark", True,  [self.water_excel_start_signal.emit])
+-        water_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        feeling_start_button = self.Button("Feeling Start Mark", True,  [self.feeling_excel_start_signal.emit])
+-        feeling_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        working_start_button = self.Button("Working Start Mark", True, [self.work_excel_start_signal.emit])
+-        working_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        sleeping_start_button = self.Button("Sleeping Start Mark", True, [self.sleep_excel_start_signal.emit])
+-        sleeping_start_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-        
+-        l_daily_marking_layout = QVBoxLayout()
+-        l_daily_marking_layout.addWidget(water_start_button)
+-        l_daily_marking_layout.addWidget(feeling_start_button)
+-        l_daily_marking_layout.addWidget(working_start_button)
+-        l_daily_marking_layout.addWidget(sleeping_start_button)
+-
+-        l_daily_marking_widget_set = self.Color_widget(layout=l_daily_marking_layout, bgc="#6d6d6d", border="2px solid #000000")  
+-        # --- left main widget daily marking button end --- #
+-
+-        # --- left main widget all reload button start --- #
+-        current_year = datetime.now().year
+-        current_year_file_path = os_path.join(self.OUTPUT_FOLDER, str(current_year))
+-
+-        money_excel_reload_button = self.Button("Reload Money Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"money"), "money.xlsx"), lambda: self.log_window_message_output("Money excel reloaded")])
+-        money_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        work_excel_reload_button = self.Button("Reload Work Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"work"), "work.xlsx"), lambda: self.log_window_message_output("Work excel reloaded")])
+-        work_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        sleep_excel_reload_button = self.Button("Reload Sleep Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path, "sleep"),"sleep.xlsx"), lambda: self.log_window_message_output("Sleep excel reloaded")])
+-        sleep_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        feeling_excel_reload_button = self.Button("Reload Feeling Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"feeling"),"feeling.xlsx"), lambda: self.log_window_message_output("Feeling excel reloaded")])
+-        feeling_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        water_excel_reload_button = self.Button("Reload Water Excel", True, [lambda: self.reload_file(os_path.join(current_year_file_path,"water"),"water.xlsx"), lambda: self.log_window_message_output("Water excel reloaded")])
+-        water_excel_reload_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        l_reload_excel_layout = QVBoxLayout()
+-        l_reload_excel_layout.addWidget(money_excel_reload_button)
+-        l_reload_excel_layout.addWidget(work_excel_reload_button)
+-        l_reload_excel_layout.addWidget(sleep_excel_reload_button)
+-        l_reload_excel_layout.addWidget(feeling_excel_reload_button)
+-        l_reload_excel_layout.addWidget(water_excel_reload_button)
+-
+-        l_reload_excel_widget_set = self.Color_widget(layout=l_reload_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
+-        # --- left main widget all reload button end  --- #
+-
+-        # --- left main widget open file butten start --- #
+-        money_excel_open_button = self.Button("Open Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "money.xlsx"))])
+-        money_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        money_backup_excel_open_button = self.Button("Open Backup Money Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "money", "backup.xlsx"))])
+-        money_backup_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        work_excel_open_button = self.Button("Open Work Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "work", "work.xlsx"))])
+-        work_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        sleep_excel_open_button = self.Button("Open Sleep Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "sleep", "sleep.xlsx"))])
+-        sleep_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        feeling_excel_open_button = self.Button("Open Feeling Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "feeling", "feeling.xlsx"))])
+-        feeling_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        water_excel_open_button = self.Button("Open Water Excel", True, [lambda: self.open_file(os_path.join(current_year_file_path, "water", "water.xlsx"))])
+-        water_excel_open_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-        
+-        l_open_excel_layout = QVBoxLayout()
+-        l_open_excel_layout.addWidget(money_excel_open_button)
+-        l_open_excel_layout.addWidget(money_backup_excel_open_button)
+-        l_open_excel_layout.addWidget(work_excel_open_button)
+-        l_open_excel_layout.addWidget(sleep_excel_open_button)
+-        l_open_excel_layout.addWidget(feeling_excel_open_button)
+-        l_open_excel_layout.addWidget(water_excel_open_button)
+-
+-        l_open_excel_widget_set = self.Color_widget(layout=l_open_excel_layout, bgc="#6d6d6d", border="2px solid #000000")
+-
+-        # --- left main widget open file butten end --- #
+-
+-        # --- left stacked widget start --- #
+-        self.l_stacked_w = QStackedWidget()
+-        self.l_stacked_w.addWidget(l_money_marking_widget_set) # index 0
+-        self.l_stacked_w.addWidget(l_daily_marking_widget_set) # index 1
+-        self.l_stacked_w.addWidget(l_reload_excel_widget_set)  # index 2
+-        self.l_stacked_w.addWidget(l_open_excel_widget_set) # index 3
+-        # --- left stacked widget end --- #
+-
+-        # --- log widget start--- #
+-        log_window_text = QLabel("Application Message")
+-        log_window_text.setStyleSheet(self.TEXT_STYLE_SHEET)
+-        log_window_text.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+-        self.log_window = QTextEdit()
+-        self.log_window.setReadOnly(True)
+-        self.log_window.setStyleSheet(self.LOG_WINDOW_STYLE_SHEET)
+-
+-        log_window_clear_text_button = self.Button("Clear Log Window", True, [lambda: self.log_window.clear()])
+-        log_window_clear_text_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-
+-        right_top_layout = QVBoxLayout()
+-        right_top_layout.addWidget(log_window_text)
+-        right_top_layout.addWidget(self.log_window)
+-        right_top_layout.addWidget(log_window_clear_text_button)
+-
+-        right_top_widget = self.Color_widget(layout = right_top_layout, bgc="#b5b5b5", border="2px solid #000000", margin="5px") 
+-        # --- log widget end --- # 
+-
+-        # --- folder checking start --- #
+-
+-        for folder in ["config", "input", "output"]:
+-            folder_path = os_path.join(self.CURRENT_DIRECTORY, folder)
+-            if not os_path.exists(folder_path):
+-                self.log_window_message_output(f"System: Folder \"{folder}\" not found")
+-                os_makedirs(folder_path)
+-                self.log_window_message_output(f"System: Folder \"{folder}\" is created") 
+-
+-        # --- folder checking end --- #
+-
+-        # --- user input widget start --- #    
+-        user_input_text = QLabel("User Input")
+-        user_input_text.setStyleSheet(self.TEXT_STYLE_SHEET)
+-        user_input_text.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+-
+-        self.user_input_window = QTextEdit()
+-        self.user_input_window.setStyleSheet(self.USER_STYLE_SHEET)
+-
+-        user_input_save_button = self.Button("Save",True, [lambda: self.Save_file()]) 
+-        user_input_save_button.setShortcut("Ctrl+s")
+-        user_input_save_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        clear_user_input_window_button = self.Button("Clear Text Box", True, [lambda: self.user_input_window.clear()] )
+-        clear_user_input_window_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        start_all_job_button = self.Button("Start All Excel", True, [
+-            self.money_excel_start_signal.emit,
+-            self.work_excel_start_signal.emit,
+-            self.sleep_excel_start_signal.emit,
+-            self.water_excel_start_signal.emit,
+-            self.feeling_excel_start_signal.emit            
+-        ])
+-        start_all_job_button.setStyleSheet(self.BUTTON_STYLE_SHEET)
+-
+-        right_bottom_button_layout = QHBoxLayout()
+-        right_bottom_button_layout.addWidget(user_input_save_button)
+-        right_bottom_button_layout.addWidget(clear_user_input_window_button)
+-        right_bottom_button_layout.addWidget(start_all_job_button)
+-
+-        right_bottom_layout= QVBoxLayout()
+-        right_bottom_layout.addWidget(user_input_text)
+-        right_bottom_layout.addWidget(self.user_input_window)
+-        right_bottom_layout.addLayout(right_bottom_button_layout)
+-
+-        right_bottom_widget = self.Color_widget(layout=right_bottom_layout, bgc="#b5b5b5", border="2px solid #000000",margin="5px") 
+-
+-        # --- user input widget end --- #
+-        self.right_main_splitter = QSplitter(Qt.Orientation.Vertical)
+-        self.right_main_splitter.addWidget(right_top_widget)
+-        self.right_main_splitter.addWidget(right_bottom_widget)
+-        self.right_main_splitter.setSizes([540,540])
+-
+-        self.main_splitter = QSplitter(Qt.Orientation.Horizontal)
+-        self.main_splitter.addWidget(self.l_stacked_w)
+-        self.main_splitter.addWidget(self.right_main_splitter)
+-
+-        self.main_splitter.setSizes([384,1536])
+-        self.setCentralWidget(self.main_splitter)
+-
+-        self.Load_setting()
+-
+-    def closeEvent(self, event):
+-        self.Save_settings()
+-        super().closeEvent(event)
+-
+-    def Save_settings(self):
+-        
+-        location = self.geometry()
+-
+-        setting = {
+-            "x": location.x(),
+-            "y": location.y(),
+-            "width": location.width(),
+-            "height": location.height(),
+-            "main_splitter_sizes": self.main_splitter.sizes(),
+-            "right_main_splitter_sizes" : self.right_main_splitter.sizes()             
+-        }
+-
+-        with open(self.SETTING_FILE,'w') as file:
+-            json_dump(setting, file, indent=4)
+-        print("Setting saved")
+-
+-    def Load_setting(self):
+-        if not os_path.exists(self.SETTING_FILE):
+-            return
+-        
+-        with open(self.SETTING_FILE, 'r') as file:  
+-            data = json_load(file)
+-
+-        if "x" in data and "y" in data:
+-            self.move(data["x"], data["y"])
+-        
+-        if "width" in data and "height" in data:
+-            self.resize(data["width"], data["height"])
+-        
+-        if "main_splitter_sizes" in data:
+-            self.main_splitter.setSizes(data["main_splitter_sizes"])
+-
+-        if "right_main_splitter_sizes" in data:
+-            self.right_main_splitter.setSizes(data["right_main_splitter_sizes"])
+-
+-    def Load_file(self, file_name):
+-        self.user_input_window.clear()
+-         
+-        file_path= os_path.join(self.INPUT_FOLDER, file_name)
+-
+-        try:
+-            with open(file_path, 'r', encoding="utf-8") as file:
+-                data = file.read()
+-            self.user_input_window.append(data)
+-            self.log_window_message_output(f"File {file_name} is loaded!")
+-
+-        except FileNotFoundError:
+-            self.log_window_message_output(f"File {file_name} not exists")
+-
+-            with open(file_path, 'w',encoding="utf-8" ) as file:
+-                pass
+-            self.log_window_message_output(f"File {file_name} created")    
+-
+-        self.current_opening_file = file_path
+-        self.user_input_window.document().clearUndoRedoStacks()
+-
+-    def Save_file(self):
+-        try:
+-            text_to_save =  self.user_input_window.toPlainText()
+-            with open(self.current_opening_file, 'w',encoding="utf-8") as file:
+-                file.write(text_to_save)
+-            self.user_input_window.clear()
+-            self.log_window_message_output(f"File {os_path.basename(self.current_opening_file)} is saved!")
+-            self.current_opening_file = None
+-        except TypeError:
+-            self.log_window_message_output(f"Nothing is not opening!")
+-            self.log_window_message_output(f"Please open some file before saving!")      
+-
+-
+-    def Color_widget(self, layout ,border="",bgc = "#ffffff", margin=""):
+-        widget = QWidget()
+-        widget.setObjectName("this_widget")
+-        widget.setStyleSheet(f"""
+-            #this_widget{{
+-                background-color: {bgc};
+-                border : {border};
+-                margin : {margin};
+-            }}
+-        """)
+-        widget.setLayout(layout) 
+-
+-        return widget
+-
+-    def Button(self, name, can_click, functions):
+-        button = QPushButton(name)
+-        button.setCheckable(can_click)
+-        button.setCursor(Qt.CursorShape.PointingHandCursor)
+-        for func in functions:
+-            button.pressed.connect(func)
+-        return button
+-
+-    def log_window_message_output(self, input, color = None, new_line = False):
+-        time = datetime.now().strftime("%H:%M:%S") 
+-        if(color):
+-            message = f"<span style= 'color: {color};'>{time}: {input}</span>"
+-        else:
+-            message = f"{time}: {input}"
+-
+-        if(new_line):
+-            message += "\n"
+-
+-        self.log_window.append(message) 
+-
+-    def reload_file(self, file_path, file_name):
+-        remove_file_path = os_path.join(file_path, file_name)
+-        reload_file_path = os_path.join(file_path, "backup.xlsx")
+-        if(os_path.exists(remove_file_path) and os_path.exists(reload_file_path)):
+-            os_remove(remove_file_path)
+-            os_rename(reload_file_path, remove_file_path)
+-        else:
+-            self.log_window_message_output(f"file path \"{file_path}\" not exist")
+-
+-
+-    def open_file(self, file_path):
+-        if (not os_path.exists(file_path)):
+-            self.log_window_message_output(f"File {file_path} not exist")
+-            return
+-        
+-        current_os = platform_system()
+-
+-        if (current_os == "Windows"):
+-            os_startfile(file_path)
+-        elif(current_os == "Darwin"): # MAC os
+-            subprocess_run(["open", file_path] )
+-        elif(current_os == "Linux"):
+-            subprocess_run(["xdg-open", file_path])
+-        else:
+-            self.log_window_message_output(f"Unsupproted OS : {current_os}") 
++    widget.setLayout(layout) 
++
++    return widget
++
++  def Button(self, name, can_click, functions):
++    button = QPushButton(name)
++    button.setCheckable(can_click)
++    button.setCursor(Qt.CursorShape.PointingHandCursor)
++    for func in functions:
++      button.pressed.connect(func)
++    return button
++
++  def log_window_message_output(self, input, color = None, new_line = False):
++    time = datetime.now().strftime("%H:%M:%S") 
++    if(color):
++      message = f"<span style= 'color: {color};'>{time}: {input}</span>"
++    else:
++      message = f"{time}: {input}"
++
++    if(new_line):
++      message += "\n"
++
++    self.log_window.append(message) 
++
++  def reload_file(self, file_path, file_name):
++    remove_file_path = os_path.join(file_path, file_name)
++    reload_file_path = os_path.join(file_path, "backup.xlsx")
++    if(os_path.exists(remove_file_path) and os_path.exists(reload_file_path)):
++      os_remove(remove_file_path)
++      os_rename(reload_file_path, remove_file_path)
++    else:
++      self.log_window_message_output(f"file path \"{file_path}\" not exist")
++
++  def open_file(self, file_path):
++    if (not os_path.exists(file_path)):
++      self.log_window_message_output(f"File {file_path} not exist")
++      return
++      
++    current_os = platform_system()
++
++    if (current_os == "Windows"):
++      os_startfile(file_path)
++    elif(current_os == "Darwin"): # MAC os
++      subprocess_run(["open", file_path] )
++    elif(current_os == "Linux"):
++      subprocess_run(["xdg-open", file_path])
++    else:
++      self.log_window_message_output(f"Unsupproted OS : {current_os}") 
+ 
+ if __name__ == "__main__":
+-    app = QApplication(sys_argv)
+-    window = Main_window(1920,1080) 
+-    window.show()
++  app = QApplication(sys_argv)
++  window = Main_window(1920,1080) 
++  window.show()
+ 
+-    app.exec() 
++  app.exec()
+\ No newline at end of file
+diff --git a/script/work_excel.py b/script/work_excel.py
+index 6eea0cc..0de197b 100644
+--- a/script/work_excel.py
++++ b/script/work_excel.py
+@@ -7,23 +7,23 @@ OUTPUT_FOLDER_PATH = config.path.OUTPUT_FOLDER
+ 
+ message_out = print
+ def set_message_out(function):
+-    global message_out
+-    message_out = function
++  global message_out
++  message_out = function
+ 
+ def check_file_exist():
+-    pass
++  pass
+ 
+ def read_data():
+-    # with open()
+-    pass
++  # with open()
++  pass
+ 
+ def work_excel_process():
+-    print("work excel started!")
+-    message_out("Work excel processing")
+-    pass
++  print("work excel started!")
++  message_out("Work excel processing")
++  pass
+ 
+ def main():
+-    check_file_exist()
++  check_file_exist()
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++  main()
+\ No newline at end of file

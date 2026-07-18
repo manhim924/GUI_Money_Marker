@@ -1,16 +1,16 @@
 1)  GUI add new button that when the excel have "False" then the GUI will tell, and will have a button that reload the back up file and so on 
-    1.1) rename the file path ( as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path) -- done --
+    1.1 done) rename the file path (as GUI add the reload excel page and the button, which need to change the output file path, so need to rename the file path) 
     1.2) check all the reload button after is the excel.py is finish
 
-2) GUI add a new button that clear the log message window -- done --
+2 done) GUI add a new button that clear the log message window  
 
-3) GUI add a new button that can do all the thing -- done -- 
+3 done) GUI add a new button that can do all the thing 
 
 4) GUI add a new button that can restore the temp file to the current file -- same as 1) --
 
 5) add investment marking as a new file ( not same file as money)
 
-7) GUI add a new button that open the excel file -- done -- 
+7 done) GUI add a new button that open the excel file
 
 8) GUI should not check is the file path exist, should be the job of main
 
@@ -18,17 +18,20 @@
 
 10) add the button in GUI for change the aimed water drink per day
 
+11)water
+  11.1) shortcut set some default container
+
 
 6)excel
-    6.1)    copy the old file to the temp -- done -- 
-    6.2)    if have False, then print to log window with the current line -- done -- 
-    6.3)    add coin-hold  -- done -- 
-    6.4)    process the countless -- done --
-    6.5)    fix accrose two month and two year -- done --
-    6.6)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have erocess -- done --
-    6.7)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows -- done -- 
-    6.8)    if not every account in the current_have.txt have a amount, then tell error -- done -- 
-    6.9)    fix the new month can just be the first day -- done -- 
-    6.10)   when all every thing is ok, then del the input file -- done --
+    6.1 done)    copy the old file to the temp 
+    6.2 done)    if have False, then print to log window with the current line 
+    6.3 done)    add coin-hold  
+    6.4 done)    process the countless 
+    6.5 done)    fix accrose two month and two year 
+    6.6 done)    when the message accrose two month, the currnet have should be record of last day, then the last day of the previse month should run the current have erocess 
+    6.7 done)    if current_have.txt is { not exist, not current date, or other} then tell to the log_message_windows 
+    6.8 done)    if not every account in the current_have.txt have a amount, then tell error 
+    6.9 done)    fix the new month can just be the first day 
+    6.10 done)   when all every thing is ok, then del the input file 
     
-!) add the date back to current have ( for the excel to check when accrose two month) -- done -- 
+! done) add the date back to current have ( for the excel to check when accrose two month) 
